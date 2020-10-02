@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %} Sign Up! {% endblock title %}
+
+{% block css %}
+body{
+background-color: #FAFAFA;
+margin: 0;
+padding: 0;
+width: 100%;
+
+}
+
+.row{
+margin: 0;
+margin-top: 5%;
+}
+
+
+.login-inner{
+margin: 0;
+margin-top: auto;
+background-color: #FFFFFF;
+margin-left: 8%;
+width: 90%;
+height: 100%;
+border: 1px solid #DBDBDB;
+}
+
+.content{
+margin-left: 20%;
+margin-top: 5%;
+font-family: 'Lobster', cursive;
+font-size: 280%;
+}
+
+input{
+width: 90%;
+background-color: #FAFAFA;
+border: 1px solid #DBDBDB;
+}
+
+.submit_btn{
+width : 200%;
+}
+
+input::placeholder{
+font-size: 75%;
+}
+
+input:focus{
+outline: 0;
+box-shadow: none;
+border: 1px solid #DBDBDB;
+}
+
+.username{
+margin-left: 15%;
+}
+
+.password{
+margin-top: 2%;
+margin-left: 15%;
+}
+
+.signup-btn{
+margin-top: 4%;
+color: white;
+height: 9%;
+width: 90%;
+}
+
+.signup-btn:hover{
+background-color: #0095F6;
+color: white;
+}
+
+a:hover{
+text-decoration: none;
+color: #385185;
+}
+
+.forgot{
+margin: 0;
+margin-left: 32%;
+color: #385185;
+font-size: 80%;
+}
+
+hr{
+width: 60%;
+}
+
+.already-have-acnt{
+margin: 0;
+margin-top: 5%;
+margin-left: 8%;
+background-color: #FFFFFF;
+border: 1px solid #DBDBDB;
+width: 90%;
+height: 8%;
+}
+
+.no-account{
+margin: 0;
+margin-top: 5%;
+margin-left: 23%;
+font-size: 80%;
+}
+
+.signup-link{
+font-weight: 600;
+color: #0095F7;
+}
+
+.signup-link:hover{
+font-weight: 600;
+color: #0095F7;
+}
+
+.footer-text{
+margin: 0;
+margin-left: 15%;
+margin-top: auto;
+color: #385185;
+font-size: 90%;
+font-weight: 500;
+cursor: pointer;
+}
+
+.copyright{
+margin-left: 8%;
+color: #8E919C;
+}
+
+{% endblock css %}
+
+
+
+{% block body %}
+
+<div class="row justify-content-center">
+    <div class="login-box col-lg-4 col-md-6 col-sm-12">
+        <form method="POST" action="/handleSignUp">
+            {% csrf_token %}
+            <div class="login-inner">
+                <h1 class="my-4 content"> Instagram </h1>
+
+                <div class="form-group">
+                    <label for="username" class="ml-3">Username : </label>
+                    <input type="text" class="ml-3" placeholder="Username" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="fullname" class="ml-3">Full Name : </label>
+                    <input type="text" class="ml-3" placeholder="Full Name" id="fullname" name="fullname" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="ml-3"> Email : </label>
+                    <input type="email" class="ml-3" placeholder="Email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="ml-3">Password : </label>
+                    <input type="password" class="ml-3" placeholder="Password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="password2" class="ml-3">Confirm Password : </label>
+                    <input type="password" class="ml-3" placeholder="Confirm Password" id="password2" name="password2" required>
+                </div>
+                <div >
+                    <label class="mx-3">Gender : </label>
+                    <label class="radio-inline mx-4">
+                        <input type="radio" name="male" checked>Male
+                    </label>
+                    <label class="radio-inline mx-4">
+                        <input type="radio" name="female"> Female
+                    </label>
+                </div>
+                <div class="form-group row">
+                    <label for="example-date-input" class="col col-form-label">Date of Birth :</label>
+                    <div class="col-lg-12">
+                        <input class="form-control" type="date" value="2011-08-19" id=birthdate name="birthdate" >
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn btn-primary ml-3  signup-btn ">Sign Up</button>
+                </div>
+
+                <hr>
+            </div>
+        </form>
+        <div class="already-have-acnt">
+            <p class="no-account"> Already have an account? <a href="/" class="signup-link">Log in </a> </p>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock body %}

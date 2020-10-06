@@ -11,9 +11,9 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
-    <title> {% block title %} {% endblock title %} </title>
+    <title> {% block title %} Postfeed! {% endblock title %} </title>
     <style>
-        * {
+        *{
             padding: 0;
             margin: 0;
         }
@@ -47,9 +47,22 @@
 
         }
 
+        .post-button {
+            background-color: #FFFFFF;
+        }
+
+        .post-button:focus {
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .post-button:hover {
+            color: #3995F6;
+        }
+
         .nav-right-items {
             width: 40%;
-            text-align: center;
+            /* text-align: center */  
             margin: 0;
             margin-left: 15%;
 
@@ -64,11 +77,11 @@
             color: #262626;
             font-size: 150%;
             margin: 0;
-            margin-left: 2%;
+            /*margin-left: 0%;*/
             margin-top: 1%;
         }
 
-        {% block css %}
+        {% block css %} 
         {% endblock css %}
     </style>
 </head>
@@ -77,7 +90,8 @@
 
     <nav class="navbar navbar-expand navbar-light bg-light ">
         <a class="navbar-brand logo " href="#">
-            <i class="fas fa-camera"></i> Instagram
+            <i class="fa fa-instagram"></i> Instagram
+
         </a>
 
         <input class="form-control search-bar " type="search" placeholder="Search" aria-label="Search">
@@ -89,6 +103,44 @@
                     <i class="fas fa-home nav-icons"></i>
                 </a>
             </li>
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn post-button" data-toggle="modal" data-target="#PostModal">
+                <i class="fa fa-camera nav-icons" aria-hidden="true"></i>
+            </button>
+
+            <!--Post Modal -->
+            <div class="modal fade" id="PostModal" tabindex="-1" aria-labelledby="PostModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="PostModalLabel">Post Something</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/home/post" method="POST"  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="container">
+                                    <label for="image">Image : </label>
+                                    <input type="file" name="image" id="image">
+                                    <br><br>
+                                    <label for="caption" class=""> Captions : </label>
+                                    <br>
+                                    <textarea class="ml-0" name="caption" id="caption" cols="45" rows="10" placeholder="Share what's on your mind..." class='ml-4'></textarea>
+                                </div> 
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Post</button>
+                                </div>   
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
             <li class="nav-item">
                 <a class="nav-link " href="#">
                     <i class="far fa-compass nav-icons"></i>
@@ -115,11 +167,11 @@
                     Welcome, {{request.user}}!
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/logout"> Logout</a>    
+                    <a class="dropdown-item" href="/logout"> Logout</a>
                 </div>
             </li>
             {% endif %}
-            
+
         </ul>
     </nav>
 
@@ -150,5 +202,9 @@
         crossorigin="anonymous"></script>
 
 </body>
+
+
+{% block js %}
+{% endblock js %}
 
 </html>

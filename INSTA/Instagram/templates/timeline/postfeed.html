@@ -3,8 +3,117 @@
 {% block title %} Timeline {% endblock title %}
 
 {% block css %}
+
+.card{
+border: 1px solid #DBDBDB;
+border-bottom: 0;
+margin: 0;
+margin-top: 3%;
+width : 615px;
+}
+
+.paid-text{
+font-size: 70%;
+}
+
+.card-image{
+margin: 0;
+margin-top: 3%;
+}
+
+.card-content{
+margin: 0;
+margin-left: 3%;
+margin-top: 2%;
+
+}
+
+.card-text {
+margin-left: 2%;
+font-family: 'Roboto', sans-serif;
+}
+.card-text-caption{
+margin-left: 2%;
+}
+
+.comment-bar{
+width: 100%;
+}
+
+.comment:focus{
+outline: 0;
+box-shadow: none;
+border: 1px solid #DBDBDB;
+border-right: 0;
+}
+
 {% endblock css %}
 
 
 {% block body %}
+<div class="feed d-flex justify-content-center row">
+    <div class="col- ">
+
+        {% for post in posts %}
+        <div class="card" >
+
+            <h10 class=" card-content ml-2">
+                <img src="" height="30" class="round" alt="...">
+                <strong> {{post.username}} </strong> </h10>
+            <p class="paid-text card-content"> {{post.time}}</p>
+
+            <img src="{{post.img_src}}" height="500" class="card-img-top card-image" alt="...">
+
+            <div class="container">
+                <a href="#" class="mr-3">
+                    <i id="likeBtn" onclick="Toggle()" class="far fa-heart insta-button"></i>
+                </a>
+                <a href="#" class="mr-3"> <i class="far fa-comment insta-button"></i> </a>
+                <a href="#" class="mr-3"> <i class="far fa-paper-plane insta-button"></i> </a>
+            
+
+            <p class="card-text ml-0">745 likes</p>
+            <p class="card-text-caption ml-auto"> <strong> {{post.username}}</strong> {{post.caption}} </p>
+            </div>
+
+        </div>
+        <div class="comment-section comment-bar my-2">
+            <form action="#">
+                <div class="input-group">
+                    <input type="text" class="form-control comment" placeholder="Add a Comment ...">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary " type="submit"> Post </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-3">
+    </div>
+
+</div>
+
 {% endblock body %}
+
+{% block js %}
+
+<script>
+
+    var likeBtn = document.getElementById("likeBtn");
+    function Toggle() {
+        if (likeBtn.classList.contains("far")) {
+            likeBtn.classList.remove("far");
+            likeBtn.classList.add("fas");
+            likeBtn.style.color="Tomato";  
+        }
+        else {
+            likeBtn.classList.remove("fas");
+            likeBtn.classList.add("far");
+            likeBtn.style.color="black"; 
+        }
+    }
+
+</script>
+{% endblock js %}

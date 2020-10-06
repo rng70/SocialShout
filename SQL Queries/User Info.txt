@@ -1,2 +1,8 @@
+Navicat User :
+Username : insta
+Password : insta
+
+
+Django SuperUser :
 Username : insta
 Password : insta

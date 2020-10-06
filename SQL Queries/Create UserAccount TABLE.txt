@@ -24,6 +24,6 @@ FOR EACH ROW
 
 BEGIN
   SELECT user_seq.NEXTVAL
-  INTO   :new.id
+  INTO   :new.USER_ID
   FROM   dual;
 END;

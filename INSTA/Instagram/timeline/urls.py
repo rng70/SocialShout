@@ -4,5 +4,8 @@ from timeline import views
 
 
 urlpatterns = [
+    path('post' , views.post, name='post'), #POST PHOTO
     path('', views.home,  name='home'),
 ]
+   
+    

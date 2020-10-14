@@ -1,0 +1,11 @@
+Navicat Oracle-11g !
+-----------------------
+user name : insta
+password : insta
+
+
+Django SuperUser:
+------------------------
+user name : insta
+password : insta
+

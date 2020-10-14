@@ -1,0 +1,148 @@
+{% extends 'timeline_base.html' %}
+
+{% block title %} Timeline {% endblock title %}
+
+{% block css %}
+
+.card{
+border: 1px solid #DBDBDB;
+border-bottom: 0;
+margin: 0;
+margin-top: 3%;
+width : 615px;
+}
+
+.paid-text{
+font-size: 70%;
+}
+
+.card-image{
+margin: 0;
+margin-top: 3%;
+}
+
+.card-content{
+margin: 0;
+margin-left: 3%;
+margin-top: 2%;
+
+}
+
+.card-text {
+margin-left: 2%;
+font-family: 'Roboto', sans-serif;
+}
+.card-text-caption{
+margin-left: 2%;
+}
+
+.comment-bar{
+width: 100%;
+}
+
+.comment:focus{
+outline: 0;
+box-shadow: none;
+border: 1px solid #DBDBDB;
+border-right: 0;
+}
+
+{% endblock css %}
+
+
+{% block body %}
+<div class="feed d-flex justify-content-center row">
+    <div class="col- ">
+
+        {% for post in posts %}
+        <div class="card">
+
+            <h10 class=" card-content ml-2">
+                <img src="/static/user.png" height="30" class="round" alt="...">
+                <strong> {{post.username}} </strong>
+            </h10>
+            <p class="paid-text card-content"> {{post.time}}</p>
+            <a href="/post/{{post.postid}}">
+            <img src="{{post.img_src}}" height="500" class="card-img-top card-image" alt="...">
+            </a>
+            <div class="container">
+                <a href="{% url 'likepost' %}" class="mr-3 like" id="{{post.postid}}">
+                    {% if post.isliked == 0 %}
+                        <i class="fa fa-heart-o insta-button" style="color:black"  id="likebtn{{post.postid}}"></i>
+                    {% else %}
+                        <i class="fa fa-heart insta-button" style="color:Tomato"  id="likebtn{{post.postid}}"></i>
+                    {% endif %}
+                </a>
+                <a href="/post/{{post.postid}}" class="mr-3 ">
+                    <i class="far fa-comment  insta-button"></i>
+                </a>
+                <a href="#" class="float-right">
+                    <i class="far fa-trash-alt insta-button my-2 "></i>
+                </a>
+
+                <p class="card-text ml-0 " id = "likecount{{post.postid}}">{{post.likes_count}} likes</p>
+                <p class="card-text-caption ml-auto"> <strong> {{post.username}}</strong> {{post.caption}} </p>
+            </div>
+
+        </div>
+        <div class="comment-section comment-bar my-2">
+            <form action="#">
+                <div class="input-group">
+                    <input type="text" class="form-control comment" placeholder="Add a Comment ...">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary " type="submit"> Post </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-3">
+    </div>
+
+</div>
+
+{% endblock body %}
+
+{% block js %}
+
+<script>
+
+    $(".like").click(function (e) {
+        var id = this.id; //$(this).attr('id');
+        var href = $('.like').attr('href');
+        var likeBtnId = "likebtn" + id;
+        console.log(likeBtnId);
+        e.preventDefault(); // don't follow the link
+
+
+        $.ajax({
+            url: href,
+            data: { 'postid': id },
+            success: function (response) {
+                console.log(response);
+                var likeBtn = document.getElementById(likeBtnId);
+                console.log(likeBtn);
+
+                if (response.liked) {
+                    likeBtn.classList.remove("fa-heart-o");
+                    likeBtn.classList.add("fa-heart");
+                    likeBtn.style.color = "Tomato";
+                }
+                else {
+                    likeBtn.classList.remove("fa-heart");
+                    likeBtn.classList.add("fa-heart-o");
+                    likeBtn.style.color = "black";
+                }
+
+                $('#likecount' + id).html(response.likes_count + " likes");
+            }
+        })
+
+
+    });
+
+
+</script>
+{% endblock js %}

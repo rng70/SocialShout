@@ -4,8 +4,9 @@ from timeline import views
 
 
 urlpatterns = [
-    path('post' , views.post, name='post'), #POST PHOTO
-    path('', views.home,  name='home'),
-]
+    path('post' , views.post, name='post'), #POST A PHOTO
+    path('likepost', views.likepost,  name='likepost'), #Show user's timeline 
+    path('', views.home,  name='home'), #Show user's timeline 
+]   
    
     

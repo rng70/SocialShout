@@ -12,6 +12,15 @@ margin-top: 3%;
 width : 615px;
 }
 
+.caption-comments{
+  background-color: #ffffff;
+  font-size: 90%;
+  border: 1px solid #DBDBDB;
+  margin-top: 3%;
+  width : 615px;
+
+}
+
 .paid-text{
 font-size: 70%;
 }
@@ -47,45 +56,54 @@ border: 1px solid #DBDBDB;
 border-right: 0;
 }
 
+.profile-image{
+  height: 40px;
+  width: 45px;
+  border: 2px solid #929292;
+  border-radius: 50%;
+  margin: 0;
+  margin-top: 7%;
+  
+}
+
 {% endblock css %}
 
 
 {% block body %}
 <div class="feed d-flex justify-content-center">
     <div class="col- ">
-
         <div class="card">
 
             <h10 class=" card-content ml-2">
                 <img src="/static/user.png" height="35" class="round mx-1" alt="...">
-                <strong class=""> {{post.username}} </strong>
+                <strong class=""> {{username}} </strong>
             </h10>
-            <p class="paid-text card-content"> {{post.time}}</p>
+            <p class="paid-text card-content"> {{time}}</p>
 
-            <img src="{{post.img_src}}" height="500" class="card-img-top card-image" alt="...">
+            <img src="{{img_src}}" height="500" class="card-img-top card-image" alt="...">
 
             <div class="container">
-                <a href="{% url "likepostpage" %}" class="mr-3 like" id="{{post.postid}}">
-                    {% if post.isliked == 0 %}
-                        <i class="fa fa-heart-o insta-button" style="color:black"  id="likebtn{{post.postid}}"></i>
+                <a href="{% url "likepostpage" %}" class="mr-3 like" id="{{postid}}">
+                    {% if isliked == 0 %}
+                        <i class="fa fa-heart-o insta-button" style="color:black"  id="likebtn{{postid}}"></i>
                     {% else %}
-                        <i class="fa fa-heart insta-button" style="color:Tomato"  id="likebtn{{post.postid}}"></i>
+                        <i class="fa fa-heart insta-button" style="color:Tomato"  id="likebtn{{postid}}"></i>
                     {% endif %}
                 </a>
-                <a href="/post/{{post.postid}}" class="mr-3 ">
+                <a href="/post/{{postid}}" class="mr-3 ">
                     <i class="far fa-comment  insta-button"></i>
                 </a>
                 <a href="#" class="float-right">
                     <i class="far fa-trash-alt insta-button my-2 "></i>
                 </a>
 
-                <p class="card-text ml-0 " id = "likecount{{post.postid}}">{{post.likes_count}} likes</p>
-                <p class="card-text-caption ml-auto"> <strong> {{post.username}}</strong> {{post.caption}} </p>
+                <p class="card-text ml-0 " id = "likecount{{postid}}">{{likes_count}} likes</p>
+                <p class="card-text-caption ml-auto"> <strong> {{username}}</strong> {{caption}} </p>
             </div>
 
         </div>
         <div class="comment-section comment-bar my-2">
-            <form action="/post/postComment/{{post.postid}}" method= "Post">
+            <form action="/post/postComment/{{postid}}" method= "Post">
                 {% csrf_token %}
                 <div class="input-group">
                     <input type="text" class="form-control comment" name="comment" placeholder="Add a Comment ...">
@@ -96,12 +114,21 @@ border-right: 0;
             </form>
         </div>
 
+        <p> <h2> Comments ({{comments_count}})</h2> </p>
         <div class="container my-3">
-            <h2> Comments </h2>
-            <div class="row my-3">
-                <div class="col-md-2"> Image here</div>
-                <div class="col-md-10"> comment here </div>
+            
+            {% for comment in comments %}
+            <div class="row my-3 caption-comments">
+                <div class="col-md-1 "> 
+                    <img src="/static/user.png" height="35" class=" profile-image mx-auto" alt="...">
+                </div>
+                <div class="col-md-11 "> 
+                    <b> {{comment.commenter_name}} </b>
+                    at {{comment.time}} 
+                    <div class = "my-1"> {{comment.content}} </div>
+                </div>
             </div>
+            {% endfor %}
         
         </div>
 

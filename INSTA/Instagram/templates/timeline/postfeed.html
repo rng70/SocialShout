@@ -86,9 +86,10 @@ border-right: 0;
 
         </div>
         <div class="comment-section comment-bar my-2">
-            <form action="#">
+            <form action="/post/postComment/{{post.postid}}" method= "Post">
+                {% csrf_token %}
                 <div class="input-group">
-                    <input type="text" class="form-control comment" placeholder="Add a Comment ...">
+                    <input type="text" class="form-control comment" name="comment" placeholder="Add a Comment ...">
                     <div class="input-group-append">
                         <button class="btn btn-primary " type="submit"> Post </button>
                     </div>

@@ -78,10 +78,31 @@ def showPost(request, slug):
     likes_count = row[0]
     data['likes_count'] = likes_count
 
+    #fetching the comments
+    cmnd = """
+    SELECT U.USER_NAME , U.IMG_SRC,  C.CONTENT , TO_CHAR(C.CREATED, 'DL') "TIME" 
+    FROM USER_POST_COMMENT UPC, COMMENTS C, USERACCOUNT U
+    WHERE  UPC.COMMENT_ID = C.COMMENT_ID AND UPC.COMMENTER_ID = U.USER_ID AND POST_ID = :postid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid]) 
 
+    comments = []
+    total_comments=0
+    for row in c:
+        commentdict = {
+            "commenter_name": row[0],
+            "commenter_img": row[1],
+            "content": row[2], 
+            "time": row[3]
+        }
+        comments.append(commentdict)
+        total_comments += 1
+
+    data['comments'] = comments
+    data['comments_count'] = total_comments
     connection.close()
-    params = {'post' : data}
-    return render(request, 'post/postpage.html',  params)
+    return render(request, 'post/postpage.html',  data)
 
 
 def likepost(request):
@@ -160,9 +181,64 @@ def likepost(request):
 
 def postComment(request, slug):
     if(request.method == 'POST'):
-       caption = request.POST.get('comment')
-       print(caption)
-       
-       return redirect(f"/post/{slug}")
+        comment = request.POST.get('comment')
+        print(comment)
+
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+        connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+        #Get the commenter id 
+        username = request.user.username
+        cmnd = """
+        SELECT USER_ID
+        FROM USERACCOUNT
+        WHERE USER_NAME= :username
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [username])
+        row = c.fetchone()
+        commenter_id = row[0]
+
+        cmnd = """
+        SELECT NVL(MAX(COMMENT_ID),0) 
+        FROM COMMENTS
+        """
+        c = connection.cursor()
+        c.execute(cmnd)      
+        row = c.fetchone() 
+        commentid = row[0] + 1 #create primary key for the comment
+
+        #INSERT THE COMMENT INTO DATABASE
+        cmnd = """
+        INSERT INTO COMMENTS(COMMENT_ID, CONTENT)
+        VALUES(:commentid, :content) 
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [commentid, comment])
+        connection.commit()
+
+        
+        postid = slug
+
+        cmnd = """
+        INSERT INTO USER_POST_COMMENT(COMMENTER_ID, POST_ID, COMMENT_ID)
+        VALUES(:commenter_id, :post_id, :comment_id) 
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [commenter_id, postid,  commentid])
+        connection.commit()
+
+
+        cmnd = """
+        INSERT INTO REPLY(REPLY_ID, PARENT_ID)
+        VALUES(:reply_id, :parent_id) 
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [commentid, commentid])
+        connection.commit()
+
+
+        connection.close()
+        return redirect(f"/post/{slug}")
     else :
         return HttpResponse('404-Not found')

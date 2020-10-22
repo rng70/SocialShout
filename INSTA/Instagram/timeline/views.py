@@ -227,3 +227,4 @@ def likepost(request):
 
     connection.close()
     return HttpResponse(response, content_type="application/json")
+

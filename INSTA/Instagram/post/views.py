@@ -156,3 +156,13 @@ def likepost(request):
     
     connection.close()
     return HttpResponse(response, content_type = "application/json")
+
+
+def postComment(request, slug):
+    if(request.method == 'POST'):
+       caption = request.POST.get('comment')
+       print(caption)
+       
+       return redirect(f"/post/{slug}")
+    else :
+        return HttpResponse('404-Not found')

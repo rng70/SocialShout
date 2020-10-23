@@ -133,6 +133,16 @@ margin-left: 8%;
 color: #8E919C;
 }
 
+.vvzhL {
+    color: #8e8e8e;
+    color: rgba(var(--f52,142,142,142),1);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 20px;
+    margin: 0 40px 10px;
+    text-align: center;
+}
+
 {% endblock css %}
 
 
@@ -140,12 +150,13 @@ color: #8E919C;
 {% block body %}
 
 <div class="row justify-content-center">
+
     <div class="login-box col-lg-4 col-md-6 col-sm-12">
         <form method="POST" action="/handleSignUp">
             {% csrf_token %}
             <div class="login-inner">
-                <h1 class="my-4 content"> Instagram </h1>
-
+                <h1 class="mt-4 content"> Instagram </h1>
+                <h2 class="vvzhL ">Sign up to see photos and videos from your friends.</h2>
                 <div class="form-group">
                     <label for="username" class="ml-3">Username : </label>
                     <input type="text" class="ml-3" placeholder="Username" id="username" name="username" required>
@@ -188,10 +199,20 @@ color: #8E919C;
                 <hr>
             </div>
         </form>
-        <div class="already-have-acnt">
+        <div class="already-have-acnt mb-4">
             <p class="no-account"> Already have an account? <a href="/" class="signup-link">Log in </a> </p>
         </div>
 
+    </div>
+
+    <div class="container my-4">
+        <p class="footer-text col-sm-12">
+            ABOUT HELP PRESS API JOBS PRIVACY TERMS LOCATIONS TOP ACCOUNTS HASHTAGS LANGUAGE
+    
+            <span class="copyright">
+                © 2020 INSTAGRAM FROM FACEBOOK
+            </span>
+        </p>
     </div>
 
 </div>

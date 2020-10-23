@@ -47,10 +47,20 @@ border: 1px solid #DBDBDB;
 border-right: 0;
 }
 
+.profile-image{
+    height: 40px;
+    width: 45px;
+    border: 2px solid #929292;
+    border-radius: 50%;
+    margin: 0;
+}
+
 {% endblock css %}
 
 
 {% block body %}
+{% load humanize %}
+
 <div class="feed d-flex justify-content-center row">
     <div class="col- ">
 
@@ -58,10 +68,11 @@ border-right: 0;
         <div class="card">
 
             <h10 class=" card-content ml-2">
-                <img src="/static/user.png" height="30" class="round" alt="...">
-                <strong> {{post.username}} </strong>
+                <img src="/static/user.png" height="30" class="profile-image mx-auto" alt="...">
+                <strong> {{post.username}}
+                     <span class="badge badge-info">{{ post.time | naturaltime}} </span> 
+                </strong>
             </h10>
-            <p class="paid-text card-content"> {{post.time}}</p>
             <a href="/post/{{post.postid}}">
             <img src="{{post.img_src}}" height="500" class="card-img-top card-image" alt="...">
             </a>
@@ -89,7 +100,7 @@ border-right: 0;
             <form action="/post/postComment/{{post.postid}}" method= "Post">
                 {% csrf_token %}
                 <div class="input-group">
-                    <input type="text" class="form-control comment" name="comment" placeholder="Add a Comment ...">
+                    <input type="text" class="form-control comment" name="comment" placeholder="Add a Comment ..." required="required">
                     <div class="input-group-append">
                         <button class="btn btn-primary " type="submit"> Post </button>
                     </div>

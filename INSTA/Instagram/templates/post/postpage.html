@@ -12,12 +12,23 @@ margin-top: 3%;
 width : 615px;
 }
 
+.replycomment{
+    border: 1px solid #DBDBDB;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+    margin: 0;
+    margin-top: 3%;
+    }
+    
+
+
 .caption-comments{
-  background-color: #ffffff;
-  font-size: 90%;
-  border: 1px solid #DBDBDB;
-  margin-top: 3%;
-  width : 615px;
+background-color: #ffffff;
+font-size: 90%;
+border: 1px solid #DBDBDB;
+margin-top: 3%;
+width : 615px;
 
 }
 
@@ -57,37 +68,40 @@ border-right: 0;
 }
 
 .profile-image{
-  height: 40px;
-  width: 45px;
-  border: 2px solid #929292;
-  border-radius: 50%;
-  margin: 0;
-  margin-top: 7%;
-  
+height: 40px;
+width: 45px;
+border: 2px solid #929292;
+border-radius: 50%;
+margin: 0;
 }
 
 {% endblock css %}
 
 
 {% block body %}
+
+{% load humanize %}
+
 <div class="feed d-flex justify-content-center">
     <div class="col- ">
         <div class="card">
 
             <h10 class=" card-content ml-2">
-                <img src="/static/user.png" height="35" class="round mx-1" alt="...">
-                <strong class=""> {{username}} </strong>
+                <img src="/static/user.png" height="35" class="profile-image mx-auto" alt="...">
+                <strong class=""> {{username}}
+                     <span class="badge badge-info">{{time | naturaltime}} </span>
+                </strong>
             </h10>
-            <p class="paid-text card-content"> {{time}}</p>
+           
 
             <img src="{{img_src}}" height="500" class="card-img-top card-image" alt="...">
 
             <div class="container">
                 <a href="{% url "likepostpage" %}" class="mr-3 like" id="{{postid}}">
                     {% if isliked == 0 %}
-                        <i class="fa fa-heart-o insta-button" style="color:black"  id="likebtn{{postid}}"></i>
+                    <i class="fa fa-heart-o insta-button" style="color:black" id="likebtn{{postid}}"></i>
                     {% else %}
-                        <i class="fa fa-heart insta-button" style="color:Tomato"  id="likebtn{{postid}}"></i>
+                    <i class="fa fa-heart insta-button" style="color:Tomato" id="likebtn{{postid}}"></i>
                     {% endif %}
                 </a>
                 <a href="/post/{{postid}}" class="mr-3 ">
@@ -97,39 +111,83 @@ border-right: 0;
                     <i class="far fa-trash-alt insta-button my-2 "></i>
                 </a>
 
-                <p class="card-text ml-0 " id = "likecount{{postid}}">{{likes_count}} likes</p>
+                <p class="card-text ml-0 " id="likecount{{postid}}">{{likes_count}} likes</p>
                 <p class="card-text-caption ml-auto"> <strong> {{username}}</strong> {{caption}} </p>
             </div>
 
         </div>
         <div class="comment-section comment-bar my-2">
-            <form action="/post/postComment/{{postid}}" method= "Post">
+            <form action="/post/postComment/{{postid}}" method="Post">
                 {% csrf_token %}
                 <div class="input-group">
-                    <input type="text" class="form-control comment" name="comment" placeholder="Add a Comment ...">
+                    <input type="text" required="required" class="form-control comment" name="comment"
+                        placeholder="Add a Comment ...">
                     <div class="input-group-append">
-                        <button class="btn btn-primary " type="submit"> Post </button>
+                        <input type="hidden" name="parentid" value="">
+                        <button class="btn btn-info " type="submit"> Post </button>
                     </div>
                 </div>
             </form>
         </div>
 
-        <p> <h2> Comments ({{comments_count}})</h2> </p>
+        <p>
+        <h2> Comments ({{comments_count}})</h2>
+        </p>
         <div class="container my-3">
-            
+
             {% for comment in comments %}
             <div class="row my-3 caption-comments">
-                <div class="col-md-1 "> 
+                <div class="col-md-1 my-1">
                     <img src="/static/user.png" height="35" class=" profile-image mx-auto" alt="...">
                 </div>
-                <div class="col-md-11 "> 
-                    <b> {{comment.commenter_name}} </b>
-                    at {{comment.time}} 
-                    <div class = "my-1"> {{comment.content}} </div>
+                <div class="col-md-11 my-1">
+                    <b> {{comment.commenter_name}} </b> at
+                    <span class="badge badge-secondary"> {{comment.time|naturaltime}}</span>
+                    <div class="my-1"> {{comment.content}} </div>
+                    <div class="reply mx-0">
+                        <button class="btn btn-sm btn-primary my-2" type="button" data-toggle="collapse"
+                            data-target="#replybox{{comment.comment_id}}" aria-expanded="false"
+                            aria-controls="replybox{{comment.comment_id}}">
+                            Reply
+                        </button>
+
+                        <div class="collapse" id="replybox{{comment.comment_id}}">
+                            <div class="my-2">
+                                <form action="/post/postComment/{{postid}}" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="Reply">Post a reply : </label>
+                                        <input type="text" name="comment" class="form-control"
+                                            placeholder="Enter reply here..." required="required">
+                                        <input type="hidden" name="parentid" value="{{comment.comment_id}}">
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-info">Post</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="replies  my-2" style="width: 548px;">
+                            {% for reply in replies  %}
+                            {% if reply.parent_id == comment.comment_id %}
+                            <div class="row  my-2 replycomment ">
+                                <div class="col-md-1 ">
+                                    <img src="/static/user.png" height="35" class=" profile-image mx-auto" alt="...">
+                                </div>
+
+                                <div class="col-md-10 ml-2">
+                                    <b> {{reply.commenter_name}} </b> at
+                                    <span class="badge badge-secondary"> {{reply.time | naturaltime}}</span>
+                                    <div class="my-1"> {{reply.content}} </div>
+                                </div>
+                            </div>
+
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endfor %}
-        
+
         </div>
 
 

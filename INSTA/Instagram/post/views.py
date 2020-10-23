@@ -7,6 +7,8 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib import messages
+import dateutil.parser
+
 #from django.db import connection
 
 # Create your views here.
@@ -34,7 +36,7 @@ def showPost(request, slug):
         "username": row[0],  # who gave that post
         "caption": row[1],
         "img_src": row[2],
-        "time": row[3],
+        "time": dateutil.parser.parse(str(row[3])),
         "postid": row[4],
         "userid": row[5]
     }
@@ -78,29 +80,61 @@ def showPost(request, slug):
     likes_count = row[0]
     data['likes_count'] = likes_count
 
+
+
+    total_comments=0
     #fetching the comments
     cmnd = """
-    SELECT U.USER_NAME , U.IMG_SRC,  C.CONTENT , TO_CHAR(C.CREATED, 'DL') "TIME" 
-    FROM USER_POST_COMMENT UPC, COMMENTS C, USERACCOUNT U
-    WHERE  UPC.COMMENT_ID = C.COMMENT_ID AND UPC.COMMENTER_ID = U.USER_ID AND POST_ID = :postid
+    SELECT U.USER_NAME , U.IMG_SRC, C.COMMENT_ID, C.CONTENT , C.CREATED "TIME" 
+    FROM USER_POST_COMMENT UPC, COMMENTS C, USERACCOUNT U, REPLY R
+    WHERE  UPC.COMMENT_ID = C.COMMENT_ID AND UPC.COMMENTER_ID = U.USER_ID
+    AND C.COMMENT_ID = R.REPLY_ID  AND  POST_ID = :postid  AND R.REPLY_ID = R.PARENT_ID 
     """
     c = connection.cursor()
     c.execute(cmnd, [postid]) 
 
     comments = []
-    total_comments=0
+    
     for row in c:
         commentdict = {
             "commenter_name": row[0],
             "commenter_img": row[1],
-            "content": row[2], 
-            "time": row[3]
+            "comment_id" : row[2],
+            "content": row[3], 
+            "time": dateutil.parser.parse(str(row[4]))
         }
         comments.append(commentdict)
         total_comments += 1
 
     data['comments'] = comments
+
+    #fetching the replies
+    cmnd = """
+    SELECT U.USER_NAME , U.IMG_SRC, C.COMMENT_ID, C.CONTENT , C.CREATED "TIME" , R.PARENT_ID
+    FROM USER_POST_COMMENT UPC, COMMENTS C, USERACCOUNT U, REPLY R
+    WHERE  UPC.COMMENT_ID = C.COMMENT_ID AND UPC.COMMENTER_ID = U.USER_ID
+    AND C.COMMENT_ID = R.REPLY_ID  AND  POST_ID = :postid  AND R.REPLY_ID <> R.PARENT_ID
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid]) 
+
+    replies = []
+    for row in c:
+        replydict = {
+            "commenter_name": row[0],
+            "commenter_img": row[1],
+            "comment_id" : row[2],
+            "content": row[3], 
+            'time' : dateutil.parser.parse(str(row[4])),
+            "parent_id" : row[5]
+        }
+
+        replies.append(replydict)
+        total_comments += 1
+
+    data['replies'] = replies
     data['comments_count'] = total_comments
+
     connection.close()
     return render(request, 'post/postpage.html',  data)
 
@@ -182,7 +216,6 @@ def likepost(request):
 def postComment(request, slug):
     if(request.method == 'POST'):
         comment = request.POST.get('comment')
-        print(comment)
 
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
         connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
@@ -228,13 +261,17 @@ def postComment(request, slug):
         c.execute(cmnd, [commenter_id, postid,  commentid])
         connection.commit()
 
-
+        #check if the comment is a reply of another comment or main comment itself
+        parent_comment_id = request.POST.get('parentid')
+        if(parent_comment_id == ""):
+            parent_comment_id = commentid
+        
         cmnd = """
         INSERT INTO REPLY(REPLY_ID, PARENT_ID)
         VALUES(:reply_id, :parent_id) 
         """
         c = connection.cursor()
-        c.execute(cmnd, [commentid, commentid])
+        c.execute(cmnd, [commentid, parent_comment_id])
         connection.commit()
 
 

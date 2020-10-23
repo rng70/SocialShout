@@ -1,10 +1,11 @@
-import cx_Oracle
-import json
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib import messages
 from timeline.models import PostImage
+import cx_Oracle
+import json
+import dateutil.parser
 #from django.db import connection
 
 # Create your views here.
@@ -31,7 +32,7 @@ def home(request):
             "username": row[0],  # who gave that post
             "caption": row[1],
             "img_src": row[2],
-            "time": row[3],
+            "time": dateutil.parser.parse(str(row[3])),
             "postid": row[4],
             "userid": row[5]
         }

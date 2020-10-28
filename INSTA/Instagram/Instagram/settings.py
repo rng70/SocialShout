@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'timeline.apps.TimelineConfig',
     'post.apps.PostConfig',
+    'userprofile.apps.UserprofileConfig',
     
 ]
 

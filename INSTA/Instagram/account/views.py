@@ -68,11 +68,12 @@ def handleSignUp(request):
         userid = row[0] + 1
 
         cmnd ="""
-        INSERT INTO USERACCOUNT (USER_ID,  USER_NAME,FULL_NAME,EMAIL,PASSWORD,GENDER, DATE_OF_BIRTH)
-        VALUES(:userid , :username, :fullname, :email, :password,:gender,  to_date(:birthday, 'yyyy-mm-dd')) 
+        INSERT INTO USERACCOUNT (USER_ID,  USER_NAME,FULL_NAME,EMAIL,PASSWORD,GENDER, DATE_OF_BIRTH, IMG_SRC)
+        VALUES(:userid , :username, :fullname, :email, :password,:gender,  to_date(:birthday, 'yyyy-mm-dd'), :img_src) 
         """
         c = connection.cursor()
-        c.execute(cmnd, [userid, username,fullname, email, password, gender, birthdate] )
+        img_src = "/static/user.png"
+        c.execute(cmnd, [userid, username,fullname, email, password, gender, birthdate, img_src] )
         connection.commit()
         connection.close()
         

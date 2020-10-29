@@ -3,9 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib import messages
 from timeline.models import PostImage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import cx_Oracle
 import json
 import dateutil.parser
+
 #from django.db import connection
 
 # Create your views here.
@@ -229,3 +231,52 @@ def likepost(request):
     connection.close()
     return HttpResponse(response, content_type="application/json")
 
+def search(request):
+
+    text = request.GET.get('search', '') #to be searched
+
+    
+
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    pattern = '%' + text.lower() + '%'
+    cmnd = """
+    SELECT USER_ID, USER_NAME, IMG_SRC
+    FROM USERACCOUNT U
+    WHERE LOWER(USER_NAME) LIKE (:pattern)
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [pattern])      
+    
+    result = []
+    total = 0
+    for row in c :
+        userdict = {
+            "userid": row[0],  
+            "username": row[1],
+            "img_src": row[2],
+        }
+        result.append(userdict)
+        total += 1
+
+    paginator = Paginator(result, 2)
+    page = request.GET.get('page')
+
+    try :
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
+    context = {
+        'users': users,
+        'text' : text,
+        'total' : total,
+    }
+
+    print(text)
+
+    return render(request,  'timeline/search.html', context)
+   

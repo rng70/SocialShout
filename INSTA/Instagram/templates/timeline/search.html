@@ -1,0 +1,109 @@
+{% extends 'timeline_base.html' %}
+
+{% block title %} Search {% endblock title %}
+
+{% block css %}
+
+.profile-image{
+height: 40px;
+width: 45px;
+border: 2px solid #929292;
+border-radius: 50%;
+margin: 0;
+}
+
+{% endblock css %}
+
+
+{% block body %}
+
+<div class="row justify-content-center mt-4">
+    {% if not users %}
+    Your search - {{text}} - did not match any Users.
+
+    {% else %}
+
+
+
+    <div class=" col-lg-4 col-md-6 col-sm-12 mt-4">
+        <h6 class="text-secondary mb-4"> {{total}} results found for '{{text}}' <span class="badge badge-secondary"></span></h6>
+        {% for search in users %}
+        <div class="container card my-2">
+            <h10 class="card-content ml-2">
+                <img src="{{search.img_src}}" height="30" class="profile-image mx-auto" alt="...">
+                <strong class="mx-2"> {{search.username}}</strong>
+            </h10>
+        </div>
+        {% endfor %}
+
+
+        <nav aria-label="..." class="d-flex justify-content-center my-4">
+            <ul class="pagination">
+                {% if users.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{users.previous_page_number}} {% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                        aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% for p in users.paginator.page_range %}
+                {% if users.number == p %}
+                <li class="page-item active">
+                    <a class="page-link"
+                        href="?page={{p}}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                        {{p}}
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item ">
+                    <a class="page-link"
+                        href="?page={{p}}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                        {{p}}
+                    </a>
+                </li>
+                {% endif %}
+
+                {% endfor %}
+
+                {% if users.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{users.next_page_number}} {% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                        aria-label="Previous">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+
+
+
+
+    {% endif %}
+</div>
+
+
+
+
+
+
+
+
+
+
+{% endblock body %}
+
+{% block js %}
+
+<script>
+
+
+</script>
+{% endblock js %}

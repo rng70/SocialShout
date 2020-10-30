@@ -13,14 +13,14 @@ width : 615px;
 }
 
 .replycomment{
-    border: 1px solid #DBDBDB;
-    border-bottom: 0;
-    border-left: 0;
-    border-right: 0;
-    margin: 0;
-    margin-top: 3%;
-    }
-    
+border: 1px solid #DBDBDB;
+border-bottom: 0;
+border-left: 0;
+border-right: 0;
+margin: 0;
+margin-top: 3%;
+}
+
 
 
 .caption-comments{
@@ -85,14 +85,12 @@ margin: 0;
 <div class="feed d-flex justify-content-center">
     <div class="col- ">
         <div class="card">
-
-            <h10 class=" card-content ml-2">
+              <h10 class=" card-content ml-2">
                 <img src="/static/user.png" height="35" class="profile-image mx-auto" alt="...">
                 <strong class=""> {{username}}
-                     <span class="badge badge-info">{{time | naturaltime}} </span>
+                    <span class="badge badge-info">{{time | naturaltime}} </span>
                 </strong>
             </h10>
-           
 
             <img src="{{img_src}}" height="500" class="card-img-top card-image" alt="...">
 
@@ -110,8 +108,50 @@ margin: 0;
                 <a href="#" class="float-right">
                     <i class="far fa-trash-alt insta-button my-2 "></i>
                 </a>
+                <br>
 
-                <p class="card-text ml-0 " id="likecount{{postid}}">{{likes_count}} likes</p>
+                <!-- #No_of_likes Likes Button trigger modal -->
+                <a href="" class="card-text ml-0 text-dark " id="likecount{{postid}}" role="button" data-toggle="modal" data-target="#likersModalLong">
+                    {{likes_count}} likes
+                </a>
+
+                
+
+                <!--Likers Modal -->
+                <div class="modal fade" id="likersModalLong" tabindex="-1" role="dialog"
+                    aria-labelledby="likersModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="likersModalLongTitle">People who liked </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body " >
+                                    {% if isliked == 1 %}
+                                    <h10 class="card-content ml-2 " id ="ulala">
+                                    <img src="{{request_img_src}}" height="35" class="profile-image mx-auto">
+                                    <a href="/userprofile/{{request_userid}}" class = "text-dark"><strong class=""> {{request_username}}</strong></a>
+                                    <hr>
+                                    </h10>
+                                    {% endif %}
+
+                                    <h10 class="card-content ml-0" id="likeBody">
+                                    </h10>
+                               
+                                {% for liker in likers  %}                
+                                    <h10 class="card-content ml-2 scoll-tree">
+                                    <img src="{{liker.img_src}}" height="35" class="profile-image mx-auto">
+                                    <a href="/userprofile/{{request_userid}}" class = "text-dark"><strong class=""> {{liker.liker_name}}</strong></a>
+                                    </h10>
+                                    <hr>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <p class="card-text-caption ml-auto"> <strong> {{username}}</strong> {{caption}} </p>
             </div>
 
@@ -190,8 +230,6 @@ margin: 0;
 
         </div>
 
-
-
     </div>
 
     <div class="col-3">
@@ -200,15 +238,14 @@ margin: 0;
 </div>
 
 
-
-
 {% endblock body %}
 
 {% block js %}
 
-<script>
+<script> 
 
     $(".like").click(function (e) {
+
         var id = this.id; //$(this).attr('id');
         var href = $('.like').attr('href');
         var likeBtnId = "likebtn" + id;
@@ -221,23 +258,53 @@ margin: 0;
                 var likeBtn = document.getElementById(likeBtnId);
 
                 if (response.liked) {
+                    //handle likes heart icon and makes color red due to liking
                     likeBtn.classList.remove("fa-heart-o");
                     likeBtn.classList.add("fa-heart");
                     likeBtn.style.color = "Tomato";
+
+                    //handle request users name on liker list dynamically
+                    var img = document. createElement("img");
+                    img.src = response.request_img_src;
+                    img.className += "profile-image mr-2";
+                    img.height = "35";
+                    var element = document.getElementById("likeBody");
+                    element.appendChild(img);
+
+                    var a = document.createElement("a");
+                    a.href = "/userprofile/"+ response.request_userid; 
+                    a.innerHTML = "<strong class ='text-dark'>" + response.request_username + "</strong>"            
+                    element.appendChild(a);
+
+                    var hr = document.createElement("hr");   
+                    element.appendChild(hr);
+
+                    element.classList.add("ml-2");
+                    element.classList.remove("ml-0");
+                    
                 }
                 else {
+                    //changes heart icon to black because of unlike
                     likeBtn.classList.remove("fa-heart");
                     likeBtn.classList.add("fa-heart-o");
                     likeBtn.style.color = "black";
-                }
 
-                $('#likecount' + id).html(response.likes_count + " likes");
+
+                    $("#likeBody").empty();                          
+                    var element = document.getElementById("likeBody");
+                    element.classList.remove("ml-2");
+                    element.classList.add("ml-0");
+                    
+                }
+               
+                $('#likecount' + id).html(response.likes_count + " likes"); //changes number of likes shown
+
+                $("#ulala").remove(); 
+               
             }
         })
 
-
     });
-
 
 </script>
 {% endblock js %}

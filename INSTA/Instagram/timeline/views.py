@@ -235,8 +235,6 @@ def search(request):
 
     text = request.GET.get('search', '') #to be searched
 
-    
-
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
@@ -260,7 +258,7 @@ def search(request):
         result.append(userdict)
         total += 1
 
-    paginator = Paginator(result, 2)
+    paginator = Paginator(result, 2) #how many search results will show in one page
     page = request.GET.get('page')
 
     try :
@@ -275,8 +273,6 @@ def search(request):
         'text' : text,
         'total' : total,
     }
-
-    print(text)
 
     return render(request,  'timeline/search.html', context)
    

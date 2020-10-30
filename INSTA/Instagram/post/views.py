@@ -43,7 +43,7 @@ def showPost(request, slug):
 
     username = request.user.username
     cmnd = """
-    SELECT USER_ID
+    SELECT USER_ID, IMG_SRC
     FROM USERACCOUNT
     WHERE USER_NAME = :username
     """
@@ -52,6 +52,7 @@ def showPost(request, slug):
 
     row = c.fetchone() 
     likerid = row[0]  # to check if the user alreday has liked the particular post
+    img_src = row[1]
 
 
     userid = likerid
@@ -68,18 +69,32 @@ def showPost(request, slug):
     isliked = row[0]
     data['isliked'] = isliked #is that post already liked by the request user 
 
+
+    #fetching the liker users' informations
     cmnd = """
-    SELECT COUNT(*)
-    FROM USER_LIKES_POST
-    WHERE POST_ID = :postid
+    SELECT U.USER_ID, U.USER_NAME, U.IMG_SRC
+    FROM USER_LIKES_POST ULP, USERACCOUNT  U
+    WHERE ULP.USER_ID = U.USER_ID AND POST_ID = :postid
     """
     c = connection.cursor()
     c.execute(cmnd, [postid]) 
 
-    row = c.fetchone() # fetching the number of likes counts for that post
-    likes_count = row[0]
-    data['likes_count'] = likes_count
+    likes_count = 0
+    likers = []
+    for row in c:
+        likerdict = {
+            "liker_id": row[0],
+            "liker_name": row[1],
+            "img_src" : row[2],
+        }
+        if(not(row[1] == username)):
+            likers.append(likerdict)
+        likes_count += 1
 
+    print(len(likers))
+
+    data['likes_count'] = likes_count
+    data['likers'] = likers
 
 
     total_comments=0
@@ -135,6 +150,12 @@ def showPost(request, slug):
     data['replies'] = replies
     data['comments_count'] = total_comments
 
+
+    data["request_userid"] = userid
+    data["request_username"] = username 
+    data["request_img_src"] = img_src
+
+
     connection.close()
     return render(request, 'post/postpage.html',  data)
 
@@ -149,7 +170,7 @@ def likepost(request):
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
     cmnd = """
-    SELECT USER_ID
+    SELECT USER_ID, IMG_SRC
     FROM USERACCOUNT
     WHERE USER_NAME = :username
     """
@@ -158,6 +179,7 @@ def likepost(request):
 
     row = c.fetchone() #fetching the userID
     userid = row[0]
+    img_src = row[1]
 
     if(userid==None):
         return HttpResponse('404 - Not Found')
@@ -204,8 +226,14 @@ def likepost(request):
     likes_count = row[0] #count how many likes for the post 
     
     resp = {
+        #handles the color changing for heart icon and number of likes shown!
         "likes_count" : likes_count,
-        "liked" : liked
+        "liked" : liked,
+
+        #just used only for showing the liking list dynamically
+        "request_userid" : userid,
+        "request_username" : username, 
+        "request_img_src" : img_src,
     }
     response = json.dumps(resp)
     

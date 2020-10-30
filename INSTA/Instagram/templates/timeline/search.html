@@ -11,7 +11,6 @@ border: 2px solid #929292;
 border-radius: 50%;
 margin: 0;
 }
-
 {% endblock css %}
 
 
@@ -20,23 +19,17 @@ margin: 0;
 <div class="row justify-content-center mt-4">
     {% if not users %}
     Your search - {{text}} - did not match any Users.
-
     {% else %}
-
-
-
     <div class=" col-lg-4 col-md-6 col-sm-12 mt-4">
         <h6 class="text-secondary mb-4"> {{total}} results found for '{{text}}' <span class="badge badge-secondary"></span></h6>
         {% for search in users %}
         <div class="container card my-2">
             <h10 class="card-content ml-2">
                 <img src="{{search.img_src}}" height="30" class="profile-image mx-auto" alt="...">
-                <strong class="mx-2"> {{search.username}}</strong>
+                <a href="/userprofile/{{search.userid}}"><strong class="mx-2 text-dark"> {{search.username}}</strong></a>
             </h10>
         </div>
         {% endfor %}
-
-
         <nav aria-label="..." class="d-flex justify-content-center my-4">
             <ul class="pagination">
                 {% if users.has_previous %}
@@ -81,29 +74,13 @@ margin: 0;
             </ul>
         </nav>
     </div>
-
-
-
-
-
     {% endif %}
 </div>
-
-
-
-
-
-
-
-
-
 
 {% endblock body %}
 
 {% block js %}
-
 <script>
-
 
 </script>
 {% endblock js %}

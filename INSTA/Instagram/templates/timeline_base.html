@@ -160,12 +160,10 @@
                 </a>
             </li>
             <li class="nav-item ">
-                <a class="nav-link" href="#">
-                    <i class="fa fa-fw fa-user nav-icons"></i>
-                    <!-- 
-                                         <img src="images/Logo.png" alt="profile" height="26" class="round">
-                    !-->
-                </a>
+                
+                {% block profile_url %}
+                {% endblock profile_url %}
+               
             </li>
 
             {% if user.is_authenticated %}

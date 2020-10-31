@@ -4,19 +4,113 @@
 
 {% block css %}
 
+.userImage
+{
+width:200px;
+height:200px;
+border-radius:50%;
+}
 
+.pst{
+width:350px;
+height:200px;
+margin-bottom:30px;
+}
 
+.info
+{
+padding-top:2%;
+padding-left:3%;
+}
+
+hr
+{
+border-top: 2px solid #000000;
+}
+
+#follow, #edit{
+color:blue;
+}
+
+#follow:hover, #edit:hover{
+color:white;
+}
 {% endblock css %}
 
 
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
+
 {% block body %}
 
-THIS IS PROFILE
+<div class="container my-4">
+    <div class="media">
+        <img src="{{img_src}}" class="align-self-start mr-3 userImage border border-success" alt="...">
+        <div class="media-body info">
+            <h4 class="mt-0">{{username}} </h4>
+
+            {% if username != request.user.username %}
+                {% if is_following == 0 %}
+                    <a type="button" class=" btn btn-outline-primary" id="follow" role="button" 
+                    href="follow/{{userid}}">Follow</a>
+                {% else %}
+                    <a type="button" class="btn btn-outline-primary" id="follow" role="button"
+                     href="follow/{{userid}}"> Unfollow</a>
+                {% endif %}
+            {% endif %}
+            
+            <div class="mx-auto my-2 ">
+                <div class="d-inline text-dark " id="followers"> Followers : {{followers}}</div> 
+                <div class="d-inline text-dark mx-4" id="followings"> Following : {{followings}} </div>
+            </div>
+           
+            
+           
+
+        </div>
+    </div>
+
+    <hr>
+
+    <div class='row'>
+        {% for i in posts %}
+        {% for j in i %}
+        <div class='col-md-4'>
+            <img src="{{j.image.url}}" alt="Image" class='pst'>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock body %}
 
 {% block js %}
-<script>
-  
+<script type="text/javascript">
+    $("#follow").click(function (e) {
+        e.preventDefault();
+        var href = this.href;
+        $.ajax({
+            url: href,
+            success: function (response) {
+                console.log(response);
+                if (response["is_following"]) {
+                    $("#follow").html("Unfollow");
+                }
+                else {
+                    $("#follow").html("Follow");
+                }
+                var followers = document.getElementById("followers");
+                followers.innerHTML = "Followers : " + response.followers_count ;
+                console.log("Followers : " + response.followers_count);
+            }
+        })
+    })
 </script>
 {% endblock js %}

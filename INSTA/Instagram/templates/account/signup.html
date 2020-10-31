@@ -113,10 +113,6 @@ font-weight: 600;
 color: #0095F7;
 }
 
-.signup-link:hover{
-font-weight: 600;
-color: #0095F7;
-}
 
 .footer-text{
 margin: 0;
@@ -154,28 +150,28 @@ color: #8E919C;
     <div class="login-box col-lg-4 col-md-6 col-sm-12">
         <form method="POST" action="/handleSignUp">
             {% csrf_token %}
-            <div class="login-inner">
+            <div class="login-inner border border-info">
                 <h1 class="mt-4 content"> Instagram </h1>
-                <h2 class="vvzhL ">Sign up to see photos and videos from your friends.</h2>
-                <div class="form-group">
+                <h2 class="vvzhL text-info">Sign up to see photos and videos from your friends.</h2>
+                <div class="form-group ">
                     <label for="username" class="ml-3">Username : </label>
-                    <input type="text" class="ml-3" placeholder="Username" id="username" name="username" required>
+                    <input type="text " class="ml-3 border border-success" placeholder="Username" id="username" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="fullname" class="ml-3">Full Name : </label>
-                    <input type="text" class="ml-3" placeholder="Full Name" id="fullname" name="fullname" required>
+                    <input type="text" class="ml-3 border border-success" placeholder="Full Name" id="fullname" name="fullname" required>
                 </div>
                 <div class="form-group">
                     <label for="email" class="ml-3"> Email : </label>
-                    <input type="email" class="ml-3" placeholder="Email" id="email" name="email" required>
+                    <input type="email" class="ml-3 border border-success" placeholder="Email" id="email" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="password" class="ml-3">Password : </label>
-                    <input type="password" class="ml-3" placeholder="Password" id="password" name="password" required>
+                    <input type="password" class="ml-3 border border-success" placeholder="Password" id="password" name="password" required>
                 </div>
                 <div class="form-group">
                     <label for="password2" class="ml-3">Confirm Password : </label>
-                    <input type="password" class="ml-3" placeholder="Confirm Password" id="password2" name="password2" required>
+                    <input type="password" class="ml-3 border border-success" placeholder="Confirm Password" id="password2" name="password2" required>
                 </div>
                 <div >
                     <label class="mx-3">Gender : </label>
@@ -187,9 +183,9 @@ color: #8E919C;
                     </label>
                 </div>
                 <div class="form-group row">
-                    <label for="example-date-input" class="col col-form-label">Date of Birth :</label>
+                    <label for="example-date-input" class="col col-form-label ">Date of Birth :</label>
                     <div class="col-lg-12">
-                        <input class="form-control" type="date" value="2011-08-19" id=birthdate name="birthdate" >
+                        <input class="form-control border border-success" type="date" value="2011-08-19" id=birthdate name="birthdate" >
                     </div>
                 </div>
                 <div class="row">
@@ -199,7 +195,7 @@ color: #8E919C;
                 <hr>
             </div>
         </form>
-        <div class="already-have-acnt mb-4">
+        <div class="already-have-acnt mb-4 border border-danger">
             <p class="no-account"> Already have an account? <a href="/" class="signup-link">Log in </a> </p>
         </div>
 

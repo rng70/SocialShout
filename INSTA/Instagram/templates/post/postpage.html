@@ -2,6 +2,7 @@
 
 {% block title %} PostPage {% endblock title %}
 
+
 {% block css %}
 
 .card{
@@ -77,15 +78,22 @@ margin: 0;
 
 {% endblock css %}
 
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
 
 {% block body %}
-
 {% load humanize %}
 
 <div class="feed d-flex justify-content-center">
     <div class="col- ">
         <div class="card">
-              <h10 class=" card-content ml-2">
+            <h10 class=" card-content ml-2">
                 <img src="/static/user.png" height="35" class="profile-image mx-auto" alt="...">
                 <strong class=""> {{username}}
                     <span class="badge badge-info">{{time | naturaltime}} </span>
@@ -111,11 +119,12 @@ margin: 0;
                 <br>
 
                 <!-- #No_of_likes Likes Button trigger modal -->
-                <a href="" class="card-text ml-0 text-dark " id="likecount{{postid}}" role="button" data-toggle="modal" data-target="#likersModalLong">
+                <a href="" class="card-text ml-0 text-dark " id="likecount{{postid}}" role="button" data-toggle="modal"
+                    data-target="#likersModalLong">
                     {{likes_count}} likes
                 </a>
 
-                
+
 
                 <!--Likers Modal -->
                 <div class="modal fade" id="likersModalLong" tabindex="-1" role="dialog"
@@ -123,29 +132,32 @@ margin: 0;
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="likersModalLongTitle">People who liked </h5>
+                                <h2 class="modal-title" id="likersModalLongTitle"><span
+                                        class="badge badge-pill badge-dark">People who liked</span> </h2>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body " >
-                                    {% if isliked == 1 %}
-                                    <h10 class="card-content ml-2 " id ="ulala">
+                            <div class="modal-body ">
+                                {% if isliked == 1 %}
+                                <h10 class="card-content ml-2 " id="ulala">
                                     <img src="{{request_img_src}}" height="35" class="profile-image mx-auto">
-                                    <a href="/userprofile/{{request_userid}}" class = "text-dark"><strong class=""> {{request_username}}</strong></a>
+                                    <a href="/userprofile/{{request_userid}}" class="text-dark"><strong class="">
+                                            {{request_username}}</strong></a>
                                     <hr>
-                                    </h10>
-                                    {% endif %}
+                                </h10>
+                                {% endif %}
 
-                                    <h10 class="card-content ml-0" id="likeBody">
-                                    </h10>
-                               
-                                {% for liker in likers  %}                
-                                    <h10 class="card-content ml-2 scoll-tree">
+                                <h10 class="card-content ml-0" id="likeBody">
+                                </h10>
+
+                                {% for liker in likers  %}
+                                <h10 class="card-content ml-2 scoll-tree">
                                     <img src="{{liker.img_src}}" height="35" class="profile-image mx-auto">
-                                    <a href="/userprofile/{{request_userid}}" class = "text-dark"><strong class=""> {{liker.liker_name}}</strong></a>
-                                    </h10>
-                                    <hr>
+                                    <a href="/userprofile/{{liker.liker_id}}" class="text-dark"><strong class="">
+                                            {{liker.liker_name}}</strong></a>
+                                </h10>
+                                <hr>
                                 {% endfor %}
                             </div>
                         </div>
@@ -242,7 +254,7 @@ margin: 0;
 
 {% block js %}
 
-<script> 
+<script>
 
     $(".like").click(function (e) {
 
@@ -264,7 +276,7 @@ margin: 0;
                     likeBtn.style.color = "Tomato";
 
                     //handle request users name on liker list dynamically
-                    var img = document. createElement("img");
+                    var img = document.createElement("img");
                     img.src = response.request_img_src;
                     img.className += "profile-image mr-2";
                     img.height = "35";
@@ -272,16 +284,16 @@ margin: 0;
                     element.appendChild(img);
 
                     var a = document.createElement("a");
-                    a.href = "/userprofile/"+ response.request_userid; 
-                    a.innerHTML = "<strong class ='text-dark'>" + response.request_username + "</strong>"            
+                    a.href = "/userprofile/" + response.request_userid;
+                    a.innerHTML = "<strong class ='text-dark'>" + response.request_username + "</strong>"
                     element.appendChild(a);
 
-                    var hr = document.createElement("hr");   
+                    var hr = document.createElement("hr");
                     element.appendChild(hr);
 
                     element.classList.add("ml-2");
                     element.classList.remove("ml-0");
-                    
+
                 }
                 else {
                     //changes heart icon to black because of unlike
@@ -290,17 +302,17 @@ margin: 0;
                     likeBtn.style.color = "black";
 
 
-                    $("#likeBody").empty();                          
+                    $("#likeBody").empty();
                     var element = document.getElementById("likeBody");
                     element.classList.remove("ml-2");
                     element.classList.add("ml-0");
-                    
+
                 }
-               
+
                 $('#likecount' + id).html(response.likes_count + " likes"); //changes number of likes shown
 
-                $("#ulala").remove(); 
-               
+                $("#ulala").remove();
+
             }
         })
 

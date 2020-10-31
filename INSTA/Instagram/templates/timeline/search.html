@@ -14,14 +14,23 @@ margin: 0;
 {% endblock css %}
 
 
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
+
 {% block body %}
 
 <div class="row justify-content-center mt-4">
     {% if not users %}
-    Your search - {{text}} - did not match any Users.
+    <h6 class="alert alert-info mx-auto"> Your search - {{text}} - did not match any Users. </h6>
     {% else %}
     <div class=" col-lg-4 col-md-6 col-sm-12 mt-4">
-        <h6 class="text-secondary mb-4"> {{total}} results found for '{{text}}' <span class="badge badge-secondary"></span></h6>
+        <h6 class="text-secondary mb-4 alert alert-info"> {{total}} results found for '{{text}}' <span class="badge badge-secondary"></span></h6>
         {% for search in users %}
         <div class="container card my-2">
             <h10 class="card-content ml-2">

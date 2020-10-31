@@ -258,7 +258,7 @@ def search(request):
         result.append(userdict)
         total += 1
 
-    paginator = Paginator(result, 2) #how many search results will show in one page
+    paginator = Paginator(result, 5) #how many search results will show in one page
     page = request.GET.get('page')
 
     try :

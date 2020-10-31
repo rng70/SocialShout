@@ -91,8 +91,6 @@ def showPost(request, slug):
             likers.append(likerdict)
         likes_count += 1
 
-    print(len(likers))
-
     data['likes_count'] = likes_count
     data['likers'] = likers
 

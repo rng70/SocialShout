@@ -57,6 +57,8 @@ border-right: 0;
 
 {% endblock css %}
 
+{% block home_active %}active{% endblock home_active %}
+
 {% block profile_url %}
 <a class="nav-link" href="/userprofile/{{request.user.username}}">
     <i class="fa fa-fw fa-user nav-icons"></i>

@@ -30,7 +30,10 @@
         }
 
         .navbar a i {
-            color: black;
+            color: white;
+        }
+        .navbar a:hover {
+        background-color: #000;
         }
 
         .logo {
@@ -80,7 +83,11 @@
             /*margin-left: 0%;*/
             margin-top: 1%;
         }
-        
+
+        .active {
+        background-color: #4CAF50;
+        }
+                
 
         {% block css %} 
         {% endblock css %}
@@ -89,7 +96,7 @@
 
 <body>
 
-    <nav class="navbar navbar-expand navbar-light bg-light ">
+    <nav class="navbar navbar-expand navbar-dark bg-dark ">
         <a class="navbar-brand logo " href="/home">
             <i class="fa fa-instagram"></i> Instagram
 
@@ -106,16 +113,16 @@
         
         <ul class="navbar-nav mr-auto nav-right-items ">
 
-            <li class="nav-item">
-                <a class="nav-link" href="/home">
+            <li class="nav-item {% block home_active %}{% endblock home_active %}">
+                <a class="nav-link " href="/home">
                     <i class="fas fa-home nav-icons"></i>
                 </a>
             </li>
 
             <!-- Button trigger modal -->
-            <button type="button" class="btn post-button" data-toggle="modal" data-target="#PostModal">
+            <a type="button" class="nav-link" data-toggle="modal" data-target="#PostModal">
                 <i class="fa fa-camera nav-icons" aria-hidden="true"></i>
-            </button>
+            </a>
 
             <!--Post Modal -->
             <div class="modal fade" id="PostModal" tabindex="-1" aria-labelledby="PostModalLabel" aria-hidden="true">
@@ -149,17 +156,17 @@
                 </div>
             </div>
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link " href="#">
                     <i class="far fa-compass nav-icons"></i>
                 </a>
-            </li>
+            </li> -->
             <li class="nav-item ">
                 <a class="nav-link" href="#">
                     <i class="far fa-heart nav-icons"></i>
                 </a>
             </li>
-            <li class="nav-item ">
+            <li class="nav-item {% block user_active %}{% endblock user_active %}">
                 
                 {% block profile_url %}
                 {% endblock profile_url %}
@@ -167,13 +174,13 @@
             </li>
 
             {% if user.is_authenticated %}
-            <li class="nav-item dropdown mr-auto">
+            <li class="nav-item dropdown mr-auto ml-4">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     Welcome, {{request.user}}!
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/logout"> Logout</a>
+                <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item text-light" href="/logout"> Logout</a>
                 </div>
             </li>
             {% endif %}

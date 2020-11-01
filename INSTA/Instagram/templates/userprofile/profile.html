@@ -37,6 +37,7 @@ color:white;
 }
 {% endblock css %}
 
+{% block user_active %}active {% endblock user_active %}
 
 {% block profile_url %}
 <a class="nav-link" href="/userprofile/{{request.user.username}}">

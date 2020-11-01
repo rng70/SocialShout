@@ -96,16 +96,34 @@ def handleLogin(request):
         loginUsername=request.POST['loginUsername']
         loginPassword=request.POST['loginPassword']
 
+
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+        #validate the login user from database
+        cmnd = """
+        SELECT COUNT(*)
+        FROM USERACCOUNT U
+        WHERE U.USER_NAME = :username AND U.PASSWORD = :pass
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [loginUsername,  loginPassword])      
+        row = c.fetchone() 
+        isValid = row[0]
+
+        if(not isValid):
+            messages.error(request, 'Invalid User!')
+            return redirect('/')
+
         user = authenticate(username = loginUsername, password=loginPassword)
 
         if(user is not None):
             login(request, user)
             messages.success(request, "Successfully Logged In!")
             
-            return redirect('/home')
-        else :
-            messages.error(request, 'Invalid User!')
-            return redirect('/')
+        return redirect('/home')
+        
+            
     else :
         return HttpResponse('404 - Not Found')
 

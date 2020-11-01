@@ -111,7 +111,7 @@ def handleLogin(request):
         row = c.fetchone() 
         isValid = row[0]
 
-        if(not isValid):
+        if(isValid==0):
             messages.error(request, 'Invalid User!')
             return redirect('/')
 

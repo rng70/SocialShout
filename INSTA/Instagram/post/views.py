@@ -23,7 +23,7 @@ def showPost(request, slug):
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
-    	SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, TO_CHAR(P.CREATED, 'DD-MON-YYYY'),P.POST_ID, U.USER_ID
+    	SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, P.CREATED,P.POST_ID, U.USER_ID
         FROM USERACCOUNT U, USERPOST UP,  POST P
         WHERE U.USER_ID = UP.USER_ID AND UP.POST_ID=P.POST_ID AND P.POST_ID = :postid
     """

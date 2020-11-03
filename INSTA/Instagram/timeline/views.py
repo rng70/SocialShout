@@ -17,6 +17,7 @@ def home(request):
 
     # fetching posts to show on user's timeline
     dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
     cmnd = """

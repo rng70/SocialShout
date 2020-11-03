@@ -24,12 +24,8 @@ def handleSignUp(request):
         password= request.POST['password']
         password2= request.POST['password2']
         birthdate = request.POST['birthdate']
-        male = request.POST.get('male', False)
-        if(male): 
-            gender = 'male'
-        else :
-            gender = 'female'
-
+        gender = request.POST['gender']
+       
         dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
         connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 

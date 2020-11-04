@@ -9,6 +9,8 @@ from django.contrib import messages
 
 # Create your views here.
 def loginhome(request):
+    if(request.user.is_authenticated):
+        return redirect('/home')
     return render(request,'account/login.html')
 
   

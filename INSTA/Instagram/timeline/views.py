@@ -8,13 +8,12 @@ import cx_Oracle
 import json
 import dateutil.parser
 
+
 #from django.db import connection
 
 # Create your views here.
 
-
 def home(request):
-
     # fetching posts to show on user's timeline
     dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
     

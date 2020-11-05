@@ -14,7 +14,7 @@
 
     <title> {% block title %} Postfeed! {% endblock title %} </title>
     <style>
-        *{
+        * {
             padding: 0;
             margin: 0;
         }
@@ -32,8 +32,9 @@
         .navbar a i {
             color: white;
         }
+
         .navbar a:hover {
-        background-color: #000;
+            background-color: #000;
         }
 
         .logo {
@@ -66,7 +67,7 @@
 
         .nav-right-items {
             width: 40%;
-            /* text-align: center */  
+            /* text-align: center */
             margin: 0;
             margin-left: 15%;
 
@@ -85,11 +86,35 @@
         }
 
         .active {
-        background-color: #4CAF50;
+            background-color: #4CAF50;
         }
-                
 
-        {% block css %} 
+        .notification {
+            background-color: #555;
+            color: white;
+            text-decoration: none;
+            /* padding: 15px 26px; */
+            position: relative;
+            display: inline-block;
+            border-radius: 2px;
+        }
+
+        .notification:hover {
+            background: red;
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: -12px;
+            right: -10px;
+            padding: 5px 10px;
+            border-radius: 50%;
+            background: red;
+            color: white;
+            max-width: 100px;
+        }
+
+        {% block css %}
         {% endblock css %}
     </style>
 </head>
@@ -102,25 +127,25 @@
 
         </a>
 
-        <form  class="form-inline" action="{% url 'searchuser' %}" method= "GET">
+        <form class="form-inline" action="{% url 'searchuser' %}" method="GET">
             <div class="form-group">
                 <input class="form-control search-bar mx-0 my-0 " type="search" placeholder="Search" aria-label="Search"
-                name = "search" required>
+                    name="search" required>
                 <button class="btn btn-outline-info mx-2 my-2 my-sm-0" type="submit"> Search</button>
-            </div> 
+            </div>
         </form>
-        
-        
+
+
         <ul class="navbar-nav mr-auto nav-right-items ">
 
-            <li class="nav-item {% block home_active %}{% endblock home_active %}">
+            <li class="nav-item mr-1 {% block home_active %}{% endblock home_active %}" style="background-color: #555;">
                 <a class="nav-link " href="/home">
                     <i class="fas fa-home nav-icons"></i>
                 </a>
             </li>
 
             <!-- Button trigger modal -->
-            <a role="button" class="nav-link" data-toggle="modal" data-target="#PostModal">
+            <a role="button" class="nav-link mr-1" data-toggle="modal" data-target="#PostModal"  style="background-color: #555;">
                 <i class="fa fa-camera nav-icons" aria-hidden="true"></i>
             </a>
 
@@ -135,7 +160,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="/home/post" method="POST"  enctype="multipart/form-data">
+                            <form action="/home/post" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="container">
                                     <label for="image">Image : </label>
@@ -143,15 +168,16 @@
                                     <br><br>
                                     <label for="caption" class=""> Captions : </label>
                                     <br>
-                                    <textarea class="ml-0" name="caption" id="caption" cols="45" rows="10" placeholder="Share what's on your mind..." class='ml-4'></textarea>
-                                </div> 
+                                    <textarea class="ml-0" name="caption" id="caption" cols="45" rows="10"
+                                        placeholder="Share what's on your mind..." class='ml-4'></textarea>
+                                </div>
                                 <div class="modal-footer">
-                                    
+
                                     <button type="submit" class="btn btn-primary">Post</button>
-                                </div>   
+                                </div>
                             </form>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -161,18 +187,21 @@
                     <i class="far fa-compass nav-icons"></i>
                 </a>
             </li> -->
-            <li class="nav-item ">
-                <a class="nav-link" href="#">
-                    <i class="far fa-heart nav-icons"></i>
+            <li class="nav-item mr-1">
+                <!-- <a class="nav-link" href="#">
+                        <i class="far fa-heart nav-icons"></i>                   
+                </a> -->
+                <a href="/notifications" class="notification nav-link">
+                    <i class="far fa-heart nav-icons "></i>
+                    {% block notification_count %}{% endblock notification_count %}
                 </a>
             </li>
-            <li class="nav-item {% block user_active %}{% endblock user_active %}">
-                
+            <li class="nav-item {% block user_active %}{% endblock user_active %}"  style="background-color: #555;">
+
                 {% block profile_url %}
                 {% endblock profile_url %}
-               
-            </li>
 
+            </li>
             {% if user.is_authenticated %}
             <li class="nav-item dropdown mr-auto ml-4">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"

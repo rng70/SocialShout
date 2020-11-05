@@ -1,0 +1,140 @@
+{% extends 'timeline_base.html' %}
+
+{% block title %} PostPage {% endblock title %}
+
+
+{% block css %}
+
+.card{
+border: 1px solid #DBDBDB;
+border-bottom: 0;
+margin: 0;
+margin-top: 3%;
+width : 615px;
+}
+
+.replycomment{
+border: 1px solid #DBDBDB;
+border-bottom: 0;
+border-left: 0;
+border-right: 0;
+margin: 0;
+margin-top: 3%;
+}
+
+
+
+.caption-comments{
+background-color: #ffffff;
+font-size: 90%;
+border: 1px solid #DBDBDB;
+margin-top: 3%;
+width : 615px;
+
+}
+
+.paid-text{
+font-size: 70%;
+}
+
+.card-image{
+margin: 0;
+margin-top: 3%;
+}
+
+.card-content{
+margin: 0;
+margin-left: 3%;
+margin-top: 2%;
+
+}
+
+.card-text {
+margin-left: 2%;
+font-family: 'Roboto', sans-serif;
+}
+.card-text-caption{
+margin-left: 2%;
+}
+
+.comment-bar{
+width: 100%;
+}
+
+.comment:focus{
+outline: 0;
+box-shadow: none;
+border: 1px solid #DBDBDB;
+border-right: 0;
+}
+
+.notify-image{
+width: 35px;
+border: 2px solid #929292;
+border-radius: 50%;
+border-color: black;
+margin: 0;
+}
+
+{% endblock css %}
+
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
+
+{% block notification_count %} 
+    {% if total_unseen > 0 %}
+        <span class="badge">{{total_unseen}}</span>
+    {% endif %} 
+{% endblock notification_count %}
+
+{% block body %}
+{% load humanize %}
+
+<div class="container my-2">
+
+    {% for notification in notifications %}
+        <a href="check/{{notification.notification_id}}">
+
+        {% if notification.content == 'like' %}
+            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
+            mb-2" role="alert" style="height: 25;">
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image mx-auto">
+                    <strong>{{notification.from_username}} </strong>  liked your post
+                    <span class="badge"> {{notification.time|naturaltime}}</span>
+            </div>
+        {% elif notification.content == 'follow' %}
+            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
+            mb-2" role="alert" style="height: 25;">
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image mx-auto">
+                    <strong>{{notification.from_username}} </strong>  started following you
+                    <span class="badge"> {{notification.time|naturaltime}}</span>
+            </div>
+
+        {% endif %}
+        </a>
+    {% endfor %}
+    <!-- <a href="/home">
+        <div class="alert alert-primary" role="alert">
+             Give it a click if you like.
+        </div>
+    </a>
+    
+    <div class="alert alert-secondary" role="alert">
+        This is a secondary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+    </div> -->
+</div>
+
+{% endblock body %}
+
+{% block js %}
+
+<script>
+
+</script>
+{% endblock js %}

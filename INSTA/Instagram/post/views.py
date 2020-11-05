@@ -116,6 +116,7 @@ def showPost(request, slug):
             "content": row[3], 
             "time": dateutil.parser.parse(str(row[4]))
         }
+        
         comments.append(commentdict)
         total_comments += 1
 
@@ -167,6 +168,19 @@ def likepost(request):
     dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
+
+    cmnd = """
+    SELECT USER_ID
+    FROM POST
+    WHERE POST_ID = :postid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid])
+
+    row = c.fetchone()
+    poster_id = row[0]
+
+
     cmnd = """
     SELECT USER_ID, IMG_SRC
     FROM USERACCOUNT
@@ -176,7 +190,7 @@ def likepost(request):
     c.execute(cmnd, [username]) 
 
     row = c.fetchone() #fetching the userID
-    userid = row[0]
+    userid = row[0] #liker_id
     img_src = row[1]
 
     if(userid==None):
@@ -204,6 +218,16 @@ def likepost(request):
         c = connection.cursor()
         c.execute(cmnd, [userid, postid]) 
         connection.commit()
+
+        #insert into notification table
+        cmnd = """
+        INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
+        VALUES(:user_id, :poster_id, :type , :post_id)
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [userid, poster_id,"like", postid]) 
+        connection.commit()
+
     else : #if already liked then dislike 
         cmnd = """
         DELETE FROM USER_LIKES_POST
@@ -211,6 +235,16 @@ def likepost(request):
         """
         c = connection.cursor()
         c.execute(cmnd, [userid, postid])
+        connection.commit()
+
+
+        #delete from notification table
+        cmnd = """
+        DELETE FROM NOTIFICATION
+        WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [userid, poster_id,"like", postid]) 
         connection.commit()
 
     cmnd = """

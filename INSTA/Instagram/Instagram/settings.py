@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'timeline.apps.TimelineConfig',
     'post.apps.PostConfig',
     'userprofile.apps.UserprofileConfig',
-    
+    'notifications.apps.NotificationsConfig'
 ]
 
 MIDDLEWARE = [

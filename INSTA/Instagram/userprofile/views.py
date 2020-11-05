@@ -126,7 +126,7 @@ def follow(request, userid):
     c.execute(cmnd, [main_username])
 
     row = c.fetchone()  # fetching the main_userID
-    main_userid = row[0]
+    main_userid = row[0] 
 
     if(main_userid == None):
         return HttpResponse('404 - Not Found')
@@ -154,6 +154,16 @@ def follow(request, userid):
         c.execute(cmnd, [to_follow_id,  main_userid])
         connection.commit()
 
+
+        #insert into notification table
+        cmnd = """
+        INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT)  
+        VALUES(:user_id, :poster_id, :type)
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [main_userid, to_follow_id,"follow"]) 
+        connection.commit()
+
     else:  # if already followed then unfollow
         cmnd = """
         DELETE FROM FOLLOWS
@@ -161,6 +171,15 @@ def follow(request, userid):
         """
         c = connection.cursor()
         c.execute(cmnd, [to_follow_id, main_userid])
+        connection.commit()
+
+        #delete from notification table
+        cmnd = """
+        DELETE FROM NOTIFICATION
+        WHERE FROM_ID = :from_id AND TO_ID = :to_id AND CONTENT = :type
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [main_userid, to_follow_id,"follow"]) 
         connection.commit()
 
     cmnd = """

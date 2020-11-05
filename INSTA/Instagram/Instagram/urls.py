@@ -23,6 +23,7 @@ urlpatterns = [
     path('home/', include('timeline.urls')),
     path('post/', include('post.urls')),
     path('userprofile/', include('userprofile.urls')),
+    path('notifications/', include('notifications.urls')),
     path('', include('account.urls')),
     
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

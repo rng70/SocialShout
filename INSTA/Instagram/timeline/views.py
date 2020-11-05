@@ -98,6 +98,17 @@ def post(request):
         connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
         cmnd = """
+        SELECT USER_ID
+        FROM USERACCOUNT
+        WHERE USER_NAME= :username
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [username])
+
+        row = c.fetchone()
+        userid = row[0]
+
+        cmnd = """
         SELECT NVL(MAX(POST_ID),0) 
         FROM POST
         """
@@ -107,11 +118,11 @@ def post(request):
         postid = row[0] + 1
 
         cmnd = """
-        INSERT INTO POST(POST_ID, CAPTION)
-        VALUES(:postid, :caption) 
+        INSERT INTO POST(POST_ID, CAPTION, USER_ID)
+        VALUES(:postid, :caption, :user_id) 
         """
         c = connection.cursor()
-        c.execute(cmnd, [postid,caption])
+        c.execute(cmnd, [postid,caption, userid])
         connection.commit()
 
         # c = conn.cursor()
@@ -133,16 +144,7 @@ def post(request):
         c.execute(cmnd, [image_path,  postid])
         connection.commit()
 
-        cmnd = """
-        SELECT USER_ID
-        FROM USERACCOUNT
-        WHERE USER_NAME= :username
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [username])
-
-        row = c.fetchone()
-        userid = row[0]
+        
 
         cmnd = """
         INSERT INTO USERPOST(USER_ID, POST_ID)
@@ -167,6 +169,17 @@ def likepost(request):
 
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    cmnd = """
+    SELECT USER_ID
+    FROM POST
+    WHERE POST_ID = :postid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid])
+
+    row = c.fetchone()
+    poster_id = row[0]
 
     cmnd = """
     SELECT USER_ID
@@ -204,6 +217,16 @@ def likepost(request):
         c = connection.cursor()
         c.execute(cmnd, [userid, postid])
         connection.commit()
+
+        #insert into notification table
+        cmnd = """
+        INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
+        VALUES(:user_id, :poster_id, :type , :post_id)
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [userid, poster_id,"like", postid]) 
+        connection.commit()
+        
     else:  # if already liked then dislike
         cmnd = """
         DELETE FROM USER_LIKES_POST
@@ -211,6 +234,15 @@ def likepost(request):
         """
         c = connection.cursor()
         c.execute(cmnd, [userid, postid])
+        connection.commit()
+
+        #delete from notification table
+        cmnd = """
+        DELETE FROM NOTIFICATION
+        WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [userid, poster_id,"like", postid]) 
         connection.commit()
 
     cmnd = """
@@ -276,4 +308,3 @@ def search(request):
     }
 
     return render(request,  'timeline/search.html', context)
-   

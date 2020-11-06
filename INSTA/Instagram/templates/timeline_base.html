@@ -145,7 +145,7 @@
             </li>
 
             <!-- Button trigger modal -->
-            <a role="button" class="nav-link mr-1" data-toggle="modal" data-target="#PostModal"  style="background-color: #555;">
+            <a type="button" role="button" class="nav-link mr-1" data-toggle="modal" data-target="#PostModal"  style="background-color: #555;">
                 <i class="fa fa-camera nav-icons" aria-hidden="true"></i>
             </a>
 
@@ -164,11 +164,11 @@
                                 {% csrf_token %}
                                 <div class="container">
                                     <label for="image">Image : </label>
-                                    <input type="file" name="image" id="image">
-                                    <br><br>
+                                    <input type="file" name="image" id="image" class="form-control-file">
+                                    <br>
                                     <label for="caption" class=""> Captions : </label>
                                     <br>
-                                    <textarea class="ml-0" name="caption" id="caption" cols="45" rows="10"
+                                    <textarea class="ml-0" name="caption" id="caption" cols="45" rows="6"
                                         placeholder="Share what's on your mind..." class='ml-4'></textarea>
                                 </div>
                                 <div class="modal-footer">

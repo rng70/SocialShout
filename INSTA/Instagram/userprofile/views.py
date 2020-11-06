@@ -85,17 +85,25 @@ def showProfile(request, userid):
 
     #Fetching the unseen notifications
     cmnd = """
+    SELECT USER_ID
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [request.user.username])
+    row = c.fetchone()  # fetching the viwer_userID
+    viwer_userid = row[0]
+
+    cmnd = """
     SELECT COUNT(*)
     FROM NOTIFICATION
     WHERE TO_ID = :userid AND IS_SEEN = 0
     """
     c = connection.cursor()
-    c.execute(cmnd, [userid])
+    c.execute(cmnd, [viwer_userid])
     row = c.fetchone()
     total_unseen = row[0] 
     profiledict["total_unseen"] = total_unseen
-
-   
 
     return render(request, 'userprofile/profile.html', profiledict)
 

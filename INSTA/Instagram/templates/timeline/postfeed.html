@@ -68,6 +68,12 @@ border-right: 0;
 </a>
 {% endblock profile_url %}
 
+{% block notification_count %} 
+    {% if total_unseen > 0 %}
+        <span class="badge">{{total_unseen}}</span>
+    {% endif %} 
+{% endblock notification_count %}
+
 {% block body %}
 {% load humanize %}
 
@@ -110,6 +116,7 @@ border-right: 0;
             <form action="/post/postComment/{{post.postid}}" method= "Post">
                 {% csrf_token %}
                 <div class="input-group">
+                    <input type="hidden" name="parentid" value="">
                     <input type="text" class="form-control comment" name="comment" placeholder="Add a Comment ..." required="required">
                     <div class="input-group-append">
                         <button class="btn btn-primary " type="submit"> Post </button>

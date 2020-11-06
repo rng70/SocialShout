@@ -1,6 +1,6 @@
 {% extends 'timeline_base.html' %}
 
-{% block title %} PostPage {% endblock title %}
+{% block title %} Notifications {% endblock title %}
 
 
 {% block css %}
@@ -98,36 +98,69 @@ margin: 0;
 
 <div class="container my-2">
 
+    {% if not notifications %}
+    <h6 class="alert alert-info mx-auto">  You have no notifications yet! </h6>
+    {% endif %}
+
     {% for notification in notifications %}
-        <a href="check/{{notification.notification_id}}">
+        <a href="check/{{notification.notification_id}} " style="text-decoration : none">
 
         {% if notification.content == 'like' %}
-            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
+            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
-                    <img src="{{notification.img_src}}" height="30" class=" notify-image mx-auto">
+                    {% if notification.is_seen %}       
+                    <span class="badge "> <span style='font-size:15px'>&#10003;</span></span>
+                    {% else %} 
+                    <span class="badge badge-pill badge-primary" style=" height: 3%;
+                    width: 2%; font-size:7px" >New</span>
+                    {% endif %}
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
                     <strong>{{notification.from_username}} </strong>  liked your post
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
         {% elif notification.content == 'follow' %}
-            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
+            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
-                    <img src="{{notification.img_src}}" height="30" class=" notify-image mx-auto">
+                    {% if notification.is_seen %}       
+                    <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>
+                    {% else %} 
+                    <span class="badge badge-pill badge-primary" style=" height: 3%;
+                    width: 2%; font-size:7px" >New</span>
+                    {% endif %}
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
                     <strong>{{notification.from_username}} </strong>  started following you
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
-
+        {% elif notification.content == 'comment' %}
+            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            mb-2" role="alert" style="height: 25;">
+                    {% if notification.is_seen %}       
+                    <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>
+                    {% else %} 
+                    <span class="badge badge-pill badge-primary" style=" height: 3%;
+                    width: 2%; font-size:7px" >New</span>
+                    {% endif %}
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
+                    <strong>{{notification.from_username}} </strong>  commented on your post
+                    <span class="badge"> {{notification.time|naturaltime}}</span>
+            </div>
+        {% else %}
+            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            mb-2" role="alert" style="height: 25;">
+                    {% if notification.is_seen %}       
+                    <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>
+                    {% else %} 
+                    <span class="badge badge-pill badge-primary" style=" height: 3%;
+                    width: 2%; font-size:7px" >New</span>
+                    {% endif %}
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
+                    <strong>{{notification.from_username}} </strong>  replied to your comment
+                    <span class="badge"> {{notification.time|naturaltime}}</span>
+            </div>
         {% endif %}
         </a>
     {% endfor %}
-    <!-- <a href="/home">
-        <div class="alert alert-primary" role="alert">
-             Give it a click if you like.
-        </div>
-    </a>
-    
-    <div class="alert alert-secondary" role="alert">
-        This is a secondary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-    </div> -->
+
 </div>
 
 {% endblock body %}

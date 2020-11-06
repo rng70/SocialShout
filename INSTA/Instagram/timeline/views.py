@@ -80,7 +80,18 @@ def home(request):
         likes_count = row[0]
         d['likes_count'] = likes_count
 
-    params = {'posts': data}
+    #Fetching the unseen notifications
+    cmnd = """
+    SELECT COUNT(*)
+    FROM NOTIFICATION
+    WHERE TO_ID = :userid AND IS_SEEN = 0
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [likerid])
+    row = c.fetchone()
+    total_unseen = row[0] 
+
+    params = {'posts': data, "total_unseen": total_unseen}
 
     connection.close()
     return render(request, 'timeline/postfeed.html', params)
@@ -218,14 +229,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid])
         connection.commit()
 
-        #insert into notification table
-        cmnd = """
-        INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
-        VALUES(:user_id, :poster_id, :type , :post_id)
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [userid, poster_id,"like", postid]) 
-        connection.commit()
+        if(not(userid==poster_id)):
+            #insert into notification table
+            cmnd = """
+            INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
+            VALUES(:user_id, :poster_id, :type , :post_id)
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [userid, poster_id,"like", postid]) 
+            connection.commit()
         
     else:  # if already liked then dislike
         cmnd = """
@@ -236,14 +248,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid])
         connection.commit()
 
-        #delete from notification table
-        cmnd = """
-        DELETE FROM NOTIFICATION
-        WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [userid, poster_id,"like", postid]) 
-        connection.commit()
+        if(not(userid==poster_id)):
+            #delete from notification table
+            cmnd = """
+            DELETE FROM NOTIFICATION
+            WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [userid, poster_id,"like", postid]) 
+            connection.commit()
 
     cmnd = """
     SELECT COUNT(*)
@@ -301,10 +314,33 @@ def search(request):
     except EmptyPage:
         users = paginator.page(paginator.num_pages)
 
+
+    #Fetching the unseen notifications
+    cmnd = """
+    SELECT USER_ID
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [request.user.username])
+    row = c.fetchone()  # fetching the viwer_userID
+    viwer_userid = row[0]
+
+    cmnd = """
+    SELECT COUNT(*)
+    FROM NOTIFICATION
+    WHERE TO_ID = :userid AND IS_SEEN = 0
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [viwer_userid])
+    row = c.fetchone()
+    total_unseen = row[0] 
+
     context = {
         'users': users,
         'text' : text,
         'total' : total,
+        'total_unseen':total_unseen
     }
 
     return render(request,  'timeline/search.html', context)

@@ -91,6 +91,8 @@ def checkNoification(request, notification_id):
         return redirect(f"/post/{post_id}")
     elif(content=="follow"):
         return redirect(f"/userprofile/{from_id}")
+    else :
+        return redirect(f"/post/{post_id}")
 
     return HttpResponse('haha')
     pass

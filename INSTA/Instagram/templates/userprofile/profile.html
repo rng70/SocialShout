@@ -48,6 +48,12 @@ color:white;
 </a>
 {% endblock profile_url %}
 
+{% block notification_count %} 
+    {% if total_unseen > 0 %}
+        <span class="badge">{{total_unseen}}</span>
+    {% endif %} 
+{% endblock notification_count %}
+
 {% block body %}
 
 <div class="container my-4">

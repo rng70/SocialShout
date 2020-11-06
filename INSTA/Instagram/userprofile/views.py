@@ -83,6 +83,18 @@ def showProfile(request, userid):
     followings = row[0] 
     profiledict["followings"] = followings
 
+    #Fetching the unseen notifications
+    cmnd = """
+    SELECT COUNT(*)
+    FROM NOTIFICATION
+    WHERE TO_ID = :userid AND IS_SEEN = 0
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+    total_unseen = row[0] 
+    profiledict["total_unseen"] = total_unseen
+
    
 
     return render(request, 'userprofile/profile.html', profiledict)

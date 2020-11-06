@@ -23,6 +23,12 @@ margin: 0;
 </a>
 {% endblock profile_url %}
 
+{% block notification_count %} 
+    {% if total_unseen > 0 %}
+        <span class="badge">{{total_unseen}}</span>
+    {% endif %} 
+{% endblock notification_count %}
+
 {% block body %}
 
 <div class="row justify-content-center mt-4">

@@ -1,0 +1,57 @@
+{% extends 'timeline_base.html' %}
+
+{% block title %} Followers {% endblock title %}
+
+{% block css %}
+
+.follower-image{
+    height: 40px;
+    width: 45px;
+    border: 2px solid #929292;
+    border-radius: 50%;
+    margin: 0;
+}
+{% endblock css %}
+
+{% block user_active %}active {% endblock user_active %}
+
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}" data-toggle="tooltip" data-placement="bottom"
+    title="Profile">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
+
+{% block notification_count %}
+{% if total_unseen > 0 %}
+<span class="badge">{{total_unseen}}</span>
+{% endif %}
+{% endblock notification_count %}
+
+{% block body %}
+
+<div class="container my-4">
+    <div class="container text-dark mb-2"> 
+        <strong > Followers : ({{total_followers}})</strong>
+    </div>  
+    <ul class="list-group">
+        {% for follower in followers %}
+            <li class="list-group-item">      
+                    <h10 class="">
+                    <img src="{{follower.img_src}}" height="35" class="follower-image mx-auto border border-primary" alt="...">
+                    <strong >
+                        <a href="/userprofile/{{follower.userid}}" class="text-dark mr-2"> {{follower.username}}</a>
+                    </strong>
+                    </h10>           
+            </li>
+        {% endfor %}
+      </ul>
+</div>
+{% endblock body %}
+
+{% block js %}
+
+{% endblock js %}

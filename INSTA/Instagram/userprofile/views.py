@@ -85,7 +85,6 @@ def showProfile(request, userid):
 
 
     #fetching the posts
-    #fetching the replies
     cmnd = """
     SELECT P.POST_ID , P.IMG_SRC
     FROM POST P
@@ -109,15 +108,15 @@ def showProfile(request, userid):
     profiledict['total_posts'] = total_posts
 
     #Fetching the unseen notifications
-    cmnd = """
-    SELECT USER_ID
-    FROM USERACCOUNT
-    WHERE USER_NAME = :username
-    """
-    c = connection.cursor()
-    c.execute(cmnd, [request.user.username])
-    row = c.fetchone()  # fetching the viwer_userID
-    viwer_userid = row[0]
+    # cmnd = """
+    # SELECT USER_ID
+    # FROM USERACCOUNT
+    # WHERE USER_NAME = :username
+    # """
+    # c = connection.cursor()
+    # c.execute(cmnd, [request.user.username])
+    # row = c.fetchone()  # fetching the viwer_userID
+    # viwer_userid = row[0]
 
     cmnd = """
     SELECT COUNT(*)
@@ -199,7 +198,6 @@ def follow(request, userid):
         c.execute(cmnd, [to_follow_id,  main_userid])
         connection.commit()
 
-
         #insert into notification table
         cmnd = """
         INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT)  
@@ -236,12 +234,118 @@ def follow(request, userid):
     c.execute(cmnd, [to_follow_id])
     row = c.fetchone()
     followers_count = row[0]  # count how many people follows the user
-
+    connection.close()
+    
     resp = {
         "followers_count": followers_count,
         "is_following": is_following
     }
     response = json.dumps(resp)
-
-    connection.close()
     return HttpResponse(response, content_type="application/json")
+
+def showFollowers(request, userid):
+
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    #Fetching the followers' list
+    cmnd = """
+    SELECT U.USER_NAME,U.USER_ID, U.IMG_SRC
+    FROM FOLLOWS F, USERACCOUNT U
+    WHERE F.FOLLOWER_ID = U.USER_ID AND F.FOLLOWEE_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid]) 
+
+    followers = []
+    total_followers=0
+    for row in c:
+        follwerdict = {
+            "username": row[0],
+            "userid": row[1],
+            "img_src": row[2]
+        }
+        followers.append(follwerdict)
+        total_followers += 1
+
+    #Fetching the unseen notifications
+    cmnd = """
+    SELECT USER_ID
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [request.user.username])
+    row = c.fetchone()  # fetching the viwer_userID
+    viwer_userid = row[0]
+
+    cmnd = """
+    SELECT COUNT(*)
+    FROM NOTIFICATION
+    WHERE TO_ID = :userid AND IS_SEEN = 0
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [viwer_userid])
+    row = c.fetchone()
+    total_unseen = row[0] 
+
+    data = {
+        "followers" : followers,
+        "total_followers" :total_followers,
+        "total_unseen" : total_unseen
+    }
+
+    return render(request, 'userprofile/followers.html', data)
+
+def showFollowings(request, userid):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    #Fetching the followings' list
+    cmnd = """
+    SELECT U.USER_NAME,U.USER_ID, U.IMG_SRC
+    FROM FOLLOWS F, USERACCOUNT U
+    WHERE F.FOLLOWEE_ID = U.USER_ID AND F.FOLLOWER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid]) 
+
+    followings = []
+    total_followings=0
+    for row in c:
+        followingdict = {
+            "username": row[0],
+            "userid": row[1],
+            "img_src": row[2]
+        }
+        followings.append(followingdict)
+        total_followings += 1
+
+    #Fetching the unseen notifications
+    cmnd = """
+    SELECT USER_ID
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [request.user.username])
+    row = c.fetchone()  # fetching the viwer_userID
+    viwer_userid = row[0]
+
+    cmnd = """
+    SELECT COUNT(*)
+    FROM NOTIFICATION
+    WHERE TO_ID = :userid AND IS_SEEN = 0
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [viwer_userid])
+    row = c.fetchone()
+    total_unseen = row[0] 
+
+    data = {
+        "followings" : followings,
+        "total_followings" :total_followings,
+        "total_unseen" : total_unseen
+    }
+
+    return render(request, 'userprofile/followings.html', data)

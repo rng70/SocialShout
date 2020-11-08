@@ -8,6 +8,7 @@ urlpatterns = [
     path('<str:username>' , views.showProfileByName, name='showProfileByNmae'), #show a user's profile page 
     
     path("follow/<int:userid>", views.follow, name="follow"), #handling the follow unfollow
-    
+    path("followers/<int:userid>", views.showFollowers, name="showFollowers"), #showing the followers list
+    path("followings/<int:userid>", views.showFollowings, name="showFollowings"), #showing the followings list
 ]   
-   
+  

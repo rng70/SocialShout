@@ -64,7 +64,7 @@ color:white;
         <div class="media-body info">
 
             <div class="mx-auto my-2 ">
-                <div class="d-inline text-dark " id="followers">
+                <div class="d-inline text-dark">
                     <h4 class="mt-0 d-inline">{{username}} </h4>
                 </div>
                 {% if username == request.user.username %}
@@ -74,19 +74,23 @@ color:white;
             </div>
 
             {% if username != request.user.username %}
-            {% if is_following == 0 %}
-            <a type="button" class=" btn btn-outline-primary" id="follow" role="button"
-                href="follow/{{userid}}">Follow</a>
-            {% else %}
+                {% if is_following == 0 %}
+                <a type="button" class=" btn btn-outline-primary" id="follow" role="button"
+                    href="follow/{{userid}}">Follow</a>
+                {% else %}
             <a type="button" class="btn btn-outline-primary" id="follow" role="button" href="follow/{{userid}}">
                 Unfollow</a>
-            {% endif %}
+                {% endif %}
             {% endif %}
 
             <div class="mx-auto my-2 ">
                 <div class="d-inline text-dark " id="posts"> Posts : {{total_posts}}</div>
-                <div class="d-inline text-dark mx-4 " id="followers"> Followers : {{followers}}</div>
-                <div class="d-inline text-dark mx-4" id="followings"> Following : {{followings}} </div>
+                <div class="d-inline text-dark mx-4 "> 
+                   <a href="/userprofile/followers/{{userid}}" class="text-dark"> Followers : </a> 
+                   <p class="d-inline" id="followers"> {{followers}}</p>
+                </div>
+                <div class="d-inline text-dark mx-4" id="followings"> 
+                <a href="/userprofile/followings/{{userid}}" class="text-dark"> Followings </a>: {{followings}} </div>
             </div>
 
             <div>
@@ -106,6 +110,7 @@ color:white;
 
     <hr>
 
+    <!-- showing the  posts -->
     <div class="container">
         <nav>
             <div class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
@@ -155,8 +160,7 @@ color:white;
                     $("#follow").html("Follow");
                 }
                 var followers = document.getElementById("followers");
-                followers.innerHTML = "Followers : " + response.followers_count;
-                console.log("Followers : " + response.followers_count);
+                followers.innerHTML = response.followers_count;
             }
         })
     })

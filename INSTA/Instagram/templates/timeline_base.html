@@ -85,9 +85,9 @@
             margin-top: 1%;
         }
 
-        .active {
+        /* .active {
             background-color: #4CAF50;
-        }
+        } */
 
         .notification {
             background-color: #555;
@@ -139,16 +139,17 @@
         <ul class="navbar-nav mr-auto nav-right-items ">
 
             <li class="nav-item mr-1 {% block home_active %}{% endblock home_active %}" style="background-color: #555;">
-                <a class="nav-link " href="/home">
+                <a class="nav-link " href="/home" title="Home" data-toggle="tooltip" data-placement="bottom">
                     <i class="fas fa-home nav-icons"></i>
                 </a>
             </li>
 
             <!-- Button trigger modal -->
-            <a type="button" role="button" class="nav-link mr-1" data-toggle="modal" data-target="#PostModal"  style="background-color: #555;">
-                <i class="fa fa-camera nav-icons" aria-hidden="true"></i>
-            </a>
-
+            <span data-toggle="modal" data-target="#PostModal">
+                <a role="button" class="nav-link mr-1" data-placement="bottom" title="Post" data-toggle="tooltip" style="background-color: #555;" >
+                    <i class="fa fa-camera nav-icons" aria-hidden="true"></i>  
+                </a>
+            </span>
             <!--Post Modal -->
             <div class="modal fade" id="PostModal" tabindex="-1" aria-labelledby="PostModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -191,13 +192,15 @@
                 <!-- <a class="nav-link" href="#">
                         <i class="far fa-heart nav-icons"></i>                   
                 </a> -->
-                <a href="/notifications" class="notification nav-link">
+                <a href="/notifications" class="notification nav-link" title="Notifications" data-toggle="tooltip" data-placement="bottom">
                     <i class="far fa-heart nav-icons "></i>
                     {% block notification_count %}{% endblock notification_count %}
                 </a>
             </li>
             <li class="nav-item {% block user_active %}{% endblock user_active %}"  style="background-color: #555;">
+                <a>
 
+                </a>
                 {% block profile_url %}
                 {% endblock profile_url %}
 
@@ -248,5 +251,11 @@
 
 {% block js %}
 {% endblock js %}
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 
 </html>

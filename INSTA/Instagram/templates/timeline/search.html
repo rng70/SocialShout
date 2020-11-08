@@ -15,7 +15,7 @@ margin: 0;
 
 
 {% block profile_url %}
-<a class="nav-link" href="/userprofile/{{request.user.username}}">
+<a class="nav-link" href="/userprofile/{{request.user.username}}"  data-toggle="tooltip" data-placement="bottom" title="Profile">
     <i class="fa fa-fw fa-user nav-icons"></i>
     <!--
         <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                

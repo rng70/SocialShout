@@ -79,7 +79,7 @@ margin: 0;
 {% endblock css %}
 
 {% block profile_url %}
-<a class="nav-link" href="/userprofile/{{request.user.username}}">
+<a class="nav-link" href="/userprofile/{{request.user.username}}"  data-toggle="tooltip" data-placement="bottom" title="Profile">
     <i class="fa fa-fw fa-user nav-icons"></i>
     <!--
         <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
@@ -101,7 +101,8 @@ margin: 0;
         <div class="card">
             <h10 class=" card-content ml-2">
                 <img src="/static/user.png" height="35" class="profile-image mx-auto" alt="...">
-                <strong class=""> {{username}}
+                <strong >
+                    <a href="/userprofile/{{userid}}" style="text-decoration: none;" class="text-dark mr-2"> {{username}}</a>
                     <span class="badge badge-info">{{time | naturaltime}} </span>
                 </strong>
             </h10>
@@ -129,8 +130,6 @@ margin: 0;
                     data-target="#likersModalLong">
                     {{likes_count}} likes
                 </a>
-
-
 
                 <!--Likers Modal -->
                 <div class="modal fade" id="likersModalLong" tabindex="-1" role="dialog"
@@ -198,8 +197,9 @@ margin: 0;
                 <div class="col-md-1 my-1">
                     <img src="/static/user.png" height="35" class=" profile-image mx-auto" alt="...">
                 </div>
-                <div class="col-md-11 my-1">
-                    <b> {{comment.commenter_name}} </b> at
+                <div class="col-md-11 my-2">
+                    <b><a href="/userprofile/{{comment.commenter_name}}" style="text-decoration: none;" class="text-dark">{{comment.commenter_name}} </a> </b>
+                    at
                     <span class="badge badge-secondary"> {{comment.time|naturaltime}}</span>
                     <div class="my-1"> {{comment.content}} </div>
                     <div class="reply mx-0">
@@ -232,7 +232,9 @@ margin: 0;
                                 </div>
 
                                 <div class="col-md-10 ml-2">
-                                    <b> {{reply.commenter_name}} </b> at
+                                    <b>
+                                    <a href="/userprofile/{{reply.commenter_name}}" style="text-decoration: none;" class="text-dark ">{{reply.commenter_name}} </a>
+                                    </b> at
                                     <span class="badge badge-secondary"> {{reply.time | naturaltime}}</span>
                                     <div class="my-1"> {{reply.content}} </div>
                                 </div>

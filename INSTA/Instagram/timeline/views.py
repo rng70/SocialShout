@@ -39,7 +39,6 @@ def home(request):
             "userid": row[5]
         }
         data.append(postdict)
-        print(postdict["postid"], str(row[3]))
 
     username = request.user.username
     cmnd = """

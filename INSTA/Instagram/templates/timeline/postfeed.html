@@ -60,7 +60,7 @@ border-right: 0;
 {% block home_active %}active{% endblock home_active %}
 
 {% block profile_url %}
-<a class="nav-link" href="/userprofile/{{request.user.username}}">
+<a class="nav-link" href="/userprofile/{{request.user.username}}"  data-toggle="tooltip" data-placement="bottom" title="Profile">
     <i class="fa fa-fw fa-user nav-icons"></i>
     <!--
         <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
@@ -85,8 +85,9 @@ border-right: 0;
 
             <h10 class=" card-content ml-2">
                 <img src="/static/user.png" height="30" class="profile-image mx-auto" alt="...">
-                <strong> {{post.username}}
-                     <span class="badge badge-info">{{ post.time|naturaltime}} </span> 
+                <strong> 
+                    <a href="/userprofile/{{post.userid}}" style="text-decoration: none;" class="text-dark mr-2"> {{post.username}} </a>
+                    <span class="badge badge-info">{{ post.time|naturaltime}} </span> 
                 </strong>
             </h10>
             <a href="/post/{{post.postid}}">

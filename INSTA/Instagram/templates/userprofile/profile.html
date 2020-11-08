@@ -1,6 +1,6 @@
 {% extends 'timeline_base.html' %}
 
-{% block title %} UserProfile {% endblock title %}
+{% block title %} {{username}} {% endblock title %}
 
 {% block css %}
 
@@ -23,11 +23,6 @@ padding-top:2%;
 padding-left:3%;
 }
 
-hr
-{
-border-top: 2px solid #000000;
-}
-
 #follow, #edit{
 color:blue;
 }
@@ -35,12 +30,19 @@ color:blue;
 #follow:hover, #edit:hover{
 color:white;
 }
+
+.pst{
+    width:350px;
+    height:200px;
+    margin-bottom:30px;
+}
 {% endblock css %}
 
 {% block user_active %}active {% endblock user_active %}
 
 {% block profile_url %}
-<a class="nav-link" href="/userprofile/{{request.user.username}}">
+<a class="nav-link" href="/userprofile/{{request.user.username}}" data-toggle="tooltip" data-placement="bottom"
+    title="Profile">
     <i class="fa fa-fw fa-user nav-icons"></i>
     <!--
         <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
@@ -48,10 +50,10 @@ color:white;
 </a>
 {% endblock profile_url %}
 
-{% block notification_count %} 
-    {% if total_unseen > 0 %}
-        <span class="badge">{{total_unseen}}</span>
-    {% endif %} 
+{% block notification_count %}
+{% if total_unseen > 0 %}
+<span class="badge">{{total_unseen}}</span>
+{% endif %}
 {% endblock notification_count %}
 
 {% block body %}
@@ -60,41 +62,80 @@ color:white;
     <div class="media">
         <img src="{{img_src}}" class="align-self-start mr-3 userImage border border-success" alt="...">
         <div class="media-body info">
-            <h4 class="mt-0">{{username}} </h4>
+
+            <div class="mx-auto my-2 ">
+                <div class="d-inline text-dark " id="followers">
+                    <h4 class="mt-0 d-inline">{{username}} </h4>
+                </div>
+                {% if username == request.user.username %}
+                <button type="button" class="btn btn-secondary btn-sm mx-4">
+                    <i class="fas fa-cog mr-1"></i> Edit Profile </button>
+                {% endif %}
+            </div>
 
             {% if username != request.user.username %}
-                {% if is_following == 0 %}
-                    <a type="button" class=" btn btn-outline-primary" id="follow" role="button" 
-                    href="follow/{{userid}}">Follow</a>
-                {% else %}
-                    <a type="button" class="btn btn-outline-primary" id="follow" role="button"
-                     href="follow/{{userid}}"> Unfollow</a>
-                {% endif %}
+            {% if is_following == 0 %}
+            <a type="button" class=" btn btn-outline-primary" id="follow" role="button"
+                href="follow/{{userid}}">Follow</a>
+            {% else %}
+            <a type="button" class="btn btn-outline-primary" id="follow" role="button" href="follow/{{userid}}">
+                Unfollow</a>
             {% endif %}
-            
+            {% endif %}
+
             <div class="mx-auto my-2 ">
-                <div class="d-inline text-dark " id="followers"> Followers : {{followers}}</div> 
+                <div class="d-inline text-dark " id="posts"> Posts : {{total_posts}}</div>
+                <div class="d-inline text-dark mx-4 " id="followers"> Followers : {{followers}}</div>
                 <div class="d-inline text-dark mx-4" id="followings"> Following : {{followings}} </div>
             </div>
-           
-            
-           
+
+            <div>
+                <a href="#" class="text-dark">
+                    {% if username != request.user.username %}
+                    ... See {{username}}'s About info
+                    {% else %}
+                    ... See your about info
+                    {% endif %}
+                </a>
+
+
+            </div>
 
         </div>
     </div>
 
     <hr>
 
-    <div class='row'>
-        {% for i in posts %}
-        {% for j in i %}
-        <div class='col-md-4'>
-            <img src="{{j.image.url}}" alt="Image" class='pst'>
+    <div class="container">
+        <nav>
+            <div class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                    aria-controls="nav-home" aria-selected="true"><i class="fas fa-image mr-1"></i>Posts</a>
+                <!-- <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+                    aria-controls="nav-profile" aria-selected="false">Profile</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+                    aria-controls="nav-contact" aria-selected="false">Contact</a> -->
+            </div>
+        </nav>
+        <div class="tab-content cona" id="nav-tabContent">
+            <div class="tab-pane fade show active container" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">      
+                {% for i in posts %} 
+                <div class='row mt-1'>           
+                        {% for j in i %}
+                        <div class='col-md-4'>
+                           <a href="/post/{{j.postid}}"><img src="{{j.img_src}}" alt="Image" class='pst'></a> 
+                        </div>
+                        {% endfor %}            
+                </div>
+                 {% endfor %}
+            </div>
+            <!-- <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">c</div>
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">d</div> -->
         </div>
-        {% endfor %}
-        {% endfor %}
     </div>
 </div>
+
+
 
 {% endblock body %}
 
@@ -114,7 +155,7 @@ color:white;
                     $("#follow").html("Follow");
                 }
                 var followers = document.getElementById("followers");
-                followers.innerHTML = "Followers : " + response.followers_count ;
+                followers.innerHTML = "Followers : " + response.followers_count;
                 console.log("Followers : " + response.followers_count);
             }
         })

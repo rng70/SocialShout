@@ -83,6 +83,31 @@ def showProfile(request, userid):
     followings = row[0] 
     profiledict["followings"] = followings
 
+
+    #fetching the posts
+    #fetching the replies
+    cmnd = """
+    SELECT P.POST_ID , P.IMG_SRC
+    FROM POST P
+    WHERE P.USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid]) 
+
+    posts = []
+    total_posts=0
+    for row in c:
+        postdict = {
+            "postid": row[0],
+            "img_src": row[1],
+        }
+        posts.append(postdict)
+        total_posts += 1
+
+    posts = [posts[i:i+3] for i in range(0, len(posts), 3)] #slicing post--> 3 posts in each row
+    profiledict['posts'] = posts
+    profiledict['total_posts'] = total_posts
+
     #Fetching the unseen notifications
     cmnd = """
     SELECT USER_ID

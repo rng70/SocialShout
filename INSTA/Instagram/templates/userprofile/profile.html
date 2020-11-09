@@ -11,12 +11,6 @@ height:200px;
 border-radius:50%;
 }
 
-.pst{
-width:350px;
-height:200px;
-margin-bottom:30px;
-}
-
 .info
 {
 padding-top:2%;
@@ -34,8 +28,8 @@ color:white;
 .pst{
     width:350px;
     height:200px;
-    margin-bottom:30px;
 }
+
 {% endblock css %}
 
 {% block user_active %}active {% endblock user_active %}
@@ -89,7 +83,7 @@ color:white;
                    <a href="/userprofile/followers/{{userid}}" class="text-dark"> Followers : </a> 
                    <p class="d-inline" id="followers"> {{followers}}</p>
                 </div>
-                <div class="d-inline text-dark mx-4" id="followings"> 
+                <div class="d-inline text-dark" id="followings"> 
                 <a href="/userprofile/followings/{{userid}}" class="text-dark"> Followings </a>: {{followings}} </div>
             </div>
 
@@ -113,7 +107,7 @@ color:white;
     <!-- showing the  posts -->
     <div class="container">
         <nav>
-            <div class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
+            <div class="nav nav-tabs d-flex justify-content-center mb-1" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
                     aria-controls="nav-home" aria-selected="true"><i class="fas fa-image mr-1"></i>Posts</a>
                 <!-- <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
@@ -125,7 +119,7 @@ color:white;
         <div class="tab-content cona" id="nav-tabContent">
             <div class="tab-pane fade show active container" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">      
                 {% for i in posts %} 
-                <div class='row mt-1'>           
+                <div class='row mb-2'>           
                         {% for j in i %}
                         <div class='col-md-4'>
                            <a href="/post/{{j.postid}}"><img src="{{j.img_src}}" alt="Image" class='pst'></a> 

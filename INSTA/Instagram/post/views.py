@@ -377,3 +377,67 @@ def postComment(request, slug):
         return redirect(f"/post/{slug}")
     else :
         return HttpResponse('404-Not found')
+
+def editpost(request, postid):
+
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    #fetching the caption
+    cmnd = """
+    SELECT CAPTION
+    FROM POST
+    WHERE POST_ID = :postid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid])
+    row = c.fetchone()  
+    caption = row[0]
+
+    #Fetching the unseen notifications
+    cmnd = """
+    SELECT USER_ID
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [request.user.username])
+    row = c.fetchone()  # fetching the userID
+    userid = row[0]
+
+    cmnd = """
+    SELECT COUNT(*)
+    FROM NOTIFICATION
+    WHERE TO_ID = :userid AND IS_SEEN = 0
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+    total_unseen = row[0] 
+
+    data = { "postid" : postid, "total_unseen":total_unseen, "caption":caption}  
+    return render(request, 'post/editpost.html', data)
+
+
+def saveEditedPost(request, postid):
+    if(request.method=='POST'):
+        edited=request.POST['edited'] #fetching the edited caption
+
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+        #save the edited post in database
+        cmnd = """
+        UPDATE POST
+        SET CAPTION = :edited
+        WHERE POST_ID = :postid
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [edited,  postid])  
+        connection.commit()    
+        connection.close()
+
+        return redirect(f"/post/{postid}")
+
+    else :
+        return HttpResponse('404 - Not Found')

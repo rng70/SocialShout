@@ -1,0 +1,47 @@
+{% extends 'timeline_base.html' %}
+
+{% block title %} Edit Post {% endblock title %}
+
+
+{% block css %}
+
+
+{% endblock css %}
+
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}"  data-toggle="tooltip" data-placement="bottom" title="Profile">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
+
+{% block notification_count %} 
+    {% if total_unseen > 0 %}
+        <span class="badge">{{total_unseen}}</span>
+    {% endif %} 
+{% endblock notification_count %}
+
+{% block body %}
+{% load humanize %}
+
+<div class="container">
+
+    <form method="POST" action="/post/saveEdited/{{postid}}">
+        {% csrf_token %}
+        <div class="form-group ">
+          <label for="exampleFormControlTextarea1" class="text-dark mt-3"><b>Edit Post :</b></label>
+          <textarea class="form-control border border-info" id="exampleFormControlTextarea1" rows="3" 
+          name="edited"> {{caption}} </textarea>
+          <button type="submit" class="btn btn-success my-2">Save</button>
+        </div>
+      </form>
+</div>
+
+{% endblock body %}
+
+{% block js %}
+<script>
+</script>
+{% endblock js %}

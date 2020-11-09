@@ -95,4 +95,3 @@ def checkNoification(request, notification_id):
         return redirect(f"/post/{post_id}")
 
     return HttpResponse('haha')
-    pass

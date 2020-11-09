@@ -34,10 +34,8 @@
 {% block body %}
 
 <div class="container my-4">
-    <div class="container text-dark mb-2"> 
-        <strong > Followers : ({{total_followers}})</strong>
-    </div>  
     <ul class="list-group">
+        <li class="list-group-item list-group-item-primary"><strong > Followers : ({{total_followers}})</strong></li>
         {% for follower in followers %}
             <li class="list-group-item">      
                     <h10 class="">

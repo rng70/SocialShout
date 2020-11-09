@@ -34,10 +34,8 @@
 {% block body %}
 
 <div class="container my-4">
-    <div class="container text-dark mb-2"> 
-        <strong > followings : ({{total_followings}})</strong>
-    </div>  
     <ul class="list-group">
+        <li class="list-group-item list-group-item-primary"><strong > Followings : ({{total_followings}})</strong></li>
         {% for following in followings %}
             <li class="list-group-item">      
                     <h10 class="">
@@ -50,6 +48,7 @@
         {% endfor %}
     </ul>
 </div>
+
 {% endblock body %}
 
 {% block js %}

@@ -33,7 +33,7 @@
         <div class="form-group ">
           <label for="exampleFormControlTextarea1" class="text-dark mt-3"><b>Edit Post :</b></label>
           <textarea class="form-control border border-info" id="exampleFormControlTextarea1" rows="3" 
-          name="edited"> {{caption}} </textarea>
+          name="edited"> {% if caption %}{{caption}}{% endif %} </textarea>
           <button type="submit" class="btn btn-success my-2">Save</button>
         </div>
       </form>

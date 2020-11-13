@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from userprofile.models import ProfileImage
 import cx_Oracle
 import json
 
@@ -349,3 +349,122 @@ def showFollowings(request, userid):
     }
 
     return render(request, 'userprofile/followings.html', data)
+
+def editProfile(request, userid):
+
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+    
+    #Fetching the unseen notifications
+    cmnd = """
+    SELECT COUNT(*)
+    FROM NOTIFICATION
+    WHERE TO_ID = :userid AND IS_SEEN = 0
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+    total_unseen = row[0] 
+
+    #fetching the user's default information
+    cmnd = """
+    SELECT FULL_NAME, BIO, ADDRESS, EMAIL, TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD'), GENDER, PHONE_NUMBER 
+    FROM USERACCOUNT
+    WHERE USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+
+    data = {
+        "userid" :userid,
+        "total_unseen": total_unseen,
+        "fullname" : row[0],
+        "bio":row[1],
+        "address":row[2],
+        "email":row[3],
+        "birthdate":row[4],
+        "gender" : row[5],
+        "phone" : row[6]
+    }
+    return render(request, 'userprofile/editprofile.html', data)
+
+def savePersonalInfo(request, userid):
+    if(request.method == 'POST'):
+        fullname= request.POST['fullname']
+        bio= request.POST['bio']
+        email= request.POST['email']
+        phone= request.POST['phone']
+        address= request.POST['address']
+        birthdate = request.POST['birthdate']
+        gender = request.POST['gender']
+
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+        cmnd ="""
+        UPDATE USERACCOUNT
+        SET FULL_NAME = :fullname, 
+            BIO = :bio, 
+            ADDRESS = :address,
+			EMAIL = :email,
+			Phone_Number = :phone,
+			GENDER = :gender,
+			DATE_OF_BIRTH = to_date(:birthday, 'yyyy-mm-dd')
+        WHERE USER_ID = :userid
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [fullname, bio, address, email, phone, gender, birthdate, userid])
+        connection.commit()
+        connection.close()
+
+        messages.info(request, 'Your Changes has been updated successfully!')
+        return redirect(f"/userprofile/{userid}")
+
+    else :
+        return HttpResponse('404-Nor Found')
+
+
+def changeProfilePic(request, userid):
+    if request.method == 'POST':
+
+        image = request.FILES['image']
+
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+        cmnd = """
+        SELECT IMG_SRC 
+        FROM USERACCOUNT
+        WHERE USER_ID = :userid    
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [userid])
+        row = c.fetchone()  # fetching the profile_image
+        image_path = row[0]
+
+        if(image_path == "/static/user.png"):
+            profile_obj = ProfileImage(userid=userid,image=image)
+            profile_obj.save()
+        else :
+            profile_obj = ProfileImage.objects.get(userid = userid)
+            profile_obj.image = image
+            profile_obj.save()
+            
+        profile_img_ = ProfileImage.objects.filter(userid=userid)
+        image_path = profile_img_[0].image.url 
+
+        cmnd = """
+        UPDATE USERACCOUNT
+        SET IMG_SRC = :path
+        WHERE USER_ID = :userid    
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [image_path,  userid])
+        connection.commit()
+
+        messages.success(request, 'Profile Picture Updated Successfully!')
+        return redirect(f"/userprofile/{userid}")
+
+    else :
+        return HttpResponse('404-Nor Found')

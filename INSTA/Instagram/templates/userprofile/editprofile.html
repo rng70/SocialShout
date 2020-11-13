@@ -1,0 +1,146 @@
+{% extends 'timeline_base.html' %}
+
+{% block title %} Followers {% endblock title %}
+
+{% block css %}
+
+body {
+background: #FAFAFA
+}
+
+.form-control:focus {
+box-shadow: none;
+border-color: #BA68C8
+}
+
+
+.back:hover {
+color: #682773;
+cursor: pointer
+}
+
+.labels {
+font-size: 11px
+}
+
+.profile-button {
+background: rgb(99, 39, 120);
+box-shadow: none;
+border: none
+}
+.profile-button:focus {
+background: #682773;
+box-shadow: none
+}
+
+.profile-button:active {
+background: #682773;
+box-shadow: none
+}
+
+{% endblock css %}
+
+{% block user_active %}active {% endblock user_active %}
+
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}" data-toggle="tooltip" data-placement="bottom"
+    title="Profile">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
+
+{% block notification_count %}
+{% if total_unseen > 0 %}
+<span class="badge">{{total_unseen}}</span>
+{% endif %}
+{% endblock notification_count %}
+
+
+{% block body %}
+<div class="container">
+    <div class="alert alert-primary mb-0 mt-2 d-flex justify-content-center" role="alert">
+       <strong>Edit Profile</strong> 
+    </div>
+    <hr>
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-5 border border-primary border-right-0">
+            <form action="/userprofile/changeProfilePic/{{userid}}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="text-center mt-4">
+                    <img src="//placehold.it/100"  class="avatar img-circle" alt="avatar">
+                    <h6>Change profile picture...</h6>
+                    <input type="file" class="form-control border-danger" name="image" required>
+                    <button class="btn btn-success mt-2"> Upload</button>
+                </div>
+            </form>
+           
+        </div>
+
+        <!-- edit form column -->
+        <div class="col-md-7 personal-info border border-primary ">
+
+            <form class="form-horizontal" role="form" method="POST" action="/userprofile/savaPersonalInfo/{{userid}}">
+                {% csrf_token %}
+                <div class="form-group my-3">
+                    <label class="col-lg-3 control-label">Full name:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control border-danger" type="text" value="{% if fullname %}{{fullname}}{% endif %}" name="fullname">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Bio:</label>
+                    <div class="col-lg-8">
+                        <textarea class=" form-control border-danger" name="bio"  cols="45" rows="2">{% if bio %}{{bio}}{% endif %}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Address:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control border-danger" type="text" value="{% if address %}{{address}}{% endif %}" name ="address">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Email:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control border-danger" type="email" value="{% if email %}{{email}}{% endif %}" name="email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Phone Number:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control border-danger" type="text" value="{% if phone %}{{phone}}{% endif %}" name="phone" maxlength="15">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="mx-3">Gender : </label>
+                    <label class="radio-inline mx-3">
+                        <input type="radio" name="gender" {% if gender == 'Male' %}checked{% endif %}  value="Male" class="mr-1">Male
+                    </label>
+                    <label class="radio-inline mx-3">
+                        <input type="radio" name="gender"  {% if gender == 'Female' %}checked{% endif %} value="Female"> Female
+                    </label>
+                </div>
+                <div class="form-group d-inline-flex">
+                    <label for="example-date-input " class=" mx-3 d-inline-flex">Date of Birth :</label>
+                    <div class="d-inline-flex ">
+                        <input class="form-control border border-danger " type="date" value="{{birthdate}}" name="birthdate">
+                    </div>         
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label"></label>
+                    <div class="col-md-8  d-flex justify-content-center">
+                        <input type="submit" class="btn btn-warning " value="Save Changes" >
+                        <span></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<hr>
+
+{% endblock body %}

@@ -9,6 +9,7 @@
 width:200px;
 height:200px;
 border-radius:50%;
+border : 4px;
 }
 
 .info
@@ -26,8 +27,8 @@ color:white;
 }
 
 .pst{
-    width:350px;
-    height:200px;
+width:350px;
+height:200px;
 }
 
 {% endblock css %}
@@ -55,6 +56,13 @@ color:white;
 <div class="container my-4">
     <div class="media">
         <img src="{{img_src}}" class="align-self-start mr-3 userImage border border-success" alt="...">
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <span class="close">&times;</span>
+            <img class="modal-content" id="img01">
+            <div id="caption"></div>
+        </div>
+
         <div class="media-body info">
 
             <div class="mx-auto my-2 ">
@@ -62,29 +70,30 @@ color:white;
                     <h4 class="mt-0 d-inline">{{username}} </h4>
                 </div>
                 {% if username == request.user.username %}
-                <button type="button" class="btn btn-secondary btn-sm mx-4">
-                    <i class="fas fa-cog mr-1"></i> Edit Profile </button>
+                <a role="button" type="button" class="btn btn-secondary btn-sm mx-4" href="/userprofile/edit/{{userid}}">
+                    <i class="fas fa-cog mr-1"></i> Edit Profile </a>
                 {% endif %}
             </div>
 
             {% if username != request.user.username %}
-                {% if is_following == 0 %}
-                <a type="button" class=" btn btn-outline-primary" id="follow" role="button"
-                    href="follow/{{userid}}">Follow</a>
-                {% else %}
+            {% if is_following == 0 %}
+            <a type="button" class=" btn btn-outline-primary" id="follow" role="button"
+                href="follow/{{userid}}">Follow</a>
+            {% else %}
             <a type="button" class="btn btn-outline-primary" id="follow" role="button" href="follow/{{userid}}">
                 Unfollow</a>
-                {% endif %}
+            {% endif %}
             {% endif %}
 
             <div class="mx-auto my-2 ">
                 <div class="d-inline text-dark " id="posts"> Posts : {{total_posts}}</div>
-                <div class="d-inline text-dark mx-4 "> 
-                   <a href="/userprofile/followers/{{userid}}" class="text-dark"> Followers : </a> 
-                   <p class="d-inline" id="followers"> {{followers}}</p>
+                <div class="d-inline text-dark mx-4 ">
+                    <a href="/userprofile/followers/{{userid}}" class="text-dark"> Followers : </a>
+                    <p class="d-inline" id="followers"> {{followers}}</p>
                 </div>
-                <div class="d-inline text-dark" id="followings"> 
-                <a href="/userprofile/followings/{{userid}}" class="text-dark"> Followings </a>: {{followings}} </div>
+                <div class="d-inline text-dark" id="followings">
+                    <a href="/userprofile/followings/{{userid}}" class="text-dark"> Followings </a>: {{followings}}
+                </div>
             </div>
 
             <div>
@@ -117,16 +126,17 @@ color:white;
             </div>
         </nav>
         <div class="tab-content cona" id="nav-tabContent">
-            <div class="tab-pane fade show active container" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">      
-                {% for i in posts %} 
-                <div class='row mb-2'>           
-                        {% for j in i %}
-                        <div class='col-md-4'>
-                           <a href="/post/{{j.postid}}"><img src="{{j.img_src}}" alt="Image" class='pst'></a> 
-                        </div>
-                        {% endfor %}            
+            <div class="tab-pane fade show active container" id="nav-home" role="tabpanel"
+                aria-labelledby="nav-home-tab">
+                {% for i in posts %}
+                <div class='row mb-2'>
+                    {% for j in i %}
+                    <div class='col-md-4'>
+                        <a href="/post/{{j.postid}}"><img src="{{j.img_src}}" alt="Image" class='pst'></a>
+                    </div>
+                    {% endfor %}
                 </div>
-                 {% endfor %}
+                {% endfor %}
             </div>
             <!-- <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">c</div>
             <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">d</div> -->
@@ -158,5 +168,6 @@ color:white;
             }
         })
     })
+
 </script>
 {% endblock js %}

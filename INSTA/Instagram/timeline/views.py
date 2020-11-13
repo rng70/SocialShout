@@ -135,11 +135,7 @@ def post(request):
         c.execute(cmnd, [postid,caption, userid])
         connection.commit()
 
-        # c = conn.cursor()
-        # c.execute("SELECT MAX(POST_ID) from INSTA.POST")
-        # postid = 0
-        # for row in c:
-        #     postid = row[0]
+        
         post_obj = PostImage(postid=postid, image=image)
         post_obj.save()
         post_img_ = PostImage.objects.filter(postid=postid)
@@ -155,7 +151,6 @@ def post(request):
         connection.commit()
 
         
-
         cmnd = """
         INSERT INTO USERPOST(USER_ID, POST_ID)
         VALUES(:userid,:postid)

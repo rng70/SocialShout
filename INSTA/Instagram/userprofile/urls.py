@@ -10,5 +10,9 @@ urlpatterns = [
     path("follow/<int:userid>", views.follow, name="follow"), #handling the follow unfollow
     path("followers/<int:userid>", views.showFollowers, name="showFollowers"), #showing the followers list
     path("followings/<int:userid>", views.showFollowings, name="showFollowings"), #showing the followings list
+
+    path('edit/<int:userid>', views.editProfile, name="editProfile"),
+    path('savaPersonalInfo/<int:userid>', views.savePersonalInfo, name="savePersonalInfo"),
+    path('changeProfilePic/<int:userid>', views.changeProfilePic, name="changeProfilePic"),
 ]   
   

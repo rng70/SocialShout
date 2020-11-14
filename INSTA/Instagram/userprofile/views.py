@@ -107,16 +107,26 @@ def showProfile(request, userid):
     profiledict['posts'] = posts
     profiledict['total_posts'] = total_posts
 
-    #Fetching the unseen notifications
-    # cmnd = """
-    # SELECT USER_ID
-    # FROM USERACCOUNT
-    # WHERE USER_NAME = :username
-    # """
-    # c = connection.cursor()
-    # c.execute(cmnd, [request.user.username])
-    # row = c.fetchone()  # fetching the viwer_userID
-    # viwer_userid = row[0]
+
+    #fetching the tagged posts
+    cmnd = """
+    SELECT P.POST_ID , P.IMG_SRC
+    FROM POST P, TAGGED T
+    WHERE T.POST_ID = P.POST_ID AND  T.TAGGED_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid]) 
+
+    tagged_posts = []
+    for row in c:
+        taggeddict = {
+            "postid": row[0],
+            "img_src": row[1],
+        }
+        tagged_posts.append(taggeddict)
+
+    tagged_posts = [tagged_posts[i:i+3] for i in range(0, len(tagged_posts), 3)] #slicing post--> 3 posts in each row
+    profiledict['tagged_posts'] = tagged_posts
 
     cmnd = """
     SELECT COUNT(*)

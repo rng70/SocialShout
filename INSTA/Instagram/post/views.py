@@ -444,10 +444,28 @@ def saveEditedPost(request, postid):
         return HttpResponse('404 - Not Found')
     
 def addtag(request,  postid):
-    return render(request, 'post/addtag.html')
+    if(request.method=='POST'):
+        tagged_people = request.POST['tagged_people']
+        x = set(tagged_people.split("@"))
 
-def autocomplete(request):
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
+        for tagged_name in x :
+            cmnd = """
+            INSERT INTO TAGGED(TAGGED_ID, POST_ID) 
+            VALUES( (SELECT USER_ID FROM USERACCOUNT WHERE USER_NAME = :tagged_name), :postid)
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [tagged_name, postid])  
+            connection.commit()    
+
+        connection.close()
+        return redirect(f"/post/{postid}")
+    else :
+        return HttpResponse('404 - Not Found')
+
+def autocomplete(request, postid): #search while searching for users to tag in posts
     #https://jqueryui.com/autocomplete/
 
     if 'term' in request.GET:
@@ -470,4 +488,4 @@ def autocomplete(request):
         
         return JsonResponse(titles, safe=False)
 
-    return render(request, 'post/addtag.html')
+    return render(request, 'post/addtag.html', {'postid':postid})

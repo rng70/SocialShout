@@ -119,10 +119,8 @@ height:200px;
             <div class="nav nav-tabs d-flex justify-content-center mb-1" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
                     aria-controls="nav-home" aria-selected="true"><i class="fas fa-image mr-1"></i>Posts</a>
-                <!-- <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                    aria-controls="nav-profile" aria-selected="false">Profile</a>
-                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
-                    aria-controls="nav-contact" aria-selected="false">Contact</a> -->
+                <a class="nav-item nav-link" id="nav-tagged-tab" data-toggle="tab" href="#nav-tagged" role="tab"
+                    aria-controls="nav-tagged" aria-selected="false"><i class="fas fa-tags mr-1"></i>Tagged</a>
             </div>
         </nav>
         <div class="tab-content cona" id="nav-tabContent">
@@ -138,8 +136,19 @@ height:200px;
                 </div>
                 {% endfor %}
             </div>
-            <!-- <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">c</div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">d</div> -->
+            <div class="tab-pane fade" id="nav-tagged" role="tabpanel" aria-labelledby="nav-tagged-tab">
+                
+                {% for i in tagged_posts %}
+                <div class='row mb-2'>
+                    {% for j in i %}
+                    <div class='col-md-4'>
+                        <a href="/post/{{j.postid}}"><img src="{{j.img_src}}" alt="Image" class='pst'></a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+            </div>
         </div>
     </div>
 </div>

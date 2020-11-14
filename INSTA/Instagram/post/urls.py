@@ -14,6 +14,6 @@ urlpatterns = [
     path('saveEdited/<int:postid>' , views.saveEditedPost, name='saveEditedpost'), # save the edited post 
 
     path('addtag/<int:postid>' , views.addtag, name='addTag'),
-    path('autocomplete', views.autocomplete, name='autocomplete'),
+    path('autocomplete/<int:postid>', views.autocomplete, name='autocomplete'),
 ]   
    

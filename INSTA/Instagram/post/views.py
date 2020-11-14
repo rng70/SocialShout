@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 import cx_Oracle
 import json
+from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -441,3 +442,32 @@ def saveEditedPost(request, postid):
 
     else :
         return HttpResponse('404 - Not Found')
+    
+def addtag(request,  postid):
+    return render(request, 'post/addtag.html')
+
+def autocomplete(request):
+
+    #https://jqueryui.com/autocomplete/
+
+    if 'term' in request.GET:
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+        to_find = request.GET.get('term')
+        
+        cmnd = """
+        SELECT U.USER_NAME
+        FROM USERACCOUNT U
+        WHERE LOWER(USER_NAME) LIKE ('%' ||LOWER(:term) || '%')
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [to_find]) 
+        
+        titles = list()
+        for row in c:
+            titles.append(row[0])
+        
+        return JsonResponse(titles, safe=False)
+
+    return render(request, 'post/addtag.html')

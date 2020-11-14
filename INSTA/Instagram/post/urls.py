@@ -11,6 +11,9 @@ urlpatterns = [
     path('postComment/<int:slug>' , views.postComment, name='postComment'),
 
     path('edit/<int:postid>' , views.editpost, name='editpost') ,#edit post 
-    path('saveEdited/<int:postid>' , views.saveEditedPost, name='saveEditedpost') # save the edited post 
+    path('saveEdited/<int:postid>' , views.saveEditedPost, name='saveEditedpost'), # save the edited post 
+
+    path('addtag/<int:postid>' , views.addtag, name='addTag'),
+    path('autocomplete', views.autocomplete, name='autocomplete'),
 ]   
    

@@ -144,7 +144,7 @@ margin: 0;
                     <strong>{{notification.from_username}} </strong>  commented on your post
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
-        {% else %}
+        {% elif notification.content == 'reply' %}
             <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
                     {% if notification.is_seen %}       
@@ -157,6 +157,20 @@ margin: 0;
                     <strong>{{notification.from_username}} </strong>  replied to your comment
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
+        {% else %}
+            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            mb-2" role="alert" style="height: 25;">
+                    {% if notification.is_seen %}       
+                    <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>
+                    {% else %} 
+                    <span class="badge badge-pill badge-primary" style=" height: 3%;
+                    width: 2%; font-size:7px" >New</span>
+                    {% endif %}
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
+                    <strong>{{notification.from_username}} </strong>  tagged you in post
+                    <span class="badge"> {{notification.time|naturaltime}}</span>
+            </div>
+
         {% endif %}
         </a>
     {% endfor %}

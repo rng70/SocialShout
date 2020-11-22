@@ -67,13 +67,13 @@ box-shadow: none
     <hr>
     <div class="row">
         <!-- left column -->
-        <div class="col-md-5 border border-primary border-right-0">
+        <div class="col-md-5 border  border-right-0">
             <form action="/userprofile/changeProfilePic/{{userid}}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="text-center mt-4">
                     <img src="//placehold.it/100"  class="avatar img-circle" alt="avatar">
                     <h6>Change profile picture...</h6>
-                    <input type="file" class="form-control border-danger" name="image" required>
+                    <input type="file" class="form-control " name="image" required>
                     <button class="btn btn-success mt-2"> Upload</button>
                 </div>
             </form>
@@ -81,7 +81,7 @@ box-shadow: none
         </div>
 
         <!-- edit form column -->
-        <div class="col-md-7 personal-info border border-primary ">
+        <div class="col-md-7 personal-info border  ">
 
             <form class="form-horizontal" role="form" method="POST" action="/userprofile/savaPersonalInfo/{{userid}}">
                 {% csrf_token %}
@@ -133,7 +133,7 @@ box-shadow: none
                 <div class="form-group">
                     <label class="col-md-3 control-label"></label>
                     <div class="col-md-8  d-flex justify-content-center">
-                        <input type="submit" class="btn btn-warning " value="Save Changes" >
+                        <button type="submit" class="btn text-light" style="background-color: purple;"> Save Changes </button>
                         <span></span>
                     </div>
                 </div>

@@ -15,18 +15,31 @@ import dateutil.parser
 
 def home(request):
     # fetching posts to show on user's timeline
-    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
-    
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')    
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
+    username = request.user.username
     cmnd = """
-    	SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, P.CREATED, P.POST_ID, U.USER_ID
-        FROM USERACCOUNT U, USERPOST UP,  POST P
-        WHERE U.USER_ID = UP.USER_ID AND UP.POST_ID=P.POST_ID
+    SELECT USER_ID
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [username])
+
+    row = c.fetchone()
+    likerid = row[0]  #timeline user
+
+    cmnd = """
+    SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, P.CREATED, P.POST_ID, U.USER_ID
+    FROM USERACCOUNT U,  POST P
+    WHERE U.USER_ID = P.USER_ID 
+    AND (P.USER_ID = :userid  OR P.USER_ID IN (SELECT FOLLOWEE_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userid))
+    ORDER BY P.CREATED DESC
     """
 
     c = connection.cursor()
-    c.execute(cmnd)
+    c.execute(cmnd, [likerid, likerid])
 
     data = []
     for row in c:
@@ -39,18 +52,6 @@ def home(request):
             "userid": row[5]
         }
         data.append(postdict)
-
-    username = request.user.username
-    cmnd = """
-    SELECT USER_ID
-    FROM USERACCOUNT
-    WHERE USER_NAME = :username
-    """
-    c = connection.cursor()
-    c.execute(cmnd, [username])
-
-    row = c.fetchone()
-    likerid = row[0]  # timeline user
 
     for d in data:
         userid = likerid

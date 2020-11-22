@@ -90,9 +90,9 @@ border-right: 0;
                     <span class="badge badge-info">{{ post.time|naturaltime}} </span> 
                 </strong>
             </h10>
-            <a href="/post/{{post.postid}}">
+            <!-- <a href="/post/{{post.postid}}"> -->
             <img src="{{post.img_src}}" height="500" class="card-img-top card-image" alt="...">
-            </a>
+            <!-- </a> -->
             <div class="container">
                 <a href="{% url 'likepost' %}" class="mr-3 like" id="{{post.postid}}">
                     {% if post.isliked == 0 %}

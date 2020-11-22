@@ -469,8 +469,11 @@ def addtag(request,  postid): #add tag in postid
             """
             c = connection.cursor()
             c.execute(cmnd, [tagged_name, postid])  
-            connection.commit()   
+            connection.commit() 
 
+            if (tagged_name == request.user.username):
+                continue  
+            
             #insert into notification table
             cmnd = """
             INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
@@ -485,7 +488,7 @@ def addtag(request,  postid): #add tag in postid
     else :
         return HttpResponse('404 - Not Found')
 
-def autocomplete(request, postid): #search while searching for users to tag in posts
+def autocomplete(request, postid): #autocomplte searchBar while searching for users to tag in posts
 
     dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)

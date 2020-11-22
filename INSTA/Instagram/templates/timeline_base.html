@@ -123,11 +123,9 @@
 <body>
 
     <nav class="navbar navbar-expand navbar-dark bg-dark ">
-        <a class="navbar-brand logo " href="/home">
+        <a class="navbar-brand logo" href="/home" style="background-color:transparent;">
             <i class="fa fa-instagram"></i> SocialShout
-
         </a>
-
         <form class="form-inline" action="{% url 'searchuser' %}" method="GET">
             <div class="form-group">
                 <input class="form-control search-bar mx-0 my-0 " type="search" placeholder="Search" aria-label="Search"
@@ -166,7 +164,7 @@
                                 {% csrf_token %}
                                 <div class="container">
                                     <label for="image">Image : </label>
-                                    <input type="file" name="image" id="image" class="form-control-file">
+                                    <input type="file" name="image" id="image" class="form-control-file" required>
                                     <br>
                                     <label for="caption" class=""> Captions : </label>
                                     <br>
@@ -208,12 +206,12 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item dropdown mr-auto ml-4">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false" style="font-size: 13px;">
+                <button class="nav-link dropdown-toggle btn-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" style="font-size: 15px;">
                     Welcome, {{request.user}}!
-                </a>
+                </button>
                 <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item text-light" href="/logout"> Logout</a>
+                    <a class="dropdown-item text-light" style="background-color:transparent;" href="/logout"> Logout</a>
                 </div>
             </li>
             {% endif %}

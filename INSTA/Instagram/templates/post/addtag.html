@@ -30,18 +30,18 @@
         <form class=" my-2 " method="POST" action="/post/addtag/{{postid}}">
             {% csrf_token %}
             <label for="tags" class="mx-2 my-2 text-primary"> <b>Search Users to Tag :  </b></label> <br>
-            <input id="tags" type="text" name="tags"class="d-inline mx-2 my-2">
+            <input id="tags" type="text" name="tags"class="d-inline mx-2 my-2" placeholder="Type Usename ...">
             <p class="btn btn-sm btn-info  d-inline" id="add" style="height: 60%;"> Add</p>
             <br>
             <input type="hidden" value="" name="tagged_people" id="tagged_people">
             <button type="submit" class="btn btn-success mb-2" style="margin-left: 70px; margin-top: 10px;">Save</button>               
         </form> 
     </div>
-    <div class="col-md-4 mt-2 card border border-info">
+    <div class="col-md-4 mt-2 card border border-info d-flex justify-content-start">
         <div class="card-body">
-            <h11 class="text-danger mx-2 "> <b class="mb-4">  Tagged : </b> </h11>
+            <h11 class="text-danger mx-2 "> <b class="mb-4"> Tagged : </b> </h11>
             <div id="tag_list" class="flex-column"> </div>
-        </div>      
+        </div>
     </div>
 </div>
 
@@ -62,14 +62,16 @@
         $("#add").click(function () {
             var element = document.getElementById("tag_list");
             var tagged = document.getElementById("tags").value;
-            element.innerHTML += '<span class="badge badge-pill mx-2 badge-warning">' + tagged + "</span> <br>";
-            var prev = document.getElementById("tagged_people").value;  
-            if(prev == ""){
-                 $('#tagged_people').attr('value', tagged);
+            if (tagged != "") {
+                element.innerHTML += '<span class="badge badge-pill mx-2 badge-warning">' + tagged + "</span> <br>";
+                var prev = document.getElementById("tagged_people").value;
+                if (prev == "") {
+                    $('#tagged_people').attr('value', tagged);
+                }
+                else {
+                    $('#tagged_people').attr('value', prev + "@" + tagged);
+                }
             }
-            else{
-                 $('#tagged_people').attr('value', prev + "@" + tagged);
-            }          
             document.getElementById("tags").value = "";
         });
     });

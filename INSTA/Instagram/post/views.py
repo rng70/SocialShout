@@ -24,9 +24,9 @@ def showPost(request, slug):
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
-    	SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, P.CREATED,P.POST_ID, U.USER_ID
-        FROM USERACCOUNT U, USERPOST UP,  POST P
-        WHERE U.USER_ID = UP.USER_ID AND UP.POST_ID=P.POST_ID AND P.POST_ID = :postid
+    	SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, P.CREATED,P.POST_ID, U.USER_ID, U.IMG_SRC
+        FROM USERACCOUNT U, POST P
+        WHERE U.USER_ID = P.USER_ID  AND P.POST_ID = :postid
     """
 
     c = connection.cursor()
@@ -39,10 +39,37 @@ def showPost(request, slug):
         "img_src": row[2],
         "time": dateutil.parser.parse(str(row[3])),
         "postid": row[4],
-        "userid": row[5]
+        "userid": row[5],
+        "user_img_src" : row[6],
     }
 
     username = request.user.username
+    #fetching the tagged people
+    cmnd = """
+    SELECT U.USER_ID, U.USER_NAME, U.IMG_SRC
+    FROM TAGGED T, USERACCOUNT U, POST P
+    WHERE T.TAGGED_ID = U.USER_ID AND T.POST_ID = P.POST_ID AND T.POST_ID = :postid  AND T.TAGGED_ID <> P.USER_ID
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid])
+
+    tagged = []
+    no_of_tags = 0
+    for row in c:
+        tagDict = {
+            'userid' : row[0],
+            'username' : row[1],
+            'img_src' : row[2],
+        }
+        no_of_tags += 1
+        if(no_of_tags == 1):
+            data['firstTag'] = tagDict
+        else :
+            tagged.append(tagDict)
+    data['tagged'] = tagged
+    data['no_of_tags'] = no_of_tags
+
+    
     cmnd = """
     SELECT USER_ID, IMG_SRC
     FROM USERACCOUNT

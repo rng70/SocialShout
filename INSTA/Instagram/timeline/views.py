@@ -31,7 +31,7 @@ def home(request):
     likerid = row[0]  #timeline user
 
     cmnd = """
-    SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, P.CREATED, P.POST_ID, U.USER_ID
+    SELECT U.USER_NAME, NVL(P.CAPTION, ' '), P.IMG_SRC, P.CREATED, P.POST_ID, U.USER_ID, U.IMG_SRC
     FROM USERACCOUNT U,  POST P
     WHERE U.USER_ID = P.USER_ID 
     AND (P.USER_ID = :userid  OR P.USER_ID IN (SELECT FOLLOWEE_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userid))
@@ -49,7 +49,8 @@ def home(request):
             "img_src": row[2],
             "time": dateutil.parser.parse(str(row[3])),
             "postid": row[4],
-            "userid": row[5]
+            "userid": row[5],
+            "user_img_src": row[6]
         }
         data.append(postdict)
 

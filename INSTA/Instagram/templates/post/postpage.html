@@ -79,7 +79,8 @@ margin: 0;
 {% endblock css %}
 
 {% block profile_url %}
-<a class="nav-link" href="/userprofile/{{request.user.username}}"  data-toggle="tooltip" data-placement="bottom" title="Profile">
+<a class="nav-link" href="/userprofile/{{request.user.username}}" data-toggle="tooltip" data-placement="bottom"
+    title="Profile">
     <i class="fa fa-fw fa-user nav-icons"></i>
     <!--
         <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
@@ -87,10 +88,10 @@ margin: 0;
 </a>
 {% endblock profile_url %}
 
-{% block notification_count %} 
-    {% if total_unseen > 0 %}
-        <span class="badge">{{total_unseen}}</span>
-    {% endif %} 
+{% block notification_count %}
+{% if total_unseen > 0 %}
+<span class="badge">{{total_unseen}}</span>
+{% endif %}
 {% endblock notification_count %}
 
 {% block body %}
@@ -102,22 +103,69 @@ margin: 0;
             <div class="row mt-2">
                 <div class="col-md-8">
                     <h10 class=" card-content ml-2">
-                        <img src="/static/user.png" height="35" class="profile-image mx-auto" alt="...">
-                        <strong >
-                            <a href="/userprofile/{{userid}}" style="text-decoration: none;" class="text-dark mr-2"> {{username}}</a>
+                        <img src="{{user_img_src}}" height="35" class="profile-image mx-auto" alt="...">
+                        <strong>
+                            <a href="/userprofile/{{userid}}" style="text-decoration: none;"
+                                class="text-dark mr-2 ml-1"> {{username}}</a>
                             <span class="badge badge-info">{{time | naturaltime}} </span>
                         </strong>
+                        {% if no_of_tags > 0 %}
+                        <br>
+                        <span class="mx-4"> <span class="text-secondary ml-4" style="font-size: 13px;">&nbsp &nbsp
+                                with</span>
+                            <a href="/userprofile/{{firstTag.userid}}" class="text-dark"> {{firstTag.username}} </a>
+
+                            {% if tagged %}
+                             <!-- Button trigger modal -->
+                             <span class="text-secondary">and</span>
+                            <a data-toggle="modal" class="text-dark" role="button" href="#" data-target="#taggedModal">
+                                 {{tagged | length}} others
+                            </a>
+                            <!-- Modal -->
+                            <div class="modal fade" id="taggedModal" tabindex="-1" role="dialog"
+                                aria-labelledby="taggedModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="taggedModalLabel">Tagged People</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body list-group">
+                                            {% for t in tagged %}
+                                            <li class="list-group-item ">
+                                                <h10 class="">
+                                                    <img src="{{t.img_src}}" height="35"
+                                                        class="profile-image mx-auto border border-primary" alt="...">
+                                                    <strong>
+                                                        <a href="/userprofile/{{t.userid}}" class="text-dark mr-2">
+                                                            {{t.username}}</a>
+                                                    </strong>
+                                                </h10>
+                                            </li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                           
+                        </span>
+                        {% endif %}
                     </h10>
                 </div>
-
                 {% if username == request.user.username %}
-                <div style="margin-left: 130px;" >
+                <div style="margin-left: 130px;">
                     <div class="btn-group">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        More</button>
-                        <div class="dropdown-menu border border-primary" >
-                            <a class="dropdown-item text-dark" href="/post/edit/{{postid}}"><i class="far fa-edit mr-1"></i>Edit</a>
-                            <a class="dropdown-item text-dark" href="/post/autocomplete/{{postid}}"><i class="fas fa-tags mr-1"></i>AddTag</a>
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            More</button>
+                        <div class="dropdown-menu border border-primary">
+                            <a class="dropdown-item text-dark" href="/post/edit/{{postid}}"><i
+                                    class="far fa-edit mr-1"></i>Edit</a>
+                            <a class="dropdown-item text-dark" href="/post/autocomplete/{{postid}}"><i
+                                    class="fas fa-tags mr-1"></i>AddTag</a>
                             <div class="dropdown-divider "></div>
                             <a class="dropdown-item text-dark" href="#"><i class="far fa-trash-alt mr-1"></i>Delete</a>
                         </div>
@@ -125,7 +173,7 @@ margin: 0;
                 </div>
                 {% endif %}
             </div>
-           
+
             <img src="{{img_src}}" height="500" class="card-img-top card-image" alt="...">
 
             <div class="container">
@@ -214,7 +262,8 @@ margin: 0;
                     <img src="/static/user.png" height="35" class=" profile-image mx-auto" alt="...">
                 </div>
                 <div class="col-md-11 my-2">
-                    <b><a href="/userprofile/{{comment.commenter_name}}" style="text-decoration: none;" class="text-dark">{{comment.commenter_name}} </a> </b>
+                    <b><a href="/userprofile/{{comment.commenter_name}}" style="text-decoration: none;"
+                            class="text-dark">{{comment.commenter_name}} </a> </b>
                     at
                     <span class="badge badge-secondary"> {{comment.time|naturaltime}}</span>
                     <div class="my-1"> {{comment.content}} </div>
@@ -249,7 +298,8 @@ margin: 0;
 
                                 <div class="col-md-10 ml-2">
                                     <b>
-                                    <a href="/userprofile/{{reply.commenter_name}}" style="text-decoration: none;" class="text-dark ">{{reply.commenter_name}} </a>
+                                        <a href="/userprofile/{{reply.commenter_name}}" style="text-decoration: none;"
+                                            class="text-dark ">{{reply.commenter_name}} </a>
                                     </b> at
                                     <span class="badge badge-secondary"> {{reply.time | naturaltime}}</span>
                                     <div class="my-1"> {{reply.content}} </div>

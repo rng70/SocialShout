@@ -259,7 +259,7 @@ margin: 0;
             {% for comment in comments %}
             <div class="row my-3 caption-comments">
                 <div class="col-md-1 my-1">
-                    <img src="/static/user.png" height="35" class=" profile-image mx-auto" alt="...">
+                    <img src="{{comment.commenter_img}}" height="35" class=" profile-image mx-auto" alt="...">
                 </div>
                 <div class="col-md-11 my-2">
                     <b><a href="/userprofile/{{comment.commenter_name}}" style="text-decoration: none;"
@@ -293,7 +293,7 @@ margin: 0;
                             {% if reply.parent_id == comment.comment_id %}
                             <div class="row  my-2 replycomment ">
                                 <div class="col-md-1 ">
-                                    <img src="/static/user.png" height="35" class=" profile-image mx-auto" alt="...">
+                                    <img src="{{reply.commenter_img}}" height="35" class=" profile-image mx-auto" alt="...">
                                 </div>
 
                                 <div class="col-md-10 ml-2">

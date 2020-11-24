@@ -317,8 +317,6 @@ def likepost(request):
 def postComment(request, slug):
     if(request.method == 'POST'):
         comment = request.POST.get('comment')
-        print(slug)
-        print(comment)
 
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
         connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
@@ -528,9 +526,10 @@ def autocomplete(request, postid): #autocomplte searchBar while searching for us
         SELECT U.USER_NAME
         FROM USERACCOUNT U
         WHERE LOWER(USER_NAME) LIKE ('%' ||LOWER(:term) || '%')
+        AND USER_ID NOT IN (SELECT TAGGED_ID FROM TAGGED WHERE POST_ID = :postid)
         """
         c = connection.cursor()
-        c.execute(cmnd, [to_find]) 
+        c.execute(cmnd, [to_find, postid]) 
         
         titles = list()
         for row in c:

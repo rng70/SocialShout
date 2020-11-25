@@ -225,15 +225,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid])
         connection.commit()
 
-        if(not(userid==poster_id)):
-            #insert into notification table
-            cmnd = """
-            INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
-            VALUES(:user_id, :poster_id, :type , :post_id)
-            """
-            c = connection.cursor()
-            c.execute(cmnd, [userid, poster_id,"like", postid]) 
-            connection.commit()
+        # if(not(userid==poster_id)):
+        #     #insert into notification table
+        #     cmnd = """
+        #     INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
+        #     VALUES(:user_id, :poster_id, :type , :post_id)
+        #     """
+        #     c = connection.cursor()
+        #     c.execute(cmnd, [userid, poster_id,"like", postid]) 
+        #     connection.commit()
         
     else:  # if already liked then dislike
         cmnd = """
@@ -244,15 +244,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid])
         connection.commit()
 
-        if(not(userid==poster_id)):
-            #delete from notification table
-            cmnd = """
-            DELETE FROM NOTIFICATION
-            WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
-            """
-            c = connection.cursor()
-            c.execute(cmnd, [userid, poster_id,"like", postid]) 
-            connection.commit()
+        # if(not(userid==poster_id)):
+        #     #delete from notification table
+        #     cmnd = """
+        #     DELETE FROM NOTIFICATION
+        #     WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+        #     """
+        #     c = connection.cursor()
+        #     c.execute(cmnd, [userid, poster_id,"like", postid]) 
+        #     connection.commit()
 
     cmnd = """
     SELECT COUNT(*)

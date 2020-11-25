@@ -61,14 +61,17 @@
         $("#add").click(function () {
             var element = document.getElementById("tag_list");
             var tagged = document.getElementById("tags").value;
-            if (tagged != "") {
-                element.innerHTML += '<span class="badge badge-pill mx-2 badge-warning">' + tagged + "</span> <br>";
+            if (tagged != "") { 
                 var prev = document.getElementById("tagged_people").value;
                 if (prev == "") {
-                    $('#tagged_people').attr('value', tagged);
+                    $('#tagged_people').attr('value', tagged + "@");
+                    element.innerHTML += '<span class="badge badge-pill mx-2 badge-warning">' + tagged + "</span> <br>";
                 }
                 else {
-                    $('#tagged_people').attr('value', prev + "@" + tagged);
+                    if(prev.search(tagged + "@") == -1){
+                        $('#tagged_people').attr('value', prev + tagged + "@");
+                        element.innerHTML += '<span class="badge badge-pill mx-2 badge-warning">' + tagged + "</span> <br>";
+                    }
                 }
             }
             document.getElementById("tags").value = "";

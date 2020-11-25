@@ -126,10 +126,11 @@ def showPost(request, slug):
     total_comments=0
     #fetching the comments
     cmnd = """
-    SELECT U.USER_NAME , U.IMG_SRC, C.COMMENT_ID, C.CONTENT , C.CREATED "TIME" 
-    FROM USER_POST_COMMENT UPC, COMMENTS C, USERACCOUNT U, REPLY R
-    WHERE  UPC.COMMENT_ID = C.COMMENT_ID AND UPC.COMMENTER_ID = U.USER_ID
-    AND C.COMMENT_ID = R.REPLY_ID  AND  POST_ID = :postid  AND R.REPLY_ID = R.PARENT_ID 
+    SELECT U.USER_NAME , U.IMG_SRC, C.COMMENT_ID, C.CONTENT , C.CREATED 
+    FROM  COMMENTS C, USERACCOUNT U, REPLY R
+    WHERE C.COMMENTER_ID = U.USER_ID AND C.COMMENT_ID = R.REPLY_ID  
+	AND  C.POST_ID = :post_id  AND R.REPLY_ID = R.PARENT_ID
+	ORDER BY C.CREATED DESC
     """
     c = connection.cursor()
     c.execute(cmnd, [postid]) 
@@ -152,10 +153,11 @@ def showPost(request, slug):
 
     #fetching the replies
     cmnd = """
-    SELECT U.USER_NAME , U.IMG_SRC, C.COMMENT_ID, C.CONTENT , C.CREATED "TIME" , R.PARENT_ID
-    FROM USER_POST_COMMENT UPC, COMMENTS C, USERACCOUNT U, REPLY R
-    WHERE  UPC.COMMENT_ID = C.COMMENT_ID AND UPC.COMMENTER_ID = U.USER_ID
-    AND C.COMMENT_ID = R.REPLY_ID  AND  POST_ID = :postid  AND R.REPLY_ID <> R.PARENT_ID
+    SELECT U.USER_NAME , U.IMG_SRC, C.COMMENT_ID, C.CONTENT , C.CREATED , R.PARENT_ID
+    FROM COMMENTS C, USERACCOUNT U, REPLY R
+    WHERE C.COMMENTER_ID = U.USER_ID AND C.COMMENT_ID = R.REPLY_ID  
+    AND  C.POST_ID = :postid  AND R.REPLY_ID <> R.PARENT_ID
+    ORDER BY C.CREATED DESC
     """
     c = connection.cursor()
     c.execute(cmnd, [postid]) 
@@ -259,15 +261,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid]) 
         connection.commit()
 
-        if(not(userid==poster_id)):
-            #insert into notification table
-            cmnd = """
-            INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
-            VALUES(:user_id, :poster_id, :type , :post_id)
-            """
-            c = connection.cursor()
-            c.execute(cmnd, [userid, poster_id,"like", postid]) 
-            connection.commit()
+        # if(not(userid==poster_id)):
+        #     #insert into notification table
+        #     cmnd = """
+        #     INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
+        #     VALUES(:user_id, :poster_id, :type , :post_id)
+        #     """
+        #     c = connection.cursor()
+        #     c.execute(cmnd, [userid, poster_id,"like", postid]) 
+        #     connection.commit()
 
     else : #if already liked then dislike 
         cmnd = """
@@ -278,15 +280,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid])
         connection.commit()
 
-        if(not(userid==poster_id)):
-            #delete from notification table
-            cmnd = """
-            DELETE FROM NOTIFICATION
-            WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
-            """
-            c = connection.cursor()
-            c.execute(cmnd, [userid, poster_id,"like", postid]) 
-            connection.commit()
+        # if(not(userid==poster_id)):
+        #     #delete from notification table
+        #     cmnd = """
+        #     DELETE FROM NOTIFICATION
+        #     WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+        #     """
+        #     c = connection.cursor()
+        #     c.execute(cmnd, [userid, poster_id,"like", postid]) 
+        #     connection.commit()
 
     cmnd = """
     SELECT COUNT(*)
@@ -317,6 +319,7 @@ def likepost(request):
 def postComment(request, slug):
     if(request.method == 'POST'):
         comment = request.POST.get('comment')
+        postid = slug
 
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
         connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
@@ -344,15 +347,14 @@ def postComment(request, slug):
 
         #INSERT THE COMMENT INTO DATABASE
         cmnd = """
-        INSERT INTO COMMENTS(COMMENT_ID, CONTENT)
-        VALUES(:commentid, :content) 
+        INSERT INTO COMMENTS(COMMENT_ID, CONTENT, COMMENTER_ID, POST_ID)
+        VALUES(:commentid, :content,  :commenter_id, :post_id) 
         """
         c = connection.cursor()
-        c.execute(cmnd, [commentid, comment])
+        c.execute(cmnd, [commentid, comment, commenter_id, postid])
         connection.commit()
 
-        #get the poster id
-        postid = slug
+        #get the poster id      
         cmnd = """
         SELECT USER_ID
         FROM POST
@@ -384,19 +386,19 @@ def postComment(request, slug):
         c.execute(cmnd, [commentid, parent_comment_id])
         connection.commit()
 
-        if(not(commenter_id==poster_id)):
-            #insert into notification table
-            cmnd = """
-            INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
-            VALUES(:commenter_id, :poster_id, :type , :post_id)
-            """
-            if(parent_comment_id == commentid):
-                content = "comment"
-            else :
-                content = "reply"
-            c = connection.cursor()
-            c.execute(cmnd, [commenter_id, poster_id,content, postid]) 
-            connection.commit()
+        # if(not(commenter_id==poster_id)):
+        #     #insert into notification table
+        #     cmnd = """
+        #     INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
+        #     VALUES(:commenter_id, :poster_id, :type , :post_id)
+        #     """
+        #     if(parent_comment_id == commentid):
+        #         content = "comment"
+        #     else :
+        #         content = "reply"
+        #     c = connection.cursor()
+        #     c.execute(cmnd, [commenter_id, poster_id,content, postid]) 
+        #     connection.commit()
 
         connection.close()
 
@@ -472,6 +474,11 @@ def addtag(request,  postid): #add tag in postid
     if(request.method=='POST'):
         tagged_people = request.POST['tagged_people']
         x = set(tagged_people.split("@"))
+        x.remove('')
+
+        if(len(x) == 0):
+            messages.error(request, 'You have not selected anyone!')
+            return redirect(f"/post/{postid}")
 
         dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
         connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
@@ -496,17 +503,17 @@ def addtag(request,  postid): #add tag in postid
             c.execute(cmnd, [tagged_name, postid])  
             connection.commit() 
 
-            if (tagged_name == request.user.username):
-                continue  
+            # if (tagged_name == request.user.username):
+            #     continue  
             
-            #insert into notification table
-            cmnd = """
-            INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
-            VALUES(:user_id, (SELECT USER_ID FROM USERACCOUNT WHERE USER_NAME = :tagged_name), :type , :post_id)
-            """
-            c = connection.cursor()
-            c.execute(cmnd, [userid, tagged_name,"tag", postid]) 
-            connection.commit() 
+            # #insert into notification table
+            # cmnd = """
+            # INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT, RELATED_POST_ID)  
+            # VALUES(:user_id, (SELECT USER_ID FROM USERACCOUNT WHERE USER_NAME = :tagged_name), :type , :post_id)
+            # """
+            # c = connection.cursor()
+            # c.execute(cmnd, [userid, tagged_name,"tag", postid]) 
+            # connection.commit() 
 
         connection.close()
         return redirect(f"/post/{postid}")

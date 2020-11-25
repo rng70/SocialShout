@@ -130,7 +130,7 @@ def showPost(request, slug):
     FROM  COMMENTS C, USERACCOUNT U, REPLY R
     WHERE C.COMMENTER_ID = U.USER_ID AND C.COMMENT_ID = R.REPLY_ID  
 	AND  C.POST_ID = :post_id  AND R.REPLY_ID = R.PARENT_ID
-	ORDER BY C.CREATED DESC
+	ORDER BY C.CREATED ASC
     """
     c = connection.cursor()
     c.execute(cmnd, [postid]) 
@@ -157,7 +157,7 @@ def showPost(request, slug):
     FROM COMMENTS C, USERACCOUNT U, REPLY R
     WHERE C.COMMENTER_ID = U.USER_ID AND C.COMMENT_ID = R.REPLY_ID  
     AND  C.POST_ID = :postid  AND R.REPLY_ID <> R.PARENT_ID
-    ORDER BY C.CREATED DESC
+    ORDER BY C.CREATED ASC
     """
     c = connection.cursor()
     c.execute(cmnd, [postid]) 
@@ -365,13 +365,6 @@ def postComment(request, slug):
         row = c.fetchone()
         poster_id = row[0]
 
-        cmnd = """
-        INSERT INTO USER_POST_COMMENT(COMMENTER_ID, POST_ID, COMMENT_ID)
-        VALUES(:commenter_id, :post_id, :comment_id) 
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [commenter_id, postid,  commentid])
-        connection.commit()
 
         #check if the comment is a reply of another comment or main comment itself
         parent_comment_id = request.POST.get('parentid')

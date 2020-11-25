@@ -59,30 +59,20 @@ def showProfile(request, userid):
     is_following = row[0]
     profiledict["is_following"] = is_following
 
-    #fetching how many people follow this user
+    #fetching count of follow, following & no. of posts
     cmnd = """
-    SELECT COUNT(*)
-    FROM FOLLOWS
-    WHERE FOLLOWEE_ID = :followee_id
+    SELECT NO_OF_FOLLOWERS(:USER_ID), NO_OF_FOLLOWINGS(:USER_ID), NO_OF_POSTS(:USER_ID)
+    FROM USERACCOUNT
     """
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
     followers = row[0] 
     profiledict["followers"] = followers
-
-    #fetching how many people are followed by this people
-    cmnd = """
-    SELECT COUNT(*)
-    FROM FOLLOWS
-    WHERE FOLLOWER_ID = :follower_id
-    """
-    c = connection.cursor()
-    c.execute(cmnd, [userid])
-    row = c.fetchone()
-    followings = row[0] 
+    followings = row[1] 
     profiledict["followings"] = followings
-
+    total_posts = row[2]
+    profiledict['total_posts'] = total_posts
 
     #fetching the posts
     cmnd = """
@@ -94,19 +84,15 @@ def showProfile(request, userid):
     c.execute(cmnd, [userid]) 
 
     posts = []
-    total_posts=0
     for row in c:
         postdict = {
             "postid": row[0],
             "img_src": row[1],
         }
         posts.append(postdict)
-        total_posts += 1
 
     posts = [posts[i:i+3] for i in range(0, len(posts), 3)] #slicing post--> 3 posts in each row
     profiledict['posts'] = posts
-    profiledict['total_posts'] = total_posts
-
 
     #fetching the tagged posts
     cmnd = """

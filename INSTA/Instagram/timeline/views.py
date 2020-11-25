@@ -153,14 +153,14 @@ def post(request):
         connection.commit()
 
         
-        cmnd = """
-        INSERT INTO USERPOST(USER_ID, POST_ID)
-        VALUES(:userid,:postid)
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [userid, postid])
-        connection.commit()
-        connection.close()
+        # cmnd = """
+        # INSERT INTO USERPOST(USER_ID, POST_ID)
+        # VALUES(:userid,:postid)
+        # """
+        # c = connection.cursor()
+        # c.execute(cmnd, [userid, postid])
+        # connection.commit()
+        # connection.close()
 
         return redirect('/home')
 

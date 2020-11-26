@@ -105,7 +105,7 @@ margin: 0;
                     <h10 class=" card-content ml-2">
                         <img src="{{user_img_src}}" height="35" class="profile-image mx-auto" alt="...">
                         <strong>
-                            <a href="/userprofile/{{userid}}" style="text-decoration: none;"
+                            <a href="/userprofile/{{userid}}"
                                 class="text-dark mr-2 ml-1"> {{username}}</a>
                             <span class="badge badge-info">{{time | naturaltime}} </span>
                         </strong>
@@ -262,7 +262,7 @@ margin: 0;
                     <img src="{{comment.commenter_img}}" height="35" class=" profile-image mx-auto" alt="...">
                 </div>
                 <div class="col-md-11 my-2">
-                    <b><a href="/userprofile/{{comment.commenter_name}}" style="text-decoration: none;"
+                    <b><a href="/userprofile/{{comment.commenter_name}}"
                             class="text-dark">{{comment.commenter_name}} </a> </b>
                     at
                     <span class="badge badge-secondary"> {{comment.time|naturaltime}}</span>
@@ -298,7 +298,7 @@ margin: 0;
 
                                 <div class="col-md-10 ml-2">
                                     <b>
-                                        <a href="/userprofile/{{reply.commenter_name}}" style="text-decoration: none;"
+                                        <a href="/userprofile/{{reply.commenter_name}}" 
                                             class="text-dark ">{{reply.commenter_name}} </a>
                                     </b> at
                                     <span class="badge badge-secondary"> {{reply.time | naturaltime}}</span>

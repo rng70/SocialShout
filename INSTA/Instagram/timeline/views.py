@@ -70,16 +70,43 @@ def home(request):
         d['isliked'] = isliked  # is that post already liked by the request user
 
         cmnd = """
-        SELECT COUNT(*)
-        FROM USER_LIKES_POST
+        SELECT COUNT_LIKES(POST_ID), COUNT_COMMENTS(POST_ID)
+        FROM POST
         WHERE POST_ID = :postid
         """
         c = connection.cursor()
         c.execute(cmnd, [postid])
 
         row = c.fetchone()  # fetching the number of counts for that post
-        likes_count = row[0]
-        d['likes_count'] = likes_count
+        d['likes_count'] = row[0]
+        d['comments_count'] = row[1]
+
+        #fetching the tagged people
+        cmnd = """
+        SELECT U.USER_ID, U.USER_NAME, U.IMG_SRC
+        FROM TAGGED T, USERACCOUNT U, POST P
+        WHERE T.TAGGED_ID = U.USER_ID AND T.POST_ID = P.POST_ID AND T.POST_ID = :postid  AND T.TAGGED_ID <> P.USER_ID
+        ORDER BY U.USER_NAME ASC
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [postid])
+
+        tagged = []
+        no_of_tags = 0
+        for row in c:
+            tagDict = {
+                'userid' : row[0],
+                'username' : row[1],
+                'img_src' : row[2],
+            }
+            no_of_tags += 1
+            if(no_of_tags == 1):
+                d['firstTag'] = tagDict
+            else :
+                tagged.append(tagDict)
+        d['tagged'] = tagged
+        d['no_of_tags'] = no_of_tags
+
 
     #Fetching the unseen notifications
     cmnd = """

@@ -86,9 +86,52 @@ border-right: 0;
             <h10 class=" card-content ml-2">
                 <img src="{{post.user_img_src}}" height="30" class="profile-image mx-auto" alt="...">
                 <strong> 
-                    <a href="/userprofile/{{post.userid}}" style="text-decoration: none;" class="text-dark mr-2"> {{post.username}} </a>
+                    <a href="/userprofile/{{post.userid}}" class="text-dark mr-2 ml-1"> {{post.username}} </a>
                     <span class="badge badge-info">{{ post.time|naturaltime}} </span> 
                 </strong>
+                {% if post.no_of_tags > 0 %}
+                    <br>
+                    <span class="mx-4"> <span class="text-secondary ml-4" style="font-size: 13px;">&nbsp 
+                        with</span>
+                        <a href="/userprofile/{{post.firstTag.userid}}" class="text-dark"> {{post.firstTag.username}} </a>
+                            {% if post.tagged %}
+                             <!-- Button trigger modal -->
+                            <span class="text-secondary">and</span>
+                            <a data-toggle="modal" class="text-dark" role="button" href="#" data-target="#taggedModal{{post.postid}}">
+                                 {{post.tagged | length}} others
+                            </a>
+                            <!-- Modal -->
+                            <div class="modal fade" id="taggedModal{{post.postid}}" tabindex="-1" role="dialog"
+                                aria-labelledby="taggedModalLabel{{post.postid}}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="taggedModalLabel{{post.postid}}">Tagged People</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body list-group">
+                                            {% for t in post.tagged %}
+                                            <li class="list-group-item ">
+                                                <h10 class="">
+                                                    <img src="{{t.img_src}}" height="35"
+                                                        class="profile-image mx-auto border border-primary" alt="...">
+                                                    <strong>
+                                                        <a href="/userprofile/{{t.userid}}" class="text-dark mr-2">
+                                                            {{t.username}}</a>
+                                                    </strong>
+                                                </h10>
+                                            </li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                           
+                    </span>
+                {% endif %}
             </h10>
             <!-- <a href="/post/{{post.postid}}"> -->
             <img src="{{post.img_src}}" height="500" class="card-img-top card-image border " alt="...">
@@ -104,7 +147,7 @@ border-right: 0;
                 <a href="/post/{{post.postid}}" class="mr-3 ">
                     <i class="far fa-comment  insta-button"></i>
                 </a>
-                <p class="card-text ml-0 " id = "likecount{{post.postid}}">{{post.likes_count}} likes</p>
+                <p class="card-text ml-0 " id = "likecount{{post.postid}}">{{post.likes_count}} likes &nbsp &nbsp {{post.comments_count}} comments</p>
                 <p class="card-text-caption ml-auto"> <strong> {{post.username}}</strong> {{post.caption|truncatechars:55}} </p>
             </div>
 
@@ -168,7 +211,6 @@ border-right: 0;
 
 
     });
-
 
 </script>
 {% endblock js %}

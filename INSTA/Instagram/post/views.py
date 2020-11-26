@@ -50,6 +50,7 @@ def showPost(request, slug):
     SELECT U.USER_ID, U.USER_NAME, U.IMG_SRC
     FROM TAGGED T, USERACCOUNT U, POST P
     WHERE T.TAGGED_ID = U.USER_ID AND T.POST_ID = P.POST_ID AND T.POST_ID = :postid  AND T.TAGGED_ID <> P.USER_ID
+    ORDER BY U.USER_NAME ASC
     """
     c = connection.cursor()
     c.execute(cmnd, [postid])

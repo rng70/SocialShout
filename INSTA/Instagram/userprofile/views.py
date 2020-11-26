@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
 from userprofile.models import ProfileImage
+import dateutil.parser
 import cx_Oracle
 import json
 
@@ -28,7 +29,8 @@ def showProfile(request, userid):
 
     #fetching the user's profie data
     cmnd = """
-    SELECT U.USER_ID, U.USER_NAME, U.FULL_NAME, U.ADDRESS, U.IMG_SRC, U.CREATED,  U.DATE_OF_BIRTH, U.BIO
+    SELECT U.USER_ID, U.USER_NAME, U.FULL_NAME, U.ADDRESS, U.IMG_SRC, U.CREATED,  U.DATE_OF_BIRTH, U.BIO, U.EMAIL,
+    U.PHONE_NUMBER
     FROM USERACCOUNT U
     WHERE U.USER_ID = :user_id
     """
@@ -45,6 +47,8 @@ def showProfile(request, userid):
         "created" : row[5],
         "birthdate" : row[6],
         "bio" : row[7],
+        "email" : row[8],
+        "phone" : row[9],
     }
 
     #check if the viewer is already following that user
@@ -464,3 +468,47 @@ def changeProfilePic(request, userid):
 
     else :
         return HttpResponse('404-Nor Found')
+
+
+def about(request, userid):
+
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+    #fetching the user's profie data
+    cmnd = """
+    SELECT U.USER_ID, U.USER_NAME, U.FULL_NAME, NVL(U.ADDRESS,' '), U.IMG_SRC, U.CREATED,  TO_CHAR(U.DATE_OF_BIRTH,'DD-MON-YYYY'),
+    NVL(U.BIO, ' '), U.EMAIL, NVL(U.PHONE_NUMBER,' '),  U.GENDER
+    FROM USERACCOUNT U
+    WHERE U.USER_ID = :user_id
+    """
+
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+    profiledict = {
+        "userid" : row[0],
+        "username" : row[1],
+        "fullname" : row[2],
+        "address" : row[3],
+        "img_src" : row[4],
+        "created" : dateutil.parser.parse(str(row[5])),
+        "birthdate" : row[6],
+        "bio" : row[7],
+        "email" : row[8],
+        "phone" : row[9],
+        "gender" : row[10],
+    }
+
+    #fetching unseen notificatios count
+    cmnd = """
+    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    FROM USERACCOUNT U
+    WHERE U.USER_ID = :user_id
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+    profiledict['total_unseen'] = row[0]
+
+    return render(request, 'userprofile/about.html',  profiledict)

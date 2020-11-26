@@ -152,16 +152,6 @@ def post(request):
         c.execute(cmnd, [image_path,  postid])
         connection.commit()
 
-        
-        # cmnd = """
-        # INSERT INTO USERPOST(USER_ID, POST_ID)
-        # VALUES(:userid,:postid)
-        # """
-        # c = connection.cursor()
-        # c.execute(cmnd, [userid, postid])
-        # connection.commit()
-        # connection.close()
-
         return redirect('/home')
 
     else:
@@ -244,15 +234,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid])
         connection.commit()
 
-        # if(not(userid==poster_id)):
-        #     #delete from notification table
-        #     cmnd = """
-        #     DELETE FROM NOTIFICATION
-        #     WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
-        #     """
-        #     c = connection.cursor()
-        #     c.execute(cmnd, [userid, poster_id,"like", postid]) 
-        #     connection.commit()
+        if(not(userid==poster_id)):
+            #delete from notification table
+            cmnd = """
+            DELETE FROM NOTIFICATION
+            WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [userid, poster_id,"like", postid]) 
+            connection.commit()
 
     cmnd = """
     SELECT COUNT(*)

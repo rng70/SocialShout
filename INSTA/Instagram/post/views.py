@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from timeline.models import PostImage
 from django.contrib import messages
 import dateutil.parser
 
@@ -280,15 +281,15 @@ def likepost(request):
         c.execute(cmnd, [userid, postid])
         connection.commit()
 
-        # if(not(userid==poster_id)):
-        #     #delete from notification table
-        #     cmnd = """
-        #     DELETE FROM NOTIFICATION
-        #     WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
-        #     """
-        #     c = connection.cursor()
-        #     c.execute(cmnd, [userid, poster_id,"like", postid]) 
-        #     connection.commit()
+        if(not(userid==poster_id)):
+            #delete from notification table
+            cmnd = """
+            DELETE FROM NOTIFICATION
+            WHERE FROM_ID = :user_id AND TO_ID = :poster_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [userid, poster_id,"like", postid]) 
+            connection.commit()
 
     cmnd = """
     SELECT COUNT(*)
@@ -559,3 +560,35 @@ def autocomplete(request, postid): #autocomplte searchBar while searching for us
     total_unseen = row[0] 
 
     return render(request, 'post/addtag.html', {'postid':postid, 'total_unseen':total_unseen})
+
+
+def deleltePost(request, postid):
+
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+    #fetching the userid
+    cmnd = """
+    SELECT USER_ID
+    FROM POST
+    WHERE POST_ID = :postid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid])
+    row = c.fetchone()  
+    userid  = row[0]
+
+    #deletes post
+    cmnd = """
+    DELETE FROM POST
+    WHERE POST_ID = :postid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid])
+    connection.commit()
+
+    post_= PostImage.objects.filter(postid=postid)
+    post_.delete()
+
+    messages.info(request, 'Post deleted successfully!')
+    return redirect(f"/userprofile/{userid}")

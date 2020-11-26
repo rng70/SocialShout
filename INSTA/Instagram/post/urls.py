@@ -13,7 +13,9 @@ urlpatterns = [
     path('edit/<int:postid>' , views.editpost, name='editpost') ,#edit post 
     path('saveEdited/<int:postid>' , views.saveEditedPost, name='saveEditedpost'), # save the edited post 
 
-    path('addtag/<int:postid>' , views.addtag, name='addTag'),
-    path('autocomplete/<int:postid>', views.autocomplete, name='autocomplete'),
+    path('addtag/<int:postid>' , views.addtag, name='addTag'), #adds tagged people name in taglist of post
+    path('autocomplete/<int:postid>', views.autocomplete, name='autocomplete'),#live search while typing taglist
+
+    path('delete/<int:postid>', views.deleltePost, name='deletepost'), #delete post 
 ]   
    

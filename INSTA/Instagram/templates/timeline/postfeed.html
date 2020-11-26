@@ -146,8 +146,9 @@ border-right: 0;
                 </a>
                 <a href="/post/{{post.postid}}" class="mr-3 ">
                     <i class="far fa-comment  insta-button"></i>
-                </a>
-                <p class="card-text ml-0 " id = "likecount{{post.postid}}">{{post.likes_count}} likes &nbsp &nbsp {{post.comments_count}} comments</p>
+                </a><br>
+                <p class="card-text ml-0 d-inline" id = "likecount{{post.postid}}">{{post.likes_count}} likes </p>
+                <p class="card-text ml-0 d-inline" > &nbsp &nbsp {{post.comments_count}} comments </p><br>
                 <p class="card-text-caption ml-auto"> <strong> {{post.username}}</strong> {{post.caption|truncatechars:55}} </p>
             </div>
 

@@ -504,10 +504,10 @@ def about(request, userid):
     cmnd = """
     SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
     FROM USERACCOUNT U
-    WHERE U.USER_ID = :user_id
+    WHERE U.USER_ID = (SELECT USER_ID FROM USERACCOUNT WHERE USER_NAME = :user_name)
     """
     c = connection.cursor()
-    c.execute(cmnd, [userid])
+    c.execute(cmnd, [request.user.username])
     row = c.fetchone()
     profiledict['total_unseen'] = row[0]
 

@@ -55,6 +55,58 @@ border-right: 0;
     margin: 0;
 }
 
+.suggestions-container{
+    margin: 0;
+    margin-top: 5%;
+    background-color: #fff;
+   
+    border: 1px solid #DBDBDB;
+    border-radius: 2%;
+    width: 70%;  
+}
+.follow-suggestion{
+    
+    float: right;
+    font-weight: 500;
+    color: #00ADF1;
+}
+
+.follow-suggestion:hover{
+    /*text-decoration: none;*/
+    color: #00ADF1;
+}
+
+.stories{
+    color: #929292;
+    font-size: 120%;
+    font-weight: 500;
+   }
+.watch-all{
+   float: right;
+   font-weight: 500;
+}
+
+.stories-profiles{
+    margin: 0;
+    margin-top: 2%;
+ }
+ .stories-img{
+    border: 2px solid #C82D8D;
+    border-radius: 50%;
+    cursor: pointer;
+ }
+ .stories-name{
+    margin: 0;
+    margin-left: 2%;
+    font-weight: 500;
+    font-size: 110%;
+ }
+ .minutes-ago{
+    margin: 0;
+    margin-left: 18%;
+    color: #929292;
+ }
+
 {% endblock css %}
 
 {% block home_active %}active{% endblock home_active %}
@@ -78,7 +130,7 @@ border-right: 0;
 {% load humanize %}
 
 <div class="feed d-flex justify-content-center row">
-    <div class="col- ">
+    <div class="col-md-6 ml-4 ">
 
         {% for post in posts %}
         <div class="card">
@@ -168,7 +220,24 @@ border-right: 0;
         {% endfor %}
     </div>
 
-    <div class="col-3">
+    <div class="col-md-4 ml-4">
+
+        <div class="container suggestions-container my-4 ml-auto">
+            <span class="stories text-success "> Suggestions For You </span> 
+            <a href="#"><span class="text-dark ml-3" style="font-weight: 500;">  See All </span></a>
+            <hr>
+            {% for suggestion in suggestions %}
+            <div class="stories-profiles mb-2">
+                    <img src="{{suggestion.img_src}}" class="stories-img" height="38" width="40" alt="">
+                    <a href="/userprofile/{{suggestion.userid}}"><span class="stories-name"> {{suggestion.username}} </span></a>
+                    <a href="/userprofile/follow/{{suggestion.userid}}" class="follow-suggestion Follow"
+                    id="follow{{suggestion.userid}}"> Follow </a>
+                    <br>
+                    <p class="minutes-ago text-secondary"> followed by <span class="text-dark">{{suggestion.people}}</span> </p>
+                    
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
 </div>
@@ -212,6 +281,30 @@ border-right: 0;
 
 
     });
+
+    $(".Follow").click(function (e) {
+        e.preventDefault();
+        var href = this.href;
+        var aid = this.id;
+        var id = aid.substring(6);
+        console.log(href);
+
+        $.ajax({
+        url: href,
+        data: {
+          'to_follow_id': id
+        },
+        success: function(response){
+            if (response.is_following){
+                $("#"+aid).html("Unfollow");
+            }
+            else{
+                $("#"+aid).html("Follow");
+            }
+        }
+      })
+        
+    })
 
 </script>
 {% endblock js %}

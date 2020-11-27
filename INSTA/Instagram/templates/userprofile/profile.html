@@ -162,10 +162,10 @@ height:200px;
     $("#follow").click(function (e) {
         e.preventDefault();
         var href = this.href;
+        console.log(href);
         $.ajax({
-            url: href,
+            url: href, 
             success: function (response) {
-                console.log(response);
                 if (response["is_following"]) {
                     $("#follow").html("Unfollow");
                 }

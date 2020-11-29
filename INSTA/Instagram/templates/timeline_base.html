@@ -197,9 +197,7 @@
                 </a>
             </li>
             <li class="nav-item {% block user_active %}{% endblock user_active %}"  style="background-color: #555;">
-                <a>
-
-                </a>
+    
                 {% block profile_url %}
                 {% endblock profile_url %}
 
@@ -211,7 +209,7 @@
                     Welcome, {{request.user}}!
                 </button>
                 <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item text-light" style="background-color:transparent;" href="/logout"> Logout</a>
+                    <a class="dropdown-item text-white" style="background-color:transparent;" href="/logout"> Logout</a>
                 </div>
             </li>
             {% endif %}

@@ -110,52 +110,38 @@ def home(request):
 
     #fetching the suggestions list to follow
     cmnd = """
-    SELECT USER_ID, USER_NAME, IMG_SRC
+    SELECT USER_ID, USER_NAME, IMG_SRC,  GET_MUTUAL_FRIENDS(:userid, USER_ID) AS CNT
     FROM USERACCOUNT
     WHERE USER_ID NOT IN (SELECT FOLLOWEE_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userid) AND 
     USER_ID <> :userid
+    ORDER BY CNT DESC
     """
     c = connection.cursor()
-    c.execute(cmnd, [likerid, likerid])
+    c.execute(cmnd, [likerid, likerid, likerid])
     suggestions = []
     for row in c :
         sgstnDict = {
             'userid': row[0],
             'username' : row[1],
             'img_src':row[2],
+            'followers':row[3],
         }
         suggestions.append(sgstnDict)
         if(len(suggestions)==3):
             break
     
     for d in suggestions:
-        cmnd = """
-        SELECT GET_MUTUAL_FRIENDS(USER_ID, :to_follow_id)
-        FROM USERACCOUNT 
-        WHERE USER_ID = :userid
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [ d['userid'], likerid])
-        row = c.fetchone()
-        d['followers'] = row[0] 
-
-        cmnd = """
-        SELECT U.USER_NAME
-        FROM USERACCOUNT U, FOLLOWS F 
-        WHERE F.FOLLOWER_ID = U.USER_ID AND FOLLOWEE_ID = :userid 
-        AND F.FOLLOWER_ID IN (SELECT FOLLOWEE_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userid)
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [ d['userid'], likerid])
-
-        first = '#'
-        for row in c :
-            first = row[0]
-            break 
-        if (first != '#'):
-            d['people'] = first 
-            if(d['followers'] > 1):
-                d['people'] += ' and '+ str(d['followers']-1) + ' others'
+        if(d['followers'] > 0 ):    
+            cmnd = """
+            SELECT U.USER_NAME
+            FROM USERACCOUNT U, FOLLOWS F 
+            WHERE F.FOLLOWER_ID = U.USER_ID AND FOLLOWEE_ID = :userid 
+            AND F.FOLLOWER_ID IN (SELECT FOLLOWEE_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userid)
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [ d['userid'], userid])
+            row = c.fetchone()
+            d['first'] = row[0]
 
     #Fetching the unseen notifications
     cmnd = """
@@ -168,9 +154,9 @@ def home(request):
     row = c.fetchone()
     total_unseen = row[0] 
 
-    params = {'posts': data, "total_unseen": total_unseen, 'suggestions':suggestions}
+    params = {'posts': data, "total_unseen": total_unseen, 'suggestions':suggestions, 'main_userid' : likerid}
 
-    connection.close()
+    connection.close() 
     return render(request, 'timeline/postfeed.html', params)
 
 
@@ -406,3 +392,57 @@ def search(request):
     }
 
     return render(request,  'timeline/search.html', context)
+
+def suggestions(request, userid):
+    
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    #fetching the suggestions list to follow
+    cmnd = """
+    SELECT USER_ID, USER_NAME, IMG_SRC,GET_MUTUAL_FRIENDS(:userid, USER_ID) AS CNT
+    FROM USERACCOUNT
+    WHERE USER_ID NOT IN (SELECT FOLLOWEE_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userid) AND 
+    USER_ID <> :userid ORDER BY CNT DESC
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid, userid, userid])
+    suggestions = []
+    for row in c :
+        sgstnDict = {
+            'userid': row[0],
+            'username' : row[1],
+            'img_src':row[2],
+            'followers' : row[3]
+        }
+        suggestions.append(sgstnDict)
+    
+    for d in suggestions:
+        if(d['followers'] > 0 ):    
+            cmnd = """
+            SELECT U.USER_NAME
+            FROM USERACCOUNT U, FOLLOWS F 
+            WHERE F.FOLLOWER_ID = U.USER_ID AND FOLLOWEE_ID = :userid 
+            AND F.FOLLOWER_ID IN (SELECT FOLLOWEE_ID FROM FOLLOWS WHERE FOLLOWER_ID = :userid)
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [ d['userid'], userid])
+            row = c.fetchone()
+            d['first'] = row[0]
+
+    #fetching unseen notificatios count
+    cmnd = """
+    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    FROM USERACCOUNT U
+    WHERE U.USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+    total_unseen = row[0]
+
+    params = {
+        'suggestions' : suggestions,
+        'total_unseen' : total_unseen,
+    }
+    return render(request, 'timeline/suggestions.html', params)

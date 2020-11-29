@@ -1,0 +1,202 @@
+{% extends 'timeline_base.html' %}
+
+{% block title %} Timeline {% endblock title %}
+
+{% block css %}
+
+.card{
+border: 1px solid #DBDBDB;
+border-bottom: 0;
+margin: 0;
+margin-top: 3%;
+width : 615px;
+}
+
+.paid-text{
+font-size: 70%;
+}
+
+.card-image{
+margin: 0;
+margin-top: 3%;
+}
+
+.card-content{
+margin: 0;
+margin-left: 3%;
+margin-top: 2%;
+
+}
+
+.card-text {
+margin-left: 2%;
+font-family: 'Roboto', sans-serif;
+}
+.card-text-caption{
+margin-left: 2%;
+}
+
+.comment-bar{
+width: 100%;
+}
+
+.comment:focus{
+outline: 0;
+box-shadow: none;
+border: 1px solid #DBDBDB;
+border-right: 0;
+}
+
+.profile-image{
+height: 40px;
+width: 45px;
+border: 2px solid #929292;
+border-radius: 50%;
+margin: 0;
+}
+
+.suggestions-container{
+margin: 0;
+margin-top: 5%;
+background-color: #fff;
+
+border: 1px solid #DBDBDB;
+border-radius: 2%;
+width: 70%;
+}
+.follow-suggestion{
+
+float: right;
+font-weight: 500;
+color: #00ADF1;
+}
+
+.follow-suggestion:hover{
+/*text-decoration: none;*/
+color: #00ADF1;
+}
+
+.stories{
+font-size: 120%;
+font-weight: 500;
+}
+.watch-all{
+float: right;
+font-weight: 500;
+}
+
+.stories-profiles{
+margin: 0;
+margin-top: 2%;
+}
+.stories-img{
+border: 2px solid #C82D8D;
+border-radius: 50%;
+cursor: pointer;
+}
+.stories-name{
+margin: 0;
+margin-left: 2%;
+font-weight: 500;
+font-size: 110%;
+}
+.minutes-ago{
+margin: 0;
+margin-left: 18%;
+color: #929292;
+}
+
+{% endblock css %}
+
+{% block home_active %}active{% endblock home_active %}
+
+{% block profile_url %}
+<a class="nav-link" href="/userprofile/{{request.user.username}}" data-toggle="tooltip" data-placement="bottom"
+    title="Profile">
+    <i class="fa fa-fw fa-user nav-icons"></i>
+    <!--
+        <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
+    -->
+</a>
+{% endblock profile_url %}
+
+{% block notification_count %}
+{% if total_unseen > 0 %}
+<span class="badge">{{total_unseen}}</span>
+{% endif %}
+{% endblock notification_count %}
+
+{% block body %}
+{% load humanize %}
+
+<div class="feed d-flex justify-content-start row">
+
+    <div class="col-md-6 ">
+
+        <div class="container suggestions-container my-4 ml-auto border-info">
+            <span class="stories text-success "> Suggestions For You </span>
+            <hr class="bg-info">
+
+            {% if suggestions %}
+            {% for suggestion in suggestions %}
+            <div class="stories-profiles mb-2 list-group-item">
+                <img src="{{suggestion.img_src}}" class="stories-img" height="38" width="40" alt="">
+                <a href="/userprofile/{{suggestion.userid}}"><span class="stories-name alert-link text-primary"> {{suggestion.username}}
+                    </span></a>
+                <a href="/userprofile/follow/{{suggestion.userid}}" class="follow-suggestion Follow"
+                    id="follow{{suggestion.userid}}"> Follow </a>
+                <br>
+                {% if suggestion.followers > 0 %}
+                    <p class="minutes-ago text-secondary"> followed by <span class="text-dark"> {{suggestion.first}} </span>
+                        {% if suggestion.followers > 1 %}
+                        <span class="text-secondary"> and
+                            <span class="text-dark"> {{suggestion.followers|add:"-1"}} others </span>
+                        </span>
+                        {% endif %}
+                    </p>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-primary alert-link" role="alert">
+               No suggestions for you now !!
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock body %}
+
+{% block js %}
+
+<script>
+
+    $(".Follow").click(function (e) {
+        e.preventDefault();
+        var href = this.href;
+        var aid = this.id;
+        var id = aid.substring(6);
+        console.log(href);
+
+        $.ajax({
+            url: href,
+            data: {
+                'to_follow_id': id
+            },
+            success: function (response) {
+                if (response.is_following) {
+                    $("#" + aid).html("Unfollow");
+                }
+                else {
+                    $("#" + aid).html("Follow");
+                }
+            }
+        })
+
+    })
+
+</script>
+{% endblock js %}

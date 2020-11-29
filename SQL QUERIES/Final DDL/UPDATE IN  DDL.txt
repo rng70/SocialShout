@@ -35,7 +35,7 @@ BEGIN
   INTO   :new.NOTIFICATION_ID
   FROM   dual;
 END;
-
+/
 -- ADDED USER FIELD IN POST TABLE
 -- ---------------------------------------------
 ALTER TABLE POST

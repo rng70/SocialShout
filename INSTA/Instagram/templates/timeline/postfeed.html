@@ -221,22 +221,36 @@ border-right: 0;
     </div>
 
     <div class="col-md-4 ml-4">
-
         <div class="container suggestions-container my-4 ml-auto">
             <span class="stories text-success "> Suggestions For You </span> 
-            <a href="#"><span class="text-dark ml-3" style="font-weight: 500;">  See All </span></a>
+            <a href="/home/suggestions/{{main_userid}}"><span class="text-dark ml-3" style="font-weight: 500;">  See All </span></a>
             <hr>
-            {% for suggestion in suggestions %}
-            <div class="stories-profiles mb-2">
+            {% if suggestions %}
+                {% for suggestion in suggestions %}
+                <div class="stories-profiles ">
                     <img src="{{suggestion.img_src}}" class="stories-img" height="38" width="40" alt="">
-                    <a href="/userprofile/{{suggestion.userid}}"><span class="stories-name"> {{suggestion.username}} </span></a>
+                    <a href="/userprofile/{{suggestion.userid}}"><span class="text-primary alert-link"> {{suggestion.username}}
+                        </span></a>
                     <a href="/userprofile/follow/{{suggestion.userid}}" class="follow-suggestion Follow"
-                    id="follow{{suggestion.userid}}"> Follow </a>
+                        id="follow{{suggestion.userid}}"> Follow </a>
                     <br>
-                    <p class="minutes-ago text-secondary"> followed by <span class="text-dark">{{suggestion.people}}</span> </p>
-                    
+                    {% if suggestion.followers > 0 %}
+                    <p class="minutes-ago text-secondary"> followed by <span class="text-dark"> {{suggestion.first}} </span>
+                        {% if suggestion.followers > 1 %}
+                        <span class="text-secondary"> and
+                            <span class="text-dark"> {{suggestion.followers|add:"-1"}} others </span>
+                        </span>
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                <hr>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="alert alert-primary alert-link" role="alert" style="font-size: small;">
+               No suggestions for you now !!
             </div>
-            {% endfor %}
+            {% endif %}
         </div>
     </div>
 

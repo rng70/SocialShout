@@ -17,5 +17,6 @@ urlpatterns = [
     path('changeProfilePic/<int:userid>', views.changeProfilePic, name="changeProfilePic"),
 
     path('about/<int:userid>', views.about, name="about"), #showing about!
+    
 ]   
   

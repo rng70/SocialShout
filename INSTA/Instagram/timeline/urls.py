@@ -8,9 +8,7 @@ urlpatterns = [
     path('likepost', views.likepost,  name='likepost'), #Show user's timeline 
     path('search', views.search,  name='searchuser'), #Show search results 
     path('suggestions/<int:userid>', views.suggestions, name="suggestions"), #showing suggestions! 
-    path('', views.home,  name='home'), #Show user's timeline
-
-    
+    path('', views.home,  name='home'), #Show user's timeline 
 ]   
    
     

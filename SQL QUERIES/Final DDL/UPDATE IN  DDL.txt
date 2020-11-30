@@ -1,6 +1,7 @@
-NOTIFICATION AND USER_NOTIFICATION TABLE DELETED!
+-- NOTIFICATION AND USER_NOTIFICATION TABLE DELETED!
+DROP TABLE NOTIFICATION;
 
----------------------------------------------------------------------------------
+-- -------------------------------------------------------------------------------
 CREATE TABLE NOTIFICATION
 (
 	NOTIFICATION_ID INTEGER PRIMARY KEY,
@@ -21,7 +22,7 @@ ALTER TABLE NOTIFICATION
 ADD CONSTRAINT FK_NOTIFY_POST
 FOREIGN KEY (RELATED_POST_ID) REFERENCES POST(POST_ID) ON DELETE CASCADE;
 
-------ADDED TRIGGER FOR  GENERATING NOTIFTICATION PK------------
+-- ----ADDED TRIGGER FOR  GENERATING NOTIFTICATION PK------------
 
 CREATE SEQUENCE notification_seq START WITH 1;
 
@@ -34,9 +35,9 @@ BEGIN
   INTO   :new.NOTIFICATION_ID
   FROM   dual;
 END;
-
-ADDED USER FIELD IN POST TABLE
------------------------------------------------
+/
+-- ADDED USER FIELD IN POST TABLE
+-- ---------------------------------------------
 ALTER TABLE POST
 ADD USER_ID INTEGER NOT NULL;
 

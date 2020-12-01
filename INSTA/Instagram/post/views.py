@@ -87,6 +87,7 @@ def showPost(request, slug):
 
     userid = likerid
     postid = data['postid']
+    # counting like(s) 
     cmnd = """
     SELECT COUNT(*)
     FROM USER_LIKES_POST
@@ -212,7 +213,7 @@ def likepost(request):
     dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
-
+    # fetching use id who gives post
     cmnd = """
     SELECT USER_ID
     FROM POST

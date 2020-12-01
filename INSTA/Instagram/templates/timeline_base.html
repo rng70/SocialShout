@@ -188,14 +188,18 @@
                 </a>
             </li> -->
             <li class="nav-item mr-1">
-                <!-- <a class="nav-link" href="#">
-                        <i class="far fa-heart nav-icons"></i>                   
-                </a> -->
+                <a href="#" class="notification nav-link" title="Messages" data-toggle="tooltip" data-placement="bottom">
+                    <i class="fa fa-envelope nav-icons" aria-hidden="true"></i>
+                    {% block conversations %}{% endblock conversations %}
+                </a>
+            </li>
+            <li class="nav-item mr-1">
                 <a href="/notifications" class="notification nav-link" title="Notifications" data-toggle="tooltip" data-placement="bottom">
                     <i class="fas fa-bell nav-icons "></i>
                     {% block notification_count %}{% endblock notification_count %}
                 </a>
             </li>
+            
             <li class="nav-item {% block user_active %}{% endblock user_active %}"  style="background-color: #555;">
     
                 {% block profile_url %}

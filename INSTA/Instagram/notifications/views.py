@@ -26,7 +26,7 @@ def showNotifications(request):
 
    
     cmnd = """
-    SELECT N.FROM_ID, U.USER_NAME, N.CONTENT, N.NOTIFIED_TIME, N.IS_SEEN, U.IMG_SRC, N.NOTIFICATION_ID 
+    SELECT N.FROM_ID, U.USER_NAME, N.CONTENT, N.NOTIFIED_TIME, N.IS_SEEN, U.IMG_SRC, N.NOTIFICATION_ID, N.RELATED_POST_ID
     FROM NOTIFICATION N, USERACCOUNT U
     WHERE N.FROM_ID = U.USER_ID AND  TO_ID = :user_id
     ORDER BY N.NOTIFIED_TIME DESC
@@ -44,12 +44,26 @@ def showNotifications(request):
             "time": dateutil.parser.parse(str(row[3])),
             "is_seen": row[4],
             "img_src": row[5],
-            "notification_id": row[6],
+            "notification_id": row[6],       
+            "post_id": row[7],
         }
 
         notifications.append(notify_dict)
         if(row[4]==0):
             total_unseen += 1
+
+    for d in notifications:
+        if(d['content'] =='comment'):
+            cmnd = """
+            SELECT USER_NAME 
+            FROM POST P, USERACCOUNT U
+            WHERE P.USER_ID = U.USER_ID 
+            AND POST_ID = :post_id
+            """
+            c = connection.cursor()
+            c.execute(cmnd, [d['post_id']])
+            row = c.fetchone()
+            d['post_username'] = row[0]
 
     return render(request, 'notifications/notifications.html',
     {

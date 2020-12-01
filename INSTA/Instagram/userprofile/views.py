@@ -217,13 +217,13 @@ def follow(request, userid):
         connection.commit()
 
         #delete from notification table
-        # cmnd = """
-        # DELETE FROM NOTIFICATION
-        # WHERE FROM_ID = :from_id AND TO_ID = :to_id AND CONTENT = :type
-        # """
-        # c = connection.cursor()
-        # c.execute(cmnd, [main_userid, to_follow_id,"follow"]) 
-        # connection.commit()
+        cmnd = """
+        DELETE FROM NOTIFICATION
+        WHERE FROM_ID = :from_id AND TO_ID = :to_id AND CONTENT = :type
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [main_userid, to_follow_id,"follow"]) 
+        connection.commit()
 
     cmnd = """
     SELECT COUNT(*)

@@ -141,7 +141,13 @@ margin: 0;
                     width: 2%; font-size:7px" >New</span>
                     {% endif %}
                     <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
-                    <strong>{{notification.from_username}} </strong>  commented on your post
+                    {% if notification.post_username == request.user.username %}
+                        <strong>{{notification.from_username}} </strong>  commented on your post
+                    {% else %}
+                        <strong>{{notification.from_username}} </strong> also commented on 
+                        <span class="alert-link">{{notification.post_username}}</span>'s post
+                    {% endif %}
+                  
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
         {% elif notification.content == 'reply' %}

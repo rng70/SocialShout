@@ -115,20 +115,8 @@
             max-width: 100px;
         }
 
-        #my-message-modal {
-            top: 5vh;
-            right: -30vw;
-            outline: none;
-            overflow: hidden;
-        }
-
-            {
-            % block css %
-        }
-
-            {
-            % endblock css %
-        }
+        {% block css %}
+        {% endblock css %}
     </style>
 </head>
 
@@ -149,8 +137,7 @@
 
         <ul class="navbar-nav mr-auto nav-right-items ">
 
-            <li class="nav-item mr-1 {% block home_active %}{% endblock home_active %}"
-                style="background-color: rgb(179, 3, 3);">
+            <li class="nav-item mr-1 {% block home_active %}{% endblock home_active %}" style="background-color: #555;">
                 <a class="nav-link " href="/home" title="Home" data-toggle="tooltip" data-placement="bottom">
                     <i class="fas fa-home nav-icons"></i>
                 </a>
@@ -158,9 +145,8 @@
 
             <!-- Button trigger modal -->
             <span data-toggle="modal" data-target="#PostModal">
-                <a role="button" class="nav-link mr-1" data-placement="bottom" title="Post" data-toggle="tooltip"
-                    style="background-color: #555;">
-                    <i class="fa fa-camera nav-icons" aria-hidden="true"></i>
+                <a role="button" class="nav-link mr-1" data-placement="bottom" title="Post" data-toggle="tooltip" style="background-color: #555;" >
+                    <i class="fa fa-camera nav-icons" aria-hidden="true"></i>  
                 </a>
             </span>
             <!--Post Modal -->
@@ -205,47 +191,21 @@
                 <!-- <a class="nav-link" href="#">
                         <i class="far fa-heart nav-icons"></i>                   
                 </a> -->
-                <a href="/notifications" class="notification nav-link" title="Notifications" data-toggle="tooltip"
-                    data-placement="bottom">
+                <a href="/notifications" class="notification nav-link" title="Notifications" data-toggle="tooltip" data-placement="bottom">
                     <i class="fas fa-bell nav-icons "></i>
                     {% block notification_count %}{% endblock notification_count %}
                 </a>
             </li>
-            <li data-toggle="modal" data-target="#MessageModal">
-                <a role="button" class="nav-link mr-1" data-placement="bottom" title="Post" data-toggle="tooltip"
-                    style="background-color: #555;">
-                    <i class="fa fa-envelope nav-icons" aria-hidden="true"></i>
-                </a>
-            </li>
-            <div class="modal fade" id="MessageModal" tabindex="-1" aria-labelledby="MessageModalLabel"
-                aria-hidden="true">
-                <div id="my-message-modal" class="modal-dialog">
-                    <div class="modal-content">
-                        <div style="background-color: #012142; color: white;" class="modal-header">
-                            <h5 class="modal-title" id="PostModalLabel">Messages:</h5>
-                            <button
-                                style="background-color: white; border-radius: 50%; padding: 1px;margin: 0px 0px 0px 0px;"
-                                type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Nothing to show</p>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <li class="nav-item {% block user_active %}{% endblock user_active %}" style="background-color: #555;">
-
+            <li class="nav-item {% block user_active %}{% endblock user_active %}"  style="background-color: #555;">
+    
                 {% block profile_url %}
                 {% endblock profile_url %}
 
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item dropdown mr-auto ml-4">
-                <button class="nav-link dropdown-toggle btn-dark" href="#" id="navbarDropdown" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 15px;">
+                <button class="nav-link dropdown-toggle btn-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" style="font-size: 15px;">
                     Welcome, {{request.user}}!
                 </button>
                 <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
@@ -255,7 +215,6 @@
             {% endif %}
 
         </ul>
-
     </nav>
 
     {% for message in messages %}

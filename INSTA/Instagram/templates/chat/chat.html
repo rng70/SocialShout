@@ -150,7 +150,7 @@ overflow-y: auto;
                     {% for msg in chats %}
                         {% if msg.type == "incoming" %}
                         <div class="incoming_msg">
-                            <div class="incoming_msg_img"> <img src="{{msg.img_src}}"
+                            <div class="incoming_msg_img"> <img src="{{to_img_src}}"
                                     alt="..."> </div>
                             <div class="received_msg">
                                 <div class="received_withd_msg">

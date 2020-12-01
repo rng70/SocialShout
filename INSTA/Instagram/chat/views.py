@@ -23,9 +23,9 @@ def showChat(request, to_id):
 
     #fetching the messages
     cmnd = """
-    SELECT C.FROM_ID, C.TO_ID, C.TEXT, C.SENT_TIME, U.IMG_SRC
-    FROM CHAT C, USERACCOUNT U
-    WHERE C.FROM_ID = U.USER_ID AND 
+    SELECT C.FROM_ID, C.TO_ID, C.TEXT, C.SENT_TIME
+    FROM CHAT C
+    WHERE  
     (FROM_ID = :from_id AND TO_ID = :to_id) OR (TO_ID = :from_id AND FROM_ID =:to_id)
     ORDER BY SENT_TIME ASC
     """
@@ -33,23 +33,33 @@ def showChat(request, to_id):
     c.execute(cmnd, [userid, to_id, userid,  to_id])
     
     chats = []
+    cnt = 0
     for row in c:
+        cnt += 1
         msgDict = {
             'text': row[2],
-            'time': row[3],
-            'img_src': row[4],
+            'time': row[3], 
         }
         if(row[1] == userid):
             msgDict['type'] = 'incoming'
         else :
             msgDict['type'] = 'outgoing'
         chats.append(msgDict)
-        print(msgDict)
-    
-    print(len(chats))
+
+        cmnd = """
+        SELECT IMG_SRC
+        FROM USERACCOUNT
+        WHERE USER_ID = :USER_ID
+        """
+        c = connection.cursor()
+        c.execute(cmnd, [to_id])
+        row = c.fetchone()
+        to_img_src = row[0]
+
     params = {
         'to_id' : to_id,
-        'chats' : chats
+        'chats' : chats,
+        'to_img_src' : to_img_src
     }
     return render(request, 'chat/chat.html', params)
 

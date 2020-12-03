@@ -5,15 +5,21 @@
 
 {% block css %}
 
-.container{max-width:1170px; margin:auto;}
+.container{
+    max-width:1170px; 
+    margin:auto;
+    }
 
-img{ max-width:100%;}
+img{ 
+    max-width:100%;
+    }
 
 .inbox_people {
-background: #f8f8f8 none repeat scroll 0 0;
-float: left;
-overflow: hidden;
-width: 40%; border-right:1px solid #c4c4c4;
+    background: #f8f8f8 none repeat scroll 0 0;
+    float: left;
+    overflow: hidden;
+    width: 40%; 
+    border-right:1px solid #c4c4c4;
 }
 .inbox_msg {
 border: 0px solid #c4c4c4;
@@ -148,31 +154,32 @@ overflow-y: auto;
             <div class="mesgs border">
                 <div class="msg_history" id="messageBody">
                     {% for msg in chats %}
-                    {% if msg.type == "incoming" %}
-                    <div class="incoming_msg">
-                        <div class="incoming_msg_img"> <img src="{{to_img_src}}" alt="..."> </div>
-                        <div class="received_msg">
-                            <div class="received_withd_msg">
+                        {% if msg.type == "incoming" %}
+                        <div class="incoming_msg">
+                            <div class="incoming_msg_img"> <img src="{{to_img_src}}"
+                                    alt="..."> </div>
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>{{msg.text}}</p>
+                                    <span class="time_date"> {{msg.time}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="outgoing_msg">
+                            <div class="sent_msg">
                                 <p>{{msg.text}}</p>
                                 <span class="time_date"> {{msg.time}}</span>
                             </div>
                         </div>
-                    </div>
-                    {% else %}
-                    <div class="outgoing_msg">
-                        <div class="sent_msg">
-                            <p>{{msg.text}}</p>
-                            <span class="time_date"> {{msg.time}}</span>
-                        </div>
-                    </div>
-                    {% endif %}
+                        {% endif %}
                     {% endfor %}
                 </div>
                 <form method="POST" action="/chat/send/{{to_id}}">
                     {% csrf_token %}
                     <div class="type_msg">
                         <div class="input_msg_write">
-                            <input type="text" class="write_msg" placeholder="Type a message" name="msg" required />
+                            <input type="text" class="write_msg" placeholder="Type a message" name="msg" maxlength="3000" required />
                             <button class="msg_send_btn" type="submit"><i class="fa fa-paper-plane-o"
                                     aria-hidden="true"></i></button>
                         </div>

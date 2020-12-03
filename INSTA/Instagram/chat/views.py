@@ -4,8 +4,77 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 import dateutil.parser
+from operator import itemgetter
 
 # Create your views here.
+# def showChatList(request):
+#     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+#     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+#     cmnd = """
+#     SELECT USER_ID
+#     FROM USERACCOUNT
+#     WHERE USER_NAME = :username
+#     """
+#     c = connection.cursor()
+#     c.execute(cmnd, [request.user.username])
+#     row = c.fetchone()  # fetching the userID
+#     userid = row[0]
+    
+#     msg_sent_list = []
+#     total_conv_id = []
+#     print("Printing <-- -------------------------------------------------------------- -->")
+#     #fetching the last msg list
+#     cmnd = """
+#     SELECT 
+#         UNIQUE TO_ID 
+#     FROM 
+#         CHAT 
+#     WHERE 
+#         FROM_ID=:userid"""
+#     c = connection.cursor()
+#     c.execute(cmnd, [userid])
+#     users = c.fetchall()
+#     for user in users:
+#         total_conv_id.append(user)
+#         print(user)
+#     # print("Printing ---------------------------------------------------------------- -->")
+    
+#     cmnd = """
+#     SELECT 
+#         UNIQUE FROM_ID 
+#     FROM 
+#         CHAT 
+#     WHERE 
+#         TO_ID=:userid"""
+#     c = connection.cursor()
+#     c.execute(cmnd, [userid])
+#     users = c.fetchall()
+#     for user in users:
+#         total_conv_id.append(user)
+#         print(user)
+#     user = list(set(user))
+#     # fetching each user last message
+#     # fetching data one by one
+#     for i in user:
+#         c = connection.cursor()
+#          cmnd = """
+#                 SELECT * 
+#                 FROM (
+# 	                SELECT 
+# 	                    C.FROM_ID, C.TO_ID, C.TEXT, C.SENT_TIME
+#                     FROM 
+# 	                    CHAT C
+#                     WHERE
+#                         (FROM_ID = :userid AND TO_ID = i) OR (TO_ID = userid AND FROM_ID =i) 
+#                         ORDER BY SENT_TIME DESC)
+#                 WHERE ROWnUM = 1;
+#                 """
+#         c.execute(cmnd, [userid, i, userid, i])
+        
+        
+#     return render(request, 'chat/chat.html', params)
+    
 def showChat(request, to_id):
     
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
@@ -20,6 +89,71 @@ def showChat(request, to_id):
     c.execute(cmnd, [request.user.username])
     row = c.fetchone()  # fetching the userID
     userid = row[0]
+    
+    # #################################################3
+    # #################################################3
+    print("Printing <-- -------------------------------------------------------------- -->")
+    #fetching the last msg list
+    cmnd = """
+    SELECT 
+        UNIQUE TO_ID 
+    FROM 
+        CHAT 
+    WHERE 
+        FROM_ID=:userid"""
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    users = c.fetchall()
+    total_conv_id = []
+    for user in users:
+        total_conv_id.append(user[0])
+    # print("Printing ---------------------------------------------------------------- -->")
+    
+    cmnd = """
+    SELECT 
+        UNIQUE FROM_ID 
+    FROM 
+        CHAT 
+    WHERE 
+        TO_ID=:userid"""
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    users = c.fetchall()
+    for user in users:
+        total_conv_id.append(user[0])    
+    user = []
+    total_msg = []
+    for i in total_conv_id:
+        if i not in user:
+            user.append(i)
+
+    # fetching each user last message
+    # fetching data one by one
+    for i in user:
+        c = connection.cursor()
+        cmnd = """
+                SELECT * 
+                FROM (
+	                SELECT 
+	                    C.FROM_ID, C.TO_ID, C.TEXT, C.SENT_TIME, C.IS_SEEN
+                    FROM 
+	                    CHAT C
+                    WHERE
+                        (FROM_ID = :userid AND TO_ID = :i) OR (TO_ID = :userid AND FROM_ID =:i) 
+                        ORDER BY SENT_TIME DESC)
+                WHERE ROWNUM = 1
+                """
+        c.execute(cmnd, [userid, i, userid, i])
+        rslt = c.fetchall()
+        total_msg.append(rslt[0])
+        # print("Length ------------------------> ".format(len(rslt)))
+        # for row in rslt:
+        #     print(row)
+    print("Before sort: ", total_msg)
+    total_msg = sorted(total_msg, key=itemgetter(3), reverse=True) 
+    print("After sort", total_msg)   
+    # #################################################3
+    # #################################################3
 
     #fetching the messages
     cmnd = """
@@ -46,20 +180,20 @@ def showChat(request, to_id):
             msgDict['type'] = 'outgoing'
         chats.append(msgDict)
 
-        cmnd = """
-        SELECT IMG_SRC
-        FROM USERACCOUNT
-        WHERE USER_ID = :USER_ID
-        """
-        c = connection.cursor()
-        c.execute(cmnd, [to_id])
-        row = c.fetchone()
-        to_img_src = row[0]
+    cmnd = """
+    SELECT IMG_SRC
+    FROM USERACCOUNT
+    WHERE USER_ID = :USER_ID
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [to_id])
+    row = c.fetchone()
+    to_img_src = row[0] 
 
     params = {
         'to_id' : to_id,
         'chats' : chats,
-        'to_img_src' : to_img_src
+        'to_img_src' : to_img_src #nan
     }
     return render(request, 'chat/chat.html', params)
 

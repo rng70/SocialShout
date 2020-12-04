@@ -5,7 +5,11 @@
 
 {% block css %}
 
-.container{max-width:1170px; margin:auto;}
+.container{
+    position: relative;
+    left: 0px;
+    max-width:900px; 
+    margin:auto;}
 
 img{ max-width:100%;}
 
@@ -119,6 +123,9 @@ width: 33px;
 height: 516px;
 overflow-y: auto;
 }
+.msg_history::-webkit-scrollbar {
+    width: 0px;
+}
 
 {% endblock css %}
 
@@ -140,61 +147,58 @@ overflow-y: auto;
 
 {% block body %}
 {% load humanize %}
-
-<div class="container ">
-    <h3 class=" text-center">Messaging</h3>
-    <div class="messaging ">
-        <div class="inbox_msg d-flex justify-content-center">
-            <div class="mesgs border">
-                <div class="msg_history" id="messageBody">
-                    {% for msg in chats %}
-                        {% if msg.type == "incoming" %}
-                        <div class="incoming_msg">
-                            <div class="incoming_msg_img"> <img src="{{to_img_src}}"
-                                    alt="..."> </div>
-                            <div class="received_msg">
-                                <div class="received_withd_msg">
-                                    <p>{{msg.text}}</p>
-                                    <span class="time_date"> {{msg.time}}</span>
+<div class="row row-no-gutters" style="overflow:hidden;" >
+    <div class="col-md-4"></div>
+        <div class="col-md-8"  style="overflow:hidden;">
+            <div class="container" style="background-color: #172a45;">
+                <h3 class=" text-center" style="color: white;position:relative;top: 3vh;">Messages</h3>
+                <div class="messaging" style="position:relative;top: 3.2vh;">
+                    <div class="inbox_msg d-flex justify-content-center">
+                        <div class="mesgs border">
+                            <div class="msg_history" id="messageBody">
+                                {% for msg in chats %}
+                                    {% if msg.type == "incoming" %}
+                                    <div class="incoming_msg">
+                                        <div class="incoming_msg_img"> <img src="{{to_img_src}}"
+                                                alt="..." style="border-radius:50%"> </div>
+                                        <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                                <p>{{msg.text}}</p>
+                                                <span class="time_date"> {{msg.time}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div class="outgoing_msg">
+                                        <div class="sent_msg">
+                                            <p>{{msg.text}}</p>
+                                            <span class="time_date"> {{msg.time}}</span>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <form method="POST" action="/chat/send/{{to_id}}">
+                                {% csrf_token %}
+                                <div class="type_msg">
+                                    <div class="input_msg_write">
+                                        <input type="text" class="write_msg" style="color:white" placeholder="Type a message" name="msg" maxlength="3000" required />
+                                        <button class="msg_send_btn" type="submit"><i class="fa fa-paper-plane-o"
+                                                aria-hidden="true"></i></button>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        {% else %}
-                        <div class="outgoing_msg">
-                            <div class="sent_msg">
-                                <p>{{msg.text}}</p>
-                                <span class="time_date"> {{msg.time}}</span>
-                            </div>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <form method="POST" action="/chat/send/{{to_id}}">
-                    {% csrf_token %}
-                    <div class="type_msg">
-                        <div class="input_msg_write">
-                            <input type="text" class="write_msg" placeholder="Type a message" name="msg" maxlength="3000" required />
-                            <button class="msg_send_btn" type="submit"><i class="fa fa-paper-plane-o"
-                                    aria-hidden="true"></i></button>
+                            </form>
                         </div>
                     </div>
-                </form>
-
-            </div>
+                </div>
         </div>
-
-
-
     </div>
 </div>
 
 {% endblock body %}
-
 {% block js %}
-
 <script>
     var chatHistory = document.getElementById("messageBody");
     chatHistory.scrollTop = chatHistory.scrollHeight;
 </script>
-
 {% endblock js %}

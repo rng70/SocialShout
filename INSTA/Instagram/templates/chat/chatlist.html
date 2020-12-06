@@ -2,135 +2,78 @@
 
 {% block title %} Notifications {% endblock title %}
 
-
 {% block css %}
-
-.container{
-    max-width:1170px; 
-    margin:auto;
-    }
-
-img{ 
-    max-width:100%;
-    }
-
-.inbox_people {
-    background: #f8f8f8 none repeat scroll 0 0;
-    float: left;
-    overflow: hidden;
-    width: 40%; 
-    border-right:1px solid #c4c4c4;
-}
-.inbox_msg {
-border: 0px solid #c4c4c4;
-clear: both;
-overflow: hidden;
-}
-.top_spac{ margin: 20px 0 0;}
-
-
-.recent_heading {float: left; width:40%;}
-.srch_bar {
-display: inline-block;
-text-align: right;
-width: 60%; padding:
-}
-.headind_srch{ padding:10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
-
-.recent_heading h4 {
-color: #05728f;
-font-size: 21px;
-margin: auto;
-}
-
-
-.incoming_msg_img {
-display: inline-block;
-width: 6%;
-}
-.received_msg {
-display: inline-block;
-padding: 0 0 0 10px;
-vertical-align: top;
-width: 92%;
-}
-
-.received_withd_msg p {
-background: #ebebeb none repeat scroll 0 0;
-border-radius: 3px;
-color: #646464;
-font-size: 14px;
+.card{
+border: 1px solid #DBDBDB;
+border-bottom: 0;
 margin: 0;
-padding: 5px 10px 5px 12px;
+margin-top: 3%;
+width : 615px;
+}
+
+.replycomment{
+border: 1px solid #DBDBDB;
+border-bottom: 0;
+border-left: 0;
+border-right: 0;
+margin: 0;
+margin-top: 3%;
+}
+
+.caption-comments{
+background-color: #ffffff;
+font-size: 90%;
+border: 1px solid #DBDBDB;
+margin-top: 3%;
+width : 615px;
+}
+
+.paid-text{
+font-size: 70%;
+}
+
+.card-image{
+margin: 0;
+margin-top: 3%;
+}
+
+.card-content{
+margin: 0;
+margin-left: 3%;
+margin-top: 2%;
+}
+
+.card-text {
+margin-left: 2%;
+font-family: 'Roboto', sans-serif;
+}
+
+.card-text-caption{
+margin-left: 2%;
+}
+
+.comment-bar{
 width: 100%;
 }
 
-.time_date {
-color: #747474;
-display: block;
-font-size: 12px;
-margin: 8px 0 0;
+.comment:focus{
+outline: 0;
+box-shadow: none;
+border: 1px solid #DBDBDB;
+border-right: 0;
 }
 
-.received_withd_msg { width: 57%;}
-
-.mesgs {
-float: left;
-padding: 30px 15px 0 25px;
-width: 60%;
-}
-
-.sent_msg p {
-background: #05728f none repeat scroll 0 0;
-border-radius: 3px;
-font-size: 14px;
-margin: 0; color:#fff;
-padding: 5px 10px 5px 12px;
-width:100%;
-}
-.outgoing_msg{ overflow:hidden; margin:26px 0 26px;}
-.sent_msg {
-float: right;
-width: 46%;
-}
-
-.input_msg_write input {
-background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-border: medium none;
-color: #4c4c4c;
-font-size: 15px;
-min-height: 48px;
-width: 100%;
-}
-
-.type_msg {border-top: 1px solid #c4c4c4;position: relative;}
-
-.msg_send_btn {
-background: #05728f none repeat scroll 0 0;
-border: medium none;
+.notify-image{
+width: 35px;
+border: 2px solid #929292;
 border-radius: 50%;
-color: #fff;
-cursor: pointer;
-font-size: 17px;
-height: 33px;
-position: absolute;
-right: 0;
-top: 11px;
-width: 33px;
+border-color: black;
+margin: 0;
 }
-
-.messaging { padding: 0 0 50px 0;}
-
-.msg_history {
-height: 516px;
-overflow-y: auto;
-}
-
 {% endblock css %}
 
 {% block profile_url %}
-<a class="nav-link" href="/userprofile/{{request.user.username}}" data-toggle="tooltip" data-placement="bottom"
-    title="Profile">
+<a class="nav-link" href="/userprofile/{{request.user.username}}"  data-toggle="tooltip" data-placement="bottom" title="Profile">
     <i class="fa fa-fw fa-user nav-icons"></i>
     <!--
         <img src="{% block profile_img %}{% endblock profile_img %}" alt="" height="26" class="round">                
@@ -138,69 +81,46 @@ overflow-y: auto;
 </a>
 {% endblock profile_url %}
 
-{% block notification_count %}
-{% if total_unseen > 0 %}
-<span class="badge">{{total_unseen}}</span>
-{% endif %}
+{% block notification_count %} 
+    {% if total_unseen > 0 %}
+        <span class="badge">{{total_unseen}}</span>
+    {% endif %} 
 {% endblock notification_count %}
 
 {% block body %}
 {% load humanize %}
 
-<div class="container ">
-    <h3 class=" text-center">Messaging</h3>
-    <div class="messaging ">
-        <div class="inbox_msg d-flex justify-content-center">
-            <div class="mesgs border">
-                <div class="msg_history" id="messageBody">
-                    {% for msg in chats %}
-                        {% if msg.type == "incoming" %}
-                        <div class="incoming_msg">
-                            <div class="incoming_msg_img"> <img src="{{to_img_src}}"
-                                    alt="..."> </div>
-                            <div class="received_msg">
-                                <div class="received_withd_msg">
-                                    <p>{{msg.text}}</p>
-                                    <span class="time_date"> {{msg.time}}</span>
-                                </div>
-                            </div>
-                        </div>
-                        {% else %}
-                        <div class="outgoing_msg">
-                            <div class="sent_msg">
-                                <p>{{msg.text}}</p>
-                                <span class="time_date"> {{msg.time}}</span>
-                            </div>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <form method="POST" action="/chat/send/{{to_id}}">
-                    {% csrf_token %}
-                    <div class="type_msg">
-                        <div class="input_msg_write">
-                            <input type="text" class="write_msg" placeholder="Type a message" name="msg" maxlength="3000" required />
-                            <button class="msg_send_btn" type="submit"><i class="fa fa-paper-plane-o"
-                                    aria-hidden="true"></i></button>
-                        </div>
-                    </div>
-                </form>
+<div class="container my-2">
+    {% if not dict_of_msg %}
+    <h6 class="alert alert-info mx-auto">  You have no conversation yet! </h6>
+    {% endif %}
 
-            </div>
+    {% for chat_row in dict_of_msg %}
+        to_redirect = 0
+        {% if chat_row['f_id']==request.user.id %}
+            to_redirect = chat_row['t_id']
+        {% else %}
+            to_redirect = chat_row['f_id']
+        <a href="/chat/{{to_redirect}} " style="text-decoration : none">
+
+        <div class="alert {% if chat['seen'] %}alert-success {% else %} alert-primary{% endif %}
+        mb-2" role="alert" style="height: 25;">
+                {% if chat['seen'] %}       
+                <span class="badge "> <span style='font-size:15px'>&#10003;</span></span>
+                {% else %} 
+                <span class="badge badge-pill badge-primary" style=" height: 3%;
+                width: 2%; font-size:7px" >New</span>
+                {% endif %}
+                <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
+                <strong>{{notification.from_username}} </strong>  liked your post
+                <span class="badge"> {{notification.time|naturaltime}}</span>
         </div>
-
-
-
-    </div>
+        </a>
+    {% endfor %}
 </div>
-
 {% endblock body %}
 
 {% block js %}
-
 <script>
-    var chatHistory = document.getElementById("messageBody");
-    chatHistory.scrollTop = chatHistory.scrollHeight;
 </script>
-
 {% endblock js %}

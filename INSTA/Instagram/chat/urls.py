@@ -4,7 +4,9 @@ from chat import views
 
 
 urlpatterns = [
-     # path('/chatlist', views.showChatList, name='showChatList'),
-     path('<int:to_id>' , views.showChat, name='showchat'), #show a particular post
-     path('send/<int:to_id>' , views.send, name='send'), #show a particular post
+    # show message list
+    path('chatlist', views.showChatList, name='showChatlist'),
+    # show a particular post
+    path('<int:to_id>', views.showChat, name='showchat'),
+    path('send/<int:to_id>', views.send, name='send'),  # show a particular post
 ]

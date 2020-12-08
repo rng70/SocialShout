@@ -244,10 +244,22 @@ def showChat(request, to_id):
     row = c.fetchone()
     to_img_src = row[0]
 
+    #fetching unseen notificatios count
+    cmnd = """
+    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    FROM USERACCOUNT U
+    WHERE U.USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid])
+    row = c.fetchone()
+    total_unseen = row[0]
+
     params = {
         'to_id': to_id,
         'chats': chats,
-        'to_img_src': to_img_src
+        'to_img_src': to_img_src,
+        'total_unseen' : total_unseen,
     }
     return render(request, 'chat/chat.html', params)
 

@@ -29,6 +29,12 @@ margin: 0;
     {% endif %} 
 {% endblock notification_count %}
 
+{% block msg_count %} 
+    {% if msg_unseen > 0 %}
+        <span class="badge">{{msg_unseen}}</span>
+    {% endif %} 
+{% endblock msg_count %}
+
 {% block body %}
 
 <div class="row justify-content-center mt-4">

@@ -81,11 +81,18 @@ margin: 0;
 </a>
 {% endblock profile_url %}
 
-{% block notification_count %} 
+{% block notification_count %}
     {% if total_unseen > 0 %}
-        <span class="badge">{{total_unseen}}</span>
-    {% endif %} 
+    <span class="badge">{{total_unseen}}</span>
+    {% endif %}
 {% endblock notification_count %}
+
+{% block msg_count %} 
+    {% if msg_unseen > 0 %}
+        <span class="badge">{{msg_unseen}}</span>
+    {% endif %} 
+{% endblock msg_count %}
+
 
 {% block body %}
 {% load humanize %}

@@ -282,13 +282,13 @@ def showChat(request, to_id):
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
-    total_unseen = row[0]
+    total_unseen_msg = row[0]
 
     params = {
         'to_id': to_id,
         'chats': chats,
         'to_img_src': to_img_src,
-        'total_unseen' : total_unseen,
+        'total_unseen_msg' : total_unseen_msg,
     }
     return render(request, 'chat/chat.html', params)
 

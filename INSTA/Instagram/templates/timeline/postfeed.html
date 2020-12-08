@@ -125,6 +125,12 @@ border-right: 0;
         <span class="badge">{{total_unseen}}</span>
     {% endif %} 
 {% endblock notification_count %}
+{% block msg_count %} 
+    {% if total_unseen_msg > 0 %}
+        <span class="badge">{{total_unseen_msg}}</span>
+    {% endif %} 
+{% endblock msg_count %}
+
 
 {% block body %}
 {% load humanize %}

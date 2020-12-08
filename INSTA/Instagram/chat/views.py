@@ -13,17 +13,18 @@ def getNameAndImage(i):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
     cmnd = """
-    SELECT FULL_NAME, IMG_SRC
+    SELECT USER_NAME, FULL_NAME, IMG_SRC
     FROM USERACCOUNT
     WHERE USER_ID=:i"""
     c = connection.cursor()
     c.execute(cmnd, [i])
     rslt = c.fetchall()
+    rslt = rslt[0]
 
-    return rslt[0], rslt[1]
+    return rslt[0], rslt[1], rslt[2]
 
 
-def returnMsgList():
+def returnMsgList(request):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
@@ -36,6 +37,7 @@ def returnMsgList():
     c.execute(cmnd, [request.user.username])
     row = c.fetchone()  # fetching the userID
     pass_userid = row[0]
+    userid = pass_userid
     # #################################################
     # #################################################
     # print("Printing <-- -------------------------------------------------------------- -->")
@@ -92,22 +94,34 @@ def returnMsgList():
         c.execute(cmnd, [userid, i, userid, i])
         rslt = c.fetchall()
         total_msg.append(rslt[0])
-    print("Before sort: ", total_msg)
+    # print("Before sort: ", total_msg)
     total_msg = sorted(total_msg, key=itemgetter(3), reverse=True)
-    print("After sort", total_msg)
+    # print("After sort", total_msg)
 
     dict_of_msg = []
     for row in total_msg:
-        f_name, f_img_src = getNameAndImage(row[0])
-        t_name, t_img_src = getNameAndImage(row[1])
+        name = ''
+        init_msg = ''
+        img_src = ''
+        id = 0
+        fu_name, f_name, f_img_src = getNameAndImage(row[0])
+        tu_name, t_name, t_img_src = getNameAndImage(row[1])
+        if row[0] == pass_userid:
+            name = t_name
+            init_msg = 'You: '
+            id = row[1]
+            img_src = t_img_src
+        else:
+            name = f_name
+            init_msg = fu_name+': '
+            id = row[0]
+            img_src = f_img_src
+
         msgDict = {
-            'f_name': f_name,
-            'f_id': row[0],
-            'f_img': f_img_src,
-            't_name': t_name,
-            't_id': row[1],
-            't_img': t_img_src,
-            'last_msg': row[2],
+            'name': name,
+            'id': id,
+            'img_src': img_src,
+            'text': init_msg+row[2],
             'time': row[3],
         }
         if row[0] == pass_userid:
@@ -118,7 +132,7 @@ def returnMsgList():
 
     # #################################################3
     # #################################################3
-    return dict_of_msg
+    return pass_userid, dict_of_msg
 
 
 # def showChatList(request):
@@ -189,9 +203,13 @@ def returnMsgList():
 #     return render(request, 'chat/chatlist.html', params)
 
 def showChatList(request):
-    dict_of_msg = returnMsgList()
+    userid, dict_of_msg = returnMsgList(request)
 
-    return render(request, 'chat/chatlist.html', dict_of_msg)
+    return render(request, 'chat/chatlist.html',
+                  {
+                      'userid': userid,
+                      'dict_of_msg': dict_of_msg
+                  })
 
 
 def showChat(request, to_id):
@@ -208,6 +226,17 @@ def showChat(request, to_id):
     c.execute(cmnd, [request.user.username])
     row = c.fetchone()  # fetching the userID
     userid = row[0]
+
+    # make the msg(s) seen
+    value = 1
+    cmnd = """
+    UPDATE CHAT C 
+    SET C.IS_SEEN = :value
+    WHERE C.TO_ID = :userid AND C.FROM_ID = :to_id
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [value, userid, to_id])
+    connection.commit()
 
     # fetching the messages
     cmnd = """

@@ -1,0 +1,13 @@
+--returns the count of unseen conversations 
+CREATE OR REPLACE FUNCTION COUNT_UNSEEN_MSG(UID IN NUMBER) IS
+CNT NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO CNT
+    FROM CHAT
+    WHERE TO_ID = UID
+    GROUP BY FROM_ID, TO_ID
+    HAVING MIN(IS_SEEN)= 0;
+    
+    RETURN CNT;
+END;
+/

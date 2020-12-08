@@ -1,6 +1,6 @@
 {% extends 'timeline_base.html' %}
 
-{% block title %} Notifications {% endblock title %}
+{% block title %} Messages {% endblock title %}
 
 {% block css %}
 .card{
@@ -86,35 +86,47 @@ margin: 0;
         <span class="badge">{{total_unseen}}</span>
     {% endif %} 
 {% endblock notification_count %}
+{% block msg_count %} 
+    {% if total_unseen_msg > 0 %}
+        <span class="badge">{{total_unseen_msg}}</span>
+    {% endif %} 
+{% endblock msg_count %}
 
 {% block body %}
 {% load humanize %}
-
 <div class="container my-2">
     {% if not dict_of_msg %}
     <h6 class="alert alert-info mx-auto">  You have no conversation yet! </h6>
     {% endif %}
 
     {% for chat_row in dict_of_msg %}
-        to_redirect = 0
-        {% if chat_row['f_id']==request.user.id %}
-            to_redirect = chat_row['t_id']
-        {% else %}
-            to_redirect = chat_row['f_id']
-        <a href="/chat/{{to_redirect}} " style="text-decoration : none">
-
-        <div class="alert {% if chat['seen'] %}alert-success {% else %} alert-primary{% endif %}
-        mb-2" role="alert" style="height: 25;">
-                {% if chat['seen'] %}       
-                <span class="badge "> <span style='font-size:15px'>&#10003;</span></span>
-                {% else %} 
-                <span class="badge badge-pill badge-primary" style=" height: 3%;
-                width: 2%; font-size:7px" >New</span>
-                {% endif %}
-                <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
-                <strong>{{notification.from_username}} </strong>  liked your post
-                <span class="badge"> {{notification.time|naturaltime}}</span>
-        </div>
+        <a href="/chat/{{chat_row.id}}" style="text-decoration : none">
+            <div class="alert {% if chat_row.seen %}alert-success {% else %} alert-primary{% endif %}
+            mb-2" role="alert" style="height: 25;">
+                    {% if chat_row.seen %} 
+                        <span class="badge "> <span style='font-size:15px'>&#10003;</span></span>
+                    {% else %}
+                        <span class="badge badge-pill badge-primary" style="height: 3%;
+                    width: 2%; font-size:7px">New</span>
+                    {% endif %}
+                    <img src="{{chat_row.img_src}}" height="30" class=" notify-image ml-2">
+                    <strong style="color:black">{{chat_row.name}}</strong>
+                    <div>
+                        <p style="width:90%; margin:1px 60px 5px 60px; overflow: hidden !important; text-overflow: ellipsis; white-space: nowrap; color: black">{{chat_row.text}}
+                        </p>
+                        <span class="badge"> {{chat_row.time|naturaltime}}</span>
+                    </div>
+                    {% comment %} <span class="badge"> {{chat_row.time|naturaltime}}</span> {% endcomment %}
+                    {% comment %} {% if chat['seen'] %}       
+                    <span class="badge "> <span style='font-size:15px'>&#10003;</span></span>
+                    {% else %} 
+                    <span class="badge badge-pill badge-primary" style=" height: 3%;
+                    width: 2%; font-size:7px" >New</span>
+                    {% endif %}
+                    <img src="{{notification.img_src}}" height="30" class=" notify-image ml-2">
+                    <strong>{{notification.from_username}} </strong>  liked your post
+                    <span class="badge"> {{notification.time|naturaltime}}</span> {% endcomment %}
+            </div>
         </a>
     {% endfor %}
 </div>

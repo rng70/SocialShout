@@ -52,7 +52,7 @@ def showNotifications(request):
             total_unseen += 1
 
     for d in notifications:
-        if(d['content'] == 'comment'):
+        if(d['content'] == 'comment' or d['content'] == 'reply'):
             cmnd = """
             SELECT USER_NAME 
             FROM POST P, USERACCOUNT U

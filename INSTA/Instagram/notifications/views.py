@@ -64,10 +64,21 @@ def showNotifications(request):
             row = c.fetchone()
             d['post_username'] = row[0]
 
+    cmnd = """
+    SELECT COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [user_id])
+    row = c.fetchone()
+    total_unseen_msg = row[0]
+
     return render(request, 'notifications/notifications.html',
                   {
                       'notifications': notifications,
-                      'total_unseen': total_unseen
+                      'total_unseen': total_unseen, 
+                      'total_unseen_msg' : total_unseen_msg,
                   })
 
 

@@ -131,6 +131,17 @@ def showProfile(request, userid):
     total_unseen = row[0] 
     profiledict["total_unseen"] = total_unseen
 
+    # fetching unseen msg count
+    cmnd = """
+    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    FROM USERACCOUNT U
+    WHERE U.USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [viwer_userid])
+    row = c.fetchone()
+    profiledict['total_unseen_msg'] = row[0]
+
     return render(request, 'userprofile/profile.html', profiledict)
 
 
@@ -291,10 +302,22 @@ def showFollowers(request, userid):
     row = c.fetchone()
     total_unseen = row[0] 
 
+    # fetching unseen msg count
+    cmnd = """
+    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    FROM USERACCOUNT U
+    WHERE U.USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [viwer_userid])
+    row = c.fetchone()
+    total_unseen_msg = row[0]
+
     data = {
         "followers" : followers,
         "total_followers" :total_followers,
-        "total_unseen" : total_unseen
+        "total_unseen" : total_unseen,
+        'total_unseen_msg':total_unseen_msg
     }
 
     return render(request, 'userprofile/followers.html', data)
@@ -344,10 +367,22 @@ def showFollowings(request, userid):
     row = c.fetchone()
     total_unseen = row[0] 
 
+    # fetching unseen msg count
+    cmnd = """
+    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    FROM USERACCOUNT U
+    WHERE U.USER_ID = :userid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [viwer_userid])
+    row = c.fetchone()
+    total_unseen_msg = row[0]
+
     data = {
         "followings" : followings,
         "total_followings" :total_followings,
-        "total_unseen" : total_unseen
+        "total_unseen" : total_unseen,
+        "total_unseen_msg":total_unseen_msg,
     }
 
     return render(request, 'userprofile/followings.html', data)
@@ -504,7 +539,7 @@ def about(request, userid):
 
     #fetching unseen notificatios count
     cmnd = """
-    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
     FROM USERACCOUNT U
     WHERE U.USER_ID = (SELECT USER_ID FROM USERACCOUNT WHERE USER_NAME = :user_name)
     """
@@ -512,5 +547,6 @@ def about(request, userid):
     c.execute(cmnd, [request.user.username])
     row = c.fetchone()
     profiledict['total_unseen'] = row[0]
+    profiledict['total_unseen_msg'] = total_unseen_msg
 
     return render(request, 'userprofile/about.html',  profiledict)

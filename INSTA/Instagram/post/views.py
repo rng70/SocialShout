@@ -201,15 +201,16 @@ def showPost(request, slug):
 
     #Fetching the unseen notifications
     cmnd = """
-    SELECT COUNT(*)
-    FROM NOTIFICATION
-    WHERE TO_ID = :userid AND IS_SEEN = 0
+    SELECT  GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_ID = :userid
     """
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
     total_unseen = row[0] 
     data["total_unseen"] = total_unseen
+    data['total_unseen_msg'] = row[1]
 
 
     connection.close()
@@ -442,16 +443,17 @@ def editpost(request, postid):
     userid = row[0]
 
     cmnd = """
-    SELECT COUNT(*)
-    FROM NOTIFICATION
-    WHERE TO_ID = :userid AND IS_SEEN = 0
+    SELECT  GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_ID = :userid
     """
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
-    total_unseen = row[0] 
+    total_unseen = row[0]
+    total_unseen_msg = row[1] 
 
-    data = { "postid" : postid, "total_unseen":total_unseen, "caption":caption}  
+    data = { "postid" : postid, "total_unseen":total_unseen, "caption":caption, 'total_unseen_msg' : total_unseen_msg}  
     return render(request, 'post/editpost.html', data)
 
 
@@ -564,16 +566,17 @@ def autocomplete(request, postid): #autocomplte searchBar while searching for us
     userid = row[0]
 
     cmnd = """
-    SELECT COUNT(*)
-    FROM NOTIFICATION
-    WHERE TO_ID = :userid AND IS_SEEN = 0
+    SELECT  GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_ID = :userid
     """
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
-    total_unseen = row[0] 
+    total_unseen = row[0]
+    total_unseen_msg = row[1] 
 
-    return render(request, 'post/addtag.html', {'postid':postid, 'total_unseen':total_unseen})
+    return render(request, 'post/addtag.html', {'postid':postid, 'total_unseen':total_unseen, 'total_unseen_msg':total_unseen_msg})
 
 
 def deleltePost(request, postid):

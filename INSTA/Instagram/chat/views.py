@@ -140,10 +140,26 @@ def showChatList(request):
 
     userid, dict_of_msg = returnMsgList(request)
 
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    cmnd = """
+    SELECT  GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [request.user.username])
+    row = c.fetchone()
+    total_unseen = row[0]
+    total_unseen_msg = row[1]
+
     return render(request, 'chat/chatlist.html',
                   {
                       'userid': userid,
-                      'dict_of_msg': dict_of_msg
+                      'dict_of_msg': dict_of_msg,
+                      'total_unseen_msg': total_unseen_msg,
+                      'total_unseen' : total_unseen,
                   })
 
 
@@ -209,22 +225,24 @@ def showChat(request, to_id):
     row = c.fetchone()
     to_img_src = row[0]
 
-    # fetching unseen notificatios count
+    # fetching unseen msg count
     cmnd = """
-    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
-    FROM USERACCOUNT U
-    WHERE U.USER_ID = :userid
+    SELECT  GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_ID = :userid
     """
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
-    total_unseen_msg = row[0]
+    total_unseen = row[0]
+    total_unseen_msg = row[1]
 
     params = {
         'to_id': to_id,
         'chats': chats,
         'to_img_src': to_img_src,
         'total_unseen_msg': total_unseen_msg,
+        'total_unseen' : total_unseen,
     }
 
     return render(request, 'chat/chat.html', params)

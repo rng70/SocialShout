@@ -154,15 +154,14 @@ def home(request):
     total_unseen = row[0]
 
     cmnd = """
-    SELECT COUNT(*)
-    FROM CHAT
-    WHERE TO_ID = :userid AND IS_SEEN = 0
+    SELECT COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_ID = :user_id
     """
     c = connection.cursor()
     c.execute(cmnd, [likerid])
     row = c.fetchone()
     total_unseen_msg = row[0]
-    print("Total unseen msg = ", total_unseen_msg)
 
     params = {
         'posts': data,
@@ -390,20 +389,22 @@ def search(request):
     viwer_userid = row[0]
 
     cmnd = """
-    SELECT COUNT(*)
-    FROM NOTIFICATION
-    WHERE TO_ID = :userid AND IS_SEEN = 0
+    SELECT  GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
+    FROM USERACCOUNT
+    WHERE USER_ID = :userid
     """
     c = connection.cursor()
     c.execute(cmnd, [viwer_userid])
     row = c.fetchone()
     total_unseen = row[0]
+    total_unseen_msg = row[1]
 
     context = {
         'users': users,
         'text': text,
         'total': total,
-        'total_unseen': total_unseen
+        'total_unseen': total_unseen,
+        'total_unseen_msg': total_unseen_msg,
     }
 
     return render(request,  'timeline/search.html', context)
@@ -467,7 +468,6 @@ def suggestions(request, userid):
     c.execute(cmnd, [userid])
     row = c.fetchone()
     total_unseen_msg = row[0]
-    print("Total unseen msg = ", total_unseen_msg)
 
     params = {
         'suggestions': suggestions,

@@ -176,6 +176,8 @@ margin: 0;
                         </div>
                     </div>
                 </div>
+                {% elif istagged == 1 %}
+                <a href="/post/removetag/{{postid}}" role="button" class="btn btn-sm btn-warning" style="margin-left: 130px;"> Remove Tag</a>
                 {% endif %}
             </div>
 

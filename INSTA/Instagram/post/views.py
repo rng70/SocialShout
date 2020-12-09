@@ -187,6 +187,18 @@ def showPost(request, slug):
     data["request_username"] = username 
     data["request_img_src"] = img_src
 
+    #fetching is_tagged or not
+    cmnd = """
+    SELECT COUNT(*)
+    FROM TAGGED
+    WHERE TAGGED_ID = :userid AND POST_ID = :postid
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [likerid, postid]) 
+
+    row = c.fetchone() 
+    data['istagged'] = row[0] #is that post already liked by the request user 
+
     #Fetching the unseen notifications
     cmnd = """
     SELECT COUNT(*)
@@ -594,3 +606,40 @@ def deleltePost(request, postid):
 
     messages.info(request, 'Post deleted successfully!')
     return redirect(f"/userprofile/{userid}")
+
+
+
+def removetag(request, postid):
+
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+
+    cmnd = """
+    SELECT USER_ID
+    FROM USERACCOUNT
+    WHERE USER_NAME = :username
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [request.user.username])
+    row = c.fetchone()  # fetching the userID 
+    userid = row[0]
+
+    #delete tag from database table
+    cmnd = """
+    DELETE FROM TAGGED
+    WHERE POST_ID = :postid AND TAGGED_ID = :tagged_id
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [postid, userid])
+    connection.commit()
+
+    #delete from notification table
+    cmnd = """
+    DELETE FROM NOTIFICATION
+    WHERE TO_ID = :to_id AND CONTENT = :type AND RELATED_POST_ID = :post_id 
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [userid,"tag", postid]) 
+    connection.commit()
+       
+    return redirect(f"/post/{postid}")

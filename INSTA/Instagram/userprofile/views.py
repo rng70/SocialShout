@@ -83,6 +83,7 @@ def showProfile(request, userid):
     SELECT P.POST_ID , P.IMG_SRC
     FROM POST P
     WHERE P.USER_ID = :userid
+    ORDER BY P.CREATED DESC
     """
     c = connection.cursor()
     c.execute(cmnd, [userid]) 
@@ -103,6 +104,7 @@ def showProfile(request, userid):
     SELECT P.POST_ID , P.IMG_SRC
     FROM POST P, TAGGED T
     WHERE T.POST_ID = P.POST_ID AND  T.TAGGED_ID = :userid
+    ORDER BY P.CREATED DESC
     """
     c = connection.cursor()
     c.execute(cmnd, [userid]) 

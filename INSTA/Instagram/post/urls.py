@@ -17,5 +17,7 @@ urlpatterns = [
     path('autocomplete/<int:postid>', views.autocomplete, name='autocomplete'),#live search while typing taglist
 
     path('delete/<int:postid>', views.deleltePost, name='deletepost'), #delete post 
+
+    path('removetag/<int:postid>', views.removetag, name='removetag'), #removes tag  
 ]   
    

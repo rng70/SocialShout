@@ -240,7 +240,7 @@ margin: 0;
                     </div>
                 </div>
 
-                <p class="card-text-caption ml-auto"> <strong> {{username}}</strong> {{caption}} </p>
+                <p class="card-text-caption ml-auto" style="word-wrap: break-word;"> <strong> {{username}}</strong> {{caption}} </p>
             </div>
 
         </div>
@@ -273,7 +273,7 @@ margin: 0;
                             class="text-dark">{{comment.commenter_name}} </a> </b>
                     at
                     <span class="badge badge-secondary"> {{comment.time|naturaltime}}</span>
-                    <div class="my-1"> {{comment.content}} </div>
+                    <div class="my-1" style="word-wrap: break-word;"> {{comment.content}} </div>
                     <div class="reply mx-0">
                         <button class="btn btn-sm btn-primary my-2" type="button" data-toggle="collapse"
                             data-target="#replybox{{comment.comment_id}}" aria-expanded="false"
@@ -309,7 +309,7 @@ margin: 0;
                                             class="text-dark ">{{reply.commenter_name}} </a>
                                     </b> at
                                     <span class="badge badge-secondary"> {{reply.time | naturaltime}}</span>
-                                    <div class="my-1"> {{reply.content}} </div>
+                                    <div class="my-1" style="word-wrap: break-word;"> {{reply.content}} </div>
                                 </div>
                             </div>
 

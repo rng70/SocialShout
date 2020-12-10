@@ -12,12 +12,8 @@
     height: 100%;
     top: 5px;
 }
-.container-2{
-    position: relative;
-    left: 5px;
-    widht: 100%;
-    height: 100%;
-    top: 5px;
+.container::-webkit-scrollbar {
+    width: 0px;
 }
 
 img{ max-width:100%;}
@@ -133,8 +129,8 @@ width: 33px;
 .messaging { padding: 0 0 50px 0;}
 
 .msg_history {
-height: 516px;
-overflow-y: auto;
+height: 500px;
+overflow-y:auto;
 }
 .msg_history::-webkit-scrollbar {
     width: 0px;
@@ -153,9 +149,9 @@ overflow-y: auto;
 {% endblock profile_url %}
 
 {% block notification_count %}
-{% if total_unseen > 0 %}
-<span class="badge">{{total_unseen}}</span>
-{% endif %}
+    {% if total_unseen > 0 %}
+    <span class="badge">{{total_unseen}}</span>
+    {% endif %}
 {% endblock notification_count %}
 {% block msg_count %} 
     {% if total_unseen_msg > 0 %}
@@ -166,9 +162,9 @@ overflow-y: auto;
 {% block body %}
 {% load humanize %}
 <div class="row row-no-gutters" style="overflow:hidden;" >
-    <div class="container" style="background-color: #172a45;">
-        <h3 class=" text-center" style="color: white;position:relative;top: 3vh;">Messages</h3>
-        <div class="messaging" style="position:relative;top: 3.2vh;">
+    <div class="container" style="background-color: #172a45; overflow:hidden;">
+        <h3 class=" text-center" style="color: white;position:relative;top: 3vh;overflow:hidden;">Messages</h3>
+        <div class="messaging" style="position:relative;top: 3.2vh;overflow: hidden;">
             <div class="inbox_msg d-flex justify-content-center">
                 <div class="mesgs border">
                     <div class="msg_history" id="messageBody">
@@ -196,9 +192,9 @@ overflow-y: auto;
                     </div>
                     <form method="POST" action="/chat/send/{{to_id}}">
                         {% csrf_token %}
-                        <div class="type_msg">
-                            <div class="input_msg_write">
-                                <input type="text" class="write_msg" style="color:white" placeholder="Type a message" name="msg" maxlength="3000" required />
+                        <div class="type_msg" style="overflow: hidden;">
+                            <div class="input_msg_write" style="overflow: hidden;">
+                                <input type="text" class="write_msg" style="color:white;overflow: hidden;" placeholder="Type a message" name="msg" maxlength="3000" required />
                                 <button class="msg_send_btn" type="submit"><i class="fa fa-paper-plane-o"
                                         aria-hidden="true"></i></button>
                             </div>

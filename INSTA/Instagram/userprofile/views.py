@@ -8,13 +8,13 @@ import json
 # Create your views here.
 
 
-#showing the users profile
+# showing the users profile
 def showProfile(request, userid):
 
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
-    #who is visiting the profile
+    # who is visiting the profile
     viewer_username = request.user.username
 
     cmnd = """
@@ -27,7 +27,7 @@ def showProfile(request, userid):
     row = c.fetchone()  # fetching the viwer_userID
     viwer_userid = row[0]
 
-    #fetching the user's profie data
+    # fetching the user's profie data
     cmnd = """
     SELECT U.USER_ID, U.USER_NAME, U.FULL_NAME, U.ADDRESS, U.IMG_SRC, U.CREATED,  U.DATE_OF_BIRTH, U.BIO, U.EMAIL,
     U.PHONE_NUMBER
@@ -39,19 +39,19 @@ def showProfile(request, userid):
     c.execute(cmnd, [userid])
     row = c.fetchone()
     profiledict = {
-        "userid" : row[0],
-        "username" : row[1],
-        "fullname" : row[2],
-        "address" : row[3],
-        "img_src" : row[4],
-        "created" : row[5],
-        "birthdate" : row[6],
-        "bio" : row[7],
-        "email" : row[8],
-        "phone" : row[9],
+        "userid": row[0],
+        "username": row[1],
+        "fullname": row[2],
+        "address": row[3],
+        "img_src": row[4],
+        "created": row[5],
+        "birthdate": row[6],
+        "bio": row[7],
+        "email": row[8],
+        "phone": row[9],
     }
 
-    #check if the viewer is already following that user
+    # check if the viewer is already following that user
     cmnd = """
     SELECT COUNT(*)
     FROM FOLLOWS F
@@ -63,7 +63,7 @@ def showProfile(request, userid):
     is_following = row[0]
     profiledict["is_following"] = is_following
 
-    #fetching count of follow, following & no. of posts
+    # fetching count of follow, following & no. of posts
     cmnd = """
     SELECT NO_OF_FOLLOWERS(:USER_ID), NO_OF_FOLLOWINGS(:USER_ID), NO_OF_POSTS(:USER_ID)
     FROM USERACCOUNT
@@ -71,14 +71,14 @@ def showProfile(request, userid):
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
-    followers = row[0] 
+    followers = row[0]
     profiledict["followers"] = followers
-    followings = row[1] 
+    followings = row[1]
     profiledict["followings"] = followings
     total_posts = row[2]
     profiledict['total_posts'] = total_posts
 
-    #fetching the posts
+    # fetching the posts
     cmnd = """
     SELECT P.POST_ID , P.IMG_SRC
     FROM POST P
@@ -86,7 +86,7 @@ def showProfile(request, userid):
     ORDER BY P.CREATED DESC
     """
     c = connection.cursor()
-    c.execute(cmnd, [userid]) 
+    c.execute(cmnd, [userid])
 
     posts = []
     for row in c:
@@ -96,10 +96,11 @@ def showProfile(request, userid):
         }
         posts.append(postdict)
 
-    posts = [posts[i:i+3] for i in range(0, len(posts), 3)] #slicing post--> 3 posts in each row
+    # slicing post--> 3 posts in each row
+    posts = [posts[i:i+3] for i in range(0, len(posts), 3)]
     profiledict['posts'] = posts
 
-    #fetching the tagged posts
+    # fetching the tagged posts
     cmnd = """
     SELECT P.POST_ID , P.IMG_SRC
     FROM POST P, TAGGED T
@@ -107,7 +108,7 @@ def showProfile(request, userid):
     ORDER BY P.CREATED DESC
     """
     c = connection.cursor()
-    c.execute(cmnd, [userid]) 
+    c.execute(cmnd, [userid])
 
     tagged_posts = []
     for row in c:
@@ -117,7 +118,9 @@ def showProfile(request, userid):
         }
         tagged_posts.append(taggeddict)
 
-    tagged_posts = [tagged_posts[i:i+3] for i in range(0, len(tagged_posts), 3)] #slicing post--> 3 posts in each row
+    # slicing post--> 3 posts in each row
+    tagged_posts = [tagged_posts[i:i+3]
+                    for i in range(0, len(tagged_posts), 3)]
     profiledict['tagged_posts'] = tagged_posts
 
     cmnd = """
@@ -128,7 +131,7 @@ def showProfile(request, userid):
     c = connection.cursor()
     c.execute(cmnd, [viwer_userid])
     row = c.fetchone()
-    total_unseen = row[0] 
+    total_unseen = row[0]
     profiledict["total_unseen"] = total_unseen
 
     # fetching unseen msg count
@@ -161,10 +164,11 @@ def showProfileByName(request, username):
     row = c.fetchone()  # fetching the main_userID
     userid = row[0]
 
-    if(userid ==  None):
+    if(userid == None):
         return HttpResponse('404 - Not Found')
 
     return redirect(f"/userprofile/{userid}")
+
 
 def follow(request, userid):
 
@@ -183,7 +187,7 @@ def follow(request, userid):
     c.execute(cmnd, [main_username])
 
     row = c.fetchone()  # fetching the main_userID
-    main_userid = row[0] 
+    main_userid = row[0]
 
     if(main_userid == None):
         return HttpResponse('404 - Not Found')
@@ -213,11 +217,11 @@ def follow(request, userid):
 
         # #insert into notification table
         # cmnd = """
-        # INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT)  
+        # INSERT INTO NOTIFICATION(FROM_ID, TO_ID,CONTENT)
         # VALUES(:user_id, :poster_id, :type)
         # """
         # c = connection.cursor()
-        # c.execute(cmnd, [main_userid, to_follow_id,"follow"]) 
+        # c.execute(cmnd, [main_userid, to_follow_id,"follow"])
         # connection.commit()
 
     else:  # if already followed then unfollow
@@ -229,13 +233,13 @@ def follow(request, userid):
         c.execute(cmnd, [to_follow_id, main_userid])
         connection.commit()
 
-        #delete from notification table
+        # delete from notification table
         cmnd = """
         DELETE FROM NOTIFICATION
         WHERE FROM_ID = :from_id AND TO_ID = :to_id AND CONTENT = :type
         """
         c = connection.cursor()
-        c.execute(cmnd, [main_userid, to_follow_id,"follow"]) 
+        c.execute(cmnd, [main_userid, to_follow_id, "follow"])
         connection.commit()
 
     cmnd = """
@@ -248,7 +252,7 @@ def follow(request, userid):
     row = c.fetchone()
     followers_count = row[0]  # count how many people follows the user
     connection.close()
-    
+
     resp = {
         "followers_count": followers_count,
         "is_following": is_following
@@ -256,22 +260,23 @@ def follow(request, userid):
     response = json.dumps(resp)
     return HttpResponse(response, content_type="application/json")
 
+
 def showFollowers(request, userid):
 
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
-    #Fetching the followers' list
+    # Fetching the followers' list
     cmnd = """
     SELECT U.USER_NAME,U.USER_ID, U.IMG_SRC
     FROM FOLLOWS F, USERACCOUNT U
     WHERE F.FOLLOWER_ID = U.USER_ID AND F.FOLLOWEE_ID = :userid
     """
     c = connection.cursor()
-    c.execute(cmnd, [userid]) 
+    c.execute(cmnd, [userid])
 
     followers = []
-    total_followers=0
+    total_followers = 0
     for row in c:
         follwerdict = {
             "username": row[0],
@@ -281,7 +286,7 @@ def showFollowers(request, userid):
         followers.append(follwerdict)
         total_followers += 1
 
-    #Fetching the unseen notifications
+    # Fetching the unseen notifications
     cmnd = """
     SELECT USER_ID
     FROM USERACCOUNT
@@ -300,7 +305,7 @@ def showFollowers(request, userid):
     c = connection.cursor()
     c.execute(cmnd, [viwer_userid])
     row = c.fetchone()
-    total_unseen = row[0] 
+    total_unseen = row[0]
 
     # fetching unseen msg count
     cmnd = """
@@ -314,29 +319,30 @@ def showFollowers(request, userid):
     total_unseen_msg = row[0]
 
     data = {
-        "followers" : followers,
-        "total_followers" :total_followers,
-        "total_unseen" : total_unseen,
-        'total_unseen_msg':total_unseen_msg
+        "followers": followers,
+        "total_followers": total_followers,
+        "total_unseen": total_unseen,
+        'total_unseen_msg': total_unseen_msg
     }
 
     return render(request, 'userprofile/followers.html', data)
+
 
 def showFollowings(request, userid):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
-    #Fetching the followings' list
+    # Fetching the followings' list
     cmnd = """
     SELECT U.USER_NAME,U.USER_ID, U.IMG_SRC
     FROM FOLLOWS F, USERACCOUNT U
     WHERE F.FOLLOWEE_ID = U.USER_ID AND F.FOLLOWER_ID = :userid
     """
     c = connection.cursor()
-    c.execute(cmnd, [userid]) 
+    c.execute(cmnd, [userid])
 
     followings = []
-    total_followings=0
+    total_followings = 0
     for row in c:
         followingdict = {
             "username": row[0],
@@ -346,7 +352,7 @@ def showFollowings(request, userid):
         followings.append(followingdict)
         total_followings += 1
 
-    #Fetching the unseen notifications
+    # Fetching the unseen notifications
     cmnd = """
     SELECT USER_ID
     FROM USERACCOUNT
@@ -365,7 +371,7 @@ def showFollowings(request, userid):
     c = connection.cursor()
     c.execute(cmnd, [viwer_userid])
     row = c.fetchone()
-    total_unseen = row[0] 
+    total_unseen = row[0]
 
     # fetching unseen msg count
     cmnd = """
@@ -379,20 +385,21 @@ def showFollowings(request, userid):
     total_unseen_msg = row[0]
 
     data = {
-        "followings" : followings,
-        "total_followings" :total_followings,
-        "total_unseen" : total_unseen,
-        "total_unseen_msg":total_unseen_msg,
+        "followings": followings,
+        "total_followings": total_followings,
+        "total_unseen": total_unseen,
+        "total_unseen_msg": total_unseen_msg,
     }
 
     return render(request, 'userprofile/followings.html', data)
 
+
 def editProfile(request, userid):
 
-    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
-    connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
-    
-    #Fetching the unseen notifications
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
+
+    # Fetching the unseen notifications
     cmnd = """
     SELECT COUNT(*)
     FROM NOTIFICATION
@@ -401,9 +408,9 @@ def editProfile(request, userid):
     c = connection.cursor()
     c.execute(cmnd, [userid])
     row = c.fetchone()
-    total_unseen = row[0] 
+    total_unseen = row[0]
 
-    #fetching the user's default information
+    # fetching the user's default information
     cmnd = """
     SELECT FULL_NAME, BIO, ADDRESS, EMAIL, TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD'), GENDER, PHONE_NUMBER 
     FROM USERACCOUNT
@@ -414,32 +421,34 @@ def editProfile(request, userid):
     row = c.fetchone()
 
     data = {
-        "userid" :userid,
+        "userid": userid,
         "total_unseen": total_unseen,
-        "fullname" : row[0],
-        "bio":row[1],
-        "address":row[2],
-        "email":row[3],
-        "birthdate":row[4],
-        "gender" : row[5],
-        "phone" : row[6]
+        "fullname": row[0],
+        "bio": row[1],
+        "address": row[2],
+        "email": row[3],
+        "birthdate": row[4],
+        "gender": row[5],
+        "phone": row[6]
     }
     return render(request, 'userprofile/editprofile.html', data)
 
+
 def savePersonalInfo(request, userid):
     if(request.method == 'POST'):
-        fullname= request.POST['fullname']
-        bio= request.POST['bio']
-        email= request.POST['email']
-        phone= request.POST['phone']
-        address= request.POST['address']
+        fullname = request.POST['fullname']
+        bio = request.POST['bio']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        address = request.POST['address']
         birthdate = request.POST['birthdate']
         gender = request.POST['gender']
 
-        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
-        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+        connection = cx_Oracle.connect(
+            user='insta', password='insta', dsn=dsn_tns)
 
-        cmnd ="""
+        cmnd = """
         UPDATE USERACCOUNT
         SET FULL_NAME = :fullname, 
             BIO = :bio, 
@@ -451,14 +460,15 @@ def savePersonalInfo(request, userid):
         WHERE USER_ID = :userid
         """
         c = connection.cursor()
-        c.execute(cmnd, [fullname, bio, address, email, phone, gender, birthdate, userid])
+        c.execute(cmnd, [fullname, bio, address, email,
+                         phone, gender, birthdate, userid])
         connection.commit()
         connection.close()
 
         messages.info(request, 'Your Changes has been updated successfully!')
         return redirect(f"/userprofile/{userid}")
 
-    else :
+    else:
         return HttpResponse('404-Nor Found')
 
 
@@ -467,8 +477,9 @@ def changeProfilePic(request, userid):
 
         image = request.FILES['image']
 
-        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
-        connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+        connection = cx_Oracle.connect(
+            user='insta', password='insta', dsn=dsn_tns)
 
         cmnd = """
         SELECT IMG_SRC 
@@ -481,15 +492,15 @@ def changeProfilePic(request, userid):
         image_path = row[0]
 
         if(image_path == "/static/user.png"):
-            profile_obj = ProfileImage(userid=userid,image=image)
+            profile_obj = ProfileImage(userid=userid, image=image)
             profile_obj.save()
-        else :
-            profile_obj = ProfileImage.objects.get(userid = userid)
+        else:
+            profile_obj = ProfileImage.objects.get(userid=userid)
             profile_obj.image = image
             profile_obj.save()
-            
+
         profile_img_ = ProfileImage.objects.filter(userid=userid)
-        image_path = profile_img_[0].image.url 
+        image_path = profile_img_[0].image.url
 
         cmnd = """
         UPDATE USERACCOUNT
@@ -503,16 +514,16 @@ def changeProfilePic(request, userid):
         messages.success(request, 'Profile Picture Updated Successfully!')
         return redirect(f"/userprofile/{userid}")
 
-    else :
+    else:
         return HttpResponse('404-Nor Found')
 
 
 def about(request, userid):
 
-    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
-    connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
-    #fetching the user's profie data
+    # fetching the user's profie data
     cmnd = """
     SELECT U.USER_ID, U.USER_NAME, U.FULL_NAME, NVL(U.ADDRESS,' '), U.IMG_SRC, U.CREATED,  TO_CHAR(U.DATE_OF_BIRTH,'DD-MON-YYYY'),
     NVL(U.BIO, ' '), U.EMAIL, NVL(U.PHONE_NUMBER,' '),  U.GENDER
@@ -524,20 +535,20 @@ def about(request, userid):
     c.execute(cmnd, [userid])
     row = c.fetchone()
     profiledict = {
-        "userid" : row[0],
-        "username" : row[1],
-        "fullname" : row[2],
-        "address" : row[3],
-        "img_src" : row[4],
-        "created" : dateutil.parser.parse(str(row[5])),
-        "birthdate" : row[6],
-        "bio" : row[7],
-        "email" : row[8],
-        "phone" : row[9],
-        "gender" : row[10],
+        "userid": row[0],
+        "username": row[1],
+        "fullname": row[2],
+        "address": row[3],
+        "img_src": row[4],
+        "created": dateutil.parser.parse(str(row[5])),
+        "birthdate": row[6],
+        "bio": row[7],
+        "email": row[8],
+        "phone": row[9],
+        "gender": row[10],
     }
 
-    #fetching unseen notificatios count
+    # fetching unseen notificatios count
     cmnd = """
     SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
     FROM USERACCOUNT U
@@ -547,6 +558,6 @@ def about(request, userid):
     c.execute(cmnd, [request.user.username])
     row = c.fetchone()
     profiledict['total_unseen'] = row[0]
-    profiledict['total_unseen_msg'] = total_unseen_msg
+    profiledict['total_unseen_msg'] = row[1]
 
     return render(request, 'userprofile/about.html',  profiledict)

@@ -105,7 +105,7 @@
             background: red;
         }
 
-        .notification .badge {
+        .notification .badge{
             position: absolute;
             top: -12px;
             right: -10px;
@@ -142,7 +142,7 @@
 
 <body>
 
-    <nav class="navbar navbar-expand navbar-dark bg-dark ">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
         <a class="navbar-brand logo" href="/home" style="background-color:transparent;">
             <i class="fa fa-instagram"></i> SocialShout
         </a>
@@ -211,8 +211,8 @@
                 <!-- <a class="nav-link" href="#">
                         <i class="far fa-heart nav-icons"></i>                   
                 </a> -->
-                <a href="/notifications" class="notification nav-link" title="Notifications" data-toggle="tooltip" data-placement="bottom">
-                    <i class="fas fa-bell nav-icons"></i>
+                <a href="/notifications" role="button" class="notification nav-link" title="Notifications" data-toggle="tooltip" data-placement="bottom">
+                    <i class="fas fa-bell nav-icons" aria-hidden="true"></i>
                     {% block notification_count %}{% endblock notification_count %}
                 </a>
             </li>
@@ -220,8 +220,7 @@
                 This is custom div for chat app
             -->
             <li class="nav-item mr-1">
-                <a href="/chat/chatlist" role="button" class="notification nav-link" data-placement="bottom" title="Message" data-toggle="tooltip"
-                    style="background-color: #555;">
+                <a href="/chat/chatlist" role="button" class="notification nav-link" title="Message" data-toggle="tooltip" data-placement="bottom">
                     <i class="fa fa-envelope nav-icons" aria-hidden="true"></i>
                     {% block msg_count %}{% endblock msg_count %}
                 </a>

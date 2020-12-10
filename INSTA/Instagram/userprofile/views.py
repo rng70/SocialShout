@@ -136,7 +136,7 @@ def showProfile(request, userid):
 
     # fetching unseen msg count
     cmnd = """
-    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    SELECT COUNT_UNSEEN_MSG(USER_ID)
     FROM USERACCOUNT U
     WHERE U.USER_ID = :userid
     """
@@ -309,7 +309,7 @@ def showFollowers(request, userid):
 
     # fetching unseen msg count
     cmnd = """
-    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    SELECT COUNT_UNSEEN_MSG(USER_ID)
     FROM USERACCOUNT U
     WHERE U.USER_ID = :userid
     """
@@ -375,7 +375,7 @@ def showFollowings(request, userid):
 
     # fetching unseen msg count
     cmnd = """
-    SELECT GET_UNSEEN_NOTIFICATIONS(USER_ID)
+    SELECT COUNT_UNSEEN_MSG(USER_ID)
     FROM USERACCOUNT U
     WHERE U.USER_ID = :userid
     """

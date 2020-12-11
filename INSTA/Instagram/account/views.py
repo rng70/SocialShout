@@ -28,7 +28,7 @@ def handleSignUp(request):
         birthdate = request.POST['birthdate']
         gender = request.POST['gender']
        
-        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
         connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
         #check for errorneous input
@@ -95,7 +95,7 @@ def handleLogin(request):
         loginPassword=request.POST['loginPassword']
 
 
-        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
         connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
         #validate the login user from database

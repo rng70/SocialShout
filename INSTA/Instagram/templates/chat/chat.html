@@ -1,6 +1,6 @@
 {% extends 'timeline_base.html' %}
 
-{% block title %} Notifications {% endblock title %}
+{% block title %} {{to_name}} {% endblock title %}
 
 
 {% block css %}
@@ -162,7 +162,7 @@ overflow-y:auto;
 {% block body %}
 {% load humanize %}
 <div class="row row-no-gutters" style="overflow:hidden;" >
-    <div class="container" style="background-color: #172a45; overflow:hidden;">
+    <div class="container" style="background-color: #1F1B24; overflow:hidden;">
         <h3 class=" text-center" style="color: white;position:relative;top: 3vh;overflow:hidden;">Messages</h3>
         <div class="messaging" style="position:relative;top: 3.2vh;overflow: hidden;">
             <div class="inbox_msg d-flex justify-content-center">
@@ -171,8 +171,11 @@ overflow-y:auto;
                         {% for msg in chats %}
                             {% if msg.type == "incoming" %}
                             <div class="incoming_msg">
-                                <div class="incoming_msg_img"> <img src="{{to_img_src}}"
-                                        alt="..." style="border-radius:50%"> </div>
+                                <div class="incoming_msg_img"> <a href="/userprofile/{{to_id}}">
+                                    <img src="{{to_img_src}}" class="border border-light"
+                                        alt="..." style="border-radius:50%; height: 50px;
+                                        width: 60px;">
+                                </a> </div>
                                 <div class="received_msg">
                                     <div class="received_withd_msg">
                                         <p>{{msg.text}}</p>

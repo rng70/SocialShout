@@ -9,7 +9,7 @@ from operator import itemgetter
 
 def getNameAndImage(i):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
     cmnd = """
     SELECT USER_NAME, FULL_NAME, IMG_SRC
@@ -25,7 +25,7 @@ def getNameAndImage(i):
 
 def returnMsgList(request):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -140,7 +140,7 @@ def showChatList(request):
 
     userid, dict_of_msg = returnMsgList(request)
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -165,7 +165,7 @@ def showChatList(request):
 
 def showChat(request, to_id):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -225,6 +225,16 @@ def showChat(request, to_id):
     row = c.fetchone()
     to_img_src = row[0]
 
+    cmnd = """
+    SELECT USER_NAME
+    FROM USERACCOUNT
+    WHERE USER_ID = :USER_ID
+    """
+    c = connection.cursor()
+    c.execute(cmnd, [to_id])
+    row = c.fetchone()
+    to_name = row[0]
+
     # fetching unseen msg count
     cmnd = """
     SELECT  GET_UNSEEN_NOTIFICATIONS(USER_ID), COUNT_UNSEEN_MSG(USER_ID)
@@ -241,6 +251,7 @@ def showChat(request, to_id):
         'to_id': to_id,
         'chats': chats,
         'to_img_src': to_img_src,
+        'to_name' : to_name,
         'total_unseen_msg': total_unseen_msg,
         'total_unseen' : total_unseen,
     }
@@ -253,7 +264,7 @@ def send(request, to_id):
     if(request.method == 'POST'):
         msg = request.POST['msg']
 
-        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
         connection = cx_Oracle.connect(
             user='insta', password='insta', dsn=dsn_tns)
 

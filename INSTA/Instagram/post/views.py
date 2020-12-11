@@ -21,7 +21,7 @@ def showPost(request, slug):
     postid = slug
 
     # fetching that particular post to show
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -223,7 +223,7 @@ def likepost(request):
     username = request.user.username
 
 
-    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
     # fetching use id who gives post
@@ -337,7 +337,7 @@ def postComment(request, slug):
         comment = request.POST.get('comment')
         postid = slug
 
-        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
         connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
         #Get the commenter id 
@@ -417,7 +417,7 @@ def postComment(request, slug):
 
 def editpost(request, postid):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     #fetching the caption
@@ -461,7 +461,7 @@ def saveEditedPost(request, postid):
     if(request.method=='POST'):
         edited=request.POST['edited'] #fetching the edited caption
 
-        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
         connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
         #save the edited post in database
@@ -490,7 +490,7 @@ def addtag(request,  postid): #add tag in postid
             messages.error(request, 'You have not selected anyone!')
             return redirect(f"/post/{postid}")
 
-        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+        dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
         connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
         cmnd = """
@@ -532,7 +532,7 @@ def addtag(request,  postid): #add tag in postid
 
 def autocomplete(request, postid): #autocomplte searchBar while searching for users to tag in posts
 
-    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
     #https://jqueryui.com/autocomplete/
@@ -581,7 +581,7 @@ def autocomplete(request, postid): #autocomplte searchBar while searching for us
 
 def deleltePost(request, postid):
 
-    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
     #fetching the userid
@@ -614,7 +614,7 @@ def deleltePost(request, postid):
 
 def removetag(request, postid):
 
-    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='ORCL')
+    dsn_tns  = cx_Oracle.makedsn('localhost','1521',service_name='XE')
     connection = cx_Oracle.connect(user='insta',password='insta',dsn=dsn_tns)
 
     cmnd = """

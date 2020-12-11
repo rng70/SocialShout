@@ -4,7 +4,8 @@
 
 {% block css %}
 body{
-background-color: #FAFAFA;
+/*background-color: #FAFAFA;*/
+background-color: #1F1B24;
 margin: 0;
 padding: 0;
 width: 100%;
@@ -152,7 +153,7 @@ color: #8E919C;
             {% csrf_token %}
             <div class="login-inner border border-info">
                 <h1 class="mt-4 content">  SocialShout </h1>
-                <h2 class="vvzhL text-info">Sign up to see photos and videos from your friends.</h2>
+                <h2 class="vvzhL text-info">Sign up to see photos and posts from your friends.</h2>
                 <div class="form-group ">
                     <label for="username" class="ml-3">Username : </label>
                     <input type="text " class="ml-3 border border-success" placeholder="Username" id="username" name="username" required>
@@ -202,11 +203,11 @@ color: #8E919C;
     </div>
 
     <div class="container my-4">
-        <p class="footer-text col-sm-12">
+        <p class="footer-text col-sm-12 text-light">
             ABOUT HELP PRESS API JOBS PRIVACY TERMS LOCATIONS TOP ACCOUNTS HASHTAGS LANGUAGE
     
             <span class="copyright">
-                © 2020 INSTAGRAM FROM FACEBOOK
+                © 2020 SocialShout FROM FACEBOOK
             </span>
         </p>
     </div>

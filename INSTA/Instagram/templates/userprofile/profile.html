@@ -71,7 +71,7 @@ height:200px;
         <div class="media-body info">
 
             <div class="mx-auto my-2 ">
-                <div class="d-inline text-dark">
+                <div class="d-inline text-white">
                     <h4 class="mt-0 d-inline">{{username}} </h4>
                 </div>
                 {% if username == request.user.username %}
@@ -93,18 +93,18 @@ height:200px;
             {% endif %}
 
             <div class="mx-auto my-2 ">
-                <div class="d-inline text-dark " id="posts"> Posts : {{total_posts}}</div>
-                <div class="d-inline text-dark mx-4 ">
-                    <a href="/userprofile/followers/{{userid}}" class="text-dark"> Followers : </a>
+                <div class="d-inline text-white " id="posts"> Posts : {{total_posts}}</div>
+                <div class="d-inline text-white mx-4 ">
+                    <a href="/userprofile/followers/{{userid}}" class="text-white"> Followers : </a>
                     <p class="d-inline" id="followers"> {{followers}}</p>
                 </div>
-                <div class="d-inline text-dark" id="followings">
-                    <a href="/userprofile/followings/{{userid}}" class="text-dark"> Followings </a>: {{followings}}
+                <div class="d-inline text-white" id="followings">
+                    <a href="/userprofile/followings/{{userid}}" class="text-white"> Followings </a>: {{followings}}
                 </div>
             </div>
 
             <div>
-                <a href="/userprofile/about/{{userid}}" class="text-dark">
+                <a href="/userprofile/about/{{userid}}" class="text-light">
                     {% if username != request.user.username %}
                     ... See {{username}}'s About info
                     {% else %}
@@ -121,12 +121,12 @@ height:200px;
     <hr>
 
     <!-- showing the  posts -->
-    <div class="container">
+    <div class="container ">
         <nav>
             <div class="nav nav-tabs d-flex justify-content-center mb-1" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                <a class="nav-item nav-link active text-success" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
                     aria-controls="nav-home" aria-selected="true"><i class="fas fa-image mr-1"></i>Posts</a>
-                <a class="nav-item nav-link" id="nav-tagged-tab" data-toggle="tab" href="#nav-tagged" role="tab"
+                <a class="nav-item nav-link text-success" id="nav-tagged-tab" data-toggle="tab" href="#nav-tagged" role="tab"
                     aria-controls="nav-tagged" aria-selected="false"><i class="fas fa-tags mr-1"></i>Tagged</a>
             </div>
         </nav>

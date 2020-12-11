@@ -21,7 +21,7 @@
         }
 
         body {
-            background-color: #0a192f;
+            background-color: #1F1B24;
             {% comment %} #FAFAFA; {% endcomment %}
         }
 
@@ -212,16 +212,16 @@
                         <i class="far fa-heart nav-icons"></i>                   
                 </a> -->
                 <a href="/notifications" role="button" class="notification nav-link" title="Notifications" data-toggle="tooltip" data-placement="bottom">
-                    <i class="fas fa-bell nav-icons" aria-hidden="true"></i>
+                    <i class="fas fa-bell nav-icons"></i>
                     {% block notification_count %}{% endblock notification_count %}
                 </a>
             </li>
             <!-- 
                 This is custom div for chat app
             -->
-            <li class="nav-item mr-1">
+            <li class="nav-item mx-1">
                 <a href="/chat/chatlist" role="button" class="notification nav-link" title="Message" data-toggle="tooltip" data-placement="bottom">
-                    <i class="fa fa-envelope nav-icons" aria-hidden="true"></i>
+                    <i class="fa fa-envelope nav-icons" ></i>
                     {% block msg_count %}{% endblock msg_count %}
                 </a>
             </li>

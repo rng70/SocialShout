@@ -30,12 +30,12 @@
 {% block body %}
 {% load humanize %}
 
-<div class="container">
+<div class="container ">
 
     <form method="POST" action="/post/saveEdited/{{postid}}">
         {% csrf_token %}
         <div class="form-group ">
-          <label for="exampleFormControlTextarea1" class="text-dark mt-3"><b>Edit Post :</b></label>
+          <label for="exampleFormControlTextarea1" class="text-light mt-3"><b>Edit Post :</b></label>
           <textarea class="form-control border border-info" id="exampleFormControlTextarea1" rows="3" 
           name="edited"> {% if caption %}{{caption}}{% endif %} </textarea>
           <button type="submit" class="btn btn-success my-2">Save</button>

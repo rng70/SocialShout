@@ -11,7 +11,7 @@ import json
 # showing the users profile
 def showProfile(request, userid):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # who is visiting the profile
@@ -150,7 +150,7 @@ def showProfile(request, userid):
 
 def showProfileByName(request, username):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -175,7 +175,7 @@ def follow(request, userid):
     main_username = request.user.username
     to_follow_id = userid
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -263,7 +263,7 @@ def follow(request, userid):
 
 def showFollowers(request, userid):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # Fetching the followers' list
@@ -329,7 +329,7 @@ def showFollowers(request, userid):
 
 
 def showFollowings(request, userid):
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # Fetching the followings' list
@@ -396,7 +396,7 @@ def showFollowings(request, userid):
 
 def editProfile(request, userid):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # Fetching the unseen notifications
@@ -444,7 +444,7 @@ def savePersonalInfo(request, userid):
         birthdate = request.POST['birthdate']
         gender = request.POST['gender']
 
-        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
         connection = cx_Oracle.connect(
             user='insta', password='insta', dsn=dsn_tns)
 
@@ -477,7 +477,7 @@ def changeProfilePic(request, userid):
 
         image = request.FILES['image']
 
-        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
         connection = cx_Oracle.connect(
             user='insta', password='insta', dsn=dsn_tns)
 
@@ -520,7 +520,7 @@ def changeProfilePic(request, userid):
 
 def about(request, userid):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # fetching the user's profie data

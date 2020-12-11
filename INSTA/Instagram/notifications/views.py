@@ -9,7 +9,7 @@ import json
 
 def showNotifications(request):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # Get the user id
@@ -84,7 +84,7 @@ def showNotifications(request):
 
 def checkNoification(request, notification_id):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # if click , make the notification seen by the user

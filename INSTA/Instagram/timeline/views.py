@@ -15,7 +15,7 @@ import dateutil.parser
 
 def home(request):
     # fetching posts to show on user's timeline
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     username = request.user.username
@@ -181,7 +181,7 @@ def post(request):
         username = request.user.username
 
         # Create the  POST in database
-        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
         connection = cx_Oracle.connect(
             user='insta', password='insta', dsn=dsn_tns)
 
@@ -239,7 +239,7 @@ def likepost(request):
     postid = request.GET.get("postid", "")
     username = request.user.username
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -343,7 +343,7 @@ def search(request):
 
     text = request.GET.get('search', '')  # to be searched
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     pattern = '%' + text.lower() + '%'
@@ -412,7 +412,7 @@ def search(request):
 
 def suggestions(request, userid):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     # fetching the suggestions list to follow

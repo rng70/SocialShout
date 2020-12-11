@@ -9,7 +9,7 @@ from operator import itemgetter
 
 def getNameAndImage(i):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
     cmnd = """
     SELECT USER_NAME, FULL_NAME, IMG_SRC
@@ -25,7 +25,7 @@ def getNameAndImage(i):
 
 def returnMsgList(request):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -140,7 +140,7 @@ def showChatList(request):
 
     userid, dict_of_msg = returnMsgList(request)
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -165,7 +165,7 @@ def showChatList(request):
 
 def showChat(request, to_id):
 
-    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
     connection = cx_Oracle.connect(user='insta', password='insta', dsn=dsn_tns)
 
     cmnd = """
@@ -264,7 +264,7 @@ def send(request, to_id):
     if(request.method == 'POST'):
         msg = request.POST['msg']
 
-        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='XE')
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCL')
         connection = cx_Oracle.connect(
             user='insta', password='insta', dsn=dsn_tns)
 

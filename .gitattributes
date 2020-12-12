@@ -2,5 +2,5 @@
 * text=auto
 
 *.py linguist-detectable=true
-*.html linguist-detectable=false
+*.html linguist-detectable=true
 *.css linguist-detectable=false

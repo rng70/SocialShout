@@ -108,7 +108,7 @@ margin: 0;
         <a href="check/{{notification.notification_id}} " style="text-decoration : none">
 
         {% if notification.content == 'like' %}
-            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
                     {% if notification.is_seen %}       
                     <span class="badge "> <span style='font-size:15px'>&#10003;</span></span>
@@ -121,7 +121,7 @@ margin: 0;
                     <span class="badge">{{notification.time|naturaltime}}</span>
             </div>
         {% elif notification.content == 'follow' %}
-            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
                     {% if notification.is_seen %}       
                     <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>
@@ -134,7 +134,7 @@ margin: 0;
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
         {% elif notification.content == 'comment' %}
-            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
                     {% if notification.is_seen %}       
                     <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>
@@ -153,7 +153,7 @@ margin: 0;
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
         {% elif notification.content == 'reply' %}
-            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
                     {% if notification.is_seen %}       
                     <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>
@@ -172,7 +172,7 @@ margin: 0;
                     <span class="badge"> {{notification.time|naturaltime}}</span>
             </div>
         {% else %}
-            <div class="alert {% if notification.is_seen %}alert-success {% else %} alert-primary{% endif %}
+            <div class="alert {% if notification.is_seen %}alert-secondary {% else %} alert-primary{% endif %}
             mb-2" role="alert" style="height: 25;">
                     {% if notification.is_seen %}       
                     <span class="badge"> <span style='font-size:15px' >&#10003;</span></span>

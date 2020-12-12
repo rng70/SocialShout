@@ -116,7 +116,7 @@ margin: 0;
                         </strong>
                         {% if no_of_tags > 0 %}
                         <br>
-                        <span class="mx-4"> <span class="text-secondary ml-4" style="font-size: 13px;">&nbsp &nbsp
+                        <span class="mx-4 "> <span class="text-secondary ml-4" style="font-size: 13px;">&nbsp &nbsp
                                 with</span>
                             <a href="/userprofile/{{firstTag.userid}}" class="text-dark"> {{firstTag.username}} </a>
 
@@ -161,7 +161,7 @@ margin: 0;
                     </h10>
                 </div>
                 {% if username == request.user.username %}
-                <div style="margin-left: 130px;">
+                <div style="margin-left: 130px; ">
                     <div class="btn-group">
                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -177,9 +177,9 @@ margin: 0;
                     </div>
                 </div>
                 {% elif istagged == 1 %}
-                <div style="margin-left: 200px;">
-                    <a href="/post/removetag/{{postid}} " role="button" class="btn-sm  btn-danger" style="margin-left: 330px;">
-                        RemoveTag</a>
+                <div style="margin-left: 200px; " class="mb-auto">
+                    <a href="/post/removetag/{{postid}} " role="button" class="btn-sm  btn-danger mb-auto" style="margin-left: 330px;">
+                        Remove Tag</a>
                 </div>
                 
                 {% endif %}

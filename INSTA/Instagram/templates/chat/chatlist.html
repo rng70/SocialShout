@@ -70,6 +70,9 @@ border-radius: 50%;
 border-color: black;
 margin: 0;
 }
+
+.active_chat{ background:#ebebeb;}
+
 {% endblock css %}
 
 {% block profile_url %}
@@ -94,20 +97,20 @@ margin: 0;
 
 {% block body %}
 {% load humanize %}
-<div class="container my-2">
+<div class="container my-2 justify-content-row-center">
     {% if not dict_of_msg %}
     <h6 class="alert alert-info mx-auto">  You have no conversation yet! </h6>
     {% endif %}
 
     {% for chat_row in dict_of_msg %}
-        <a href="/chat/{{chat_row.id}}" style="text-decoration : none">
-            <div class="alert {% if chat_row.seen %}alert-success {% else %} alert-primary{% endif %}
-            mb-2" role="alert" style="height: 25;">
+        <a href="/chat/{{chat_row.id}}" style="text-decoration : none" class="justify-content-row-center">
+            <div class="alert {% if chat_row.seen %}alert-light {% else %} alert-primary{% endif %}
+            mb-2 col-8" role="alert" style="height: 25;">
                     {% if chat_row.seen %} 
                         <span class="badge "> <span style='font-size:15px'>&#10003;</span></span>
                     {% else %}
                         <span class="badge badge-pill badge-primary" style="height: 3%;
-                    width: 2%; font-size:7px">New</span>
+                    width: 4%; font-size:7px">New</span>
                     {% endif %}
                     <img src="{{chat_row.img_src}}" height="30" class=" notify-image ml-2">
                     <strong style="color:black">{{chat_row.name}}</strong>
